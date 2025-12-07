@@ -1,0 +1,21 @@
+.main-content {
+  margin-left: 240px; /* full sidebar width */
+  padding-top: 60px; /* topbar height */
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.page-content {
+  padding: 20px;
+}
+
+body{
+    margin: 0;
+}
+.main-content {
+  transition: all 0.3s ease;
+}
+
+.main-content.collapsed {
+  margin-left: 80px; /* collapsed sidebar */
+}
