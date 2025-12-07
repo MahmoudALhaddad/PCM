@@ -1,23 +1,81 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/profile.css";
-import profilePic from "../assets/profilePic.png"; 
+import profilePic from "../assets/profilePic.png";
 
 export default function Profile() {
   const [user, setUser] = useState({
-    name: "John Doe",
-    email: "johndoe@example.com",
-    role: "Admin",
-    department: "Development",
+    name: "",
+    role: "",
+    department: "",
   });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      try {
+        const response = await fetch("http://localhost:5000/api/users/profile", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          setUser({
+            name: data.name,
+            role: data.role,
+            department: data.department,
+          });
+        } else {
+          console.error(data.error);
+        }
+      } catch (error) {
+        console.error("Fetch profile error:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
 
   const handleChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
-    console.log("Saved user:", user);
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    try {
+      const response = await fetch(`http://localhost:5000/api/users/${user.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name: user.name,
+          department: user.department,
+        }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        alert("Profile updated successfully!");
+      } else {
+        alert(data.error || "Update failed");
+      }
+    } catch (error) {
+      console.error("Update profile error:", error);
+    }
   };
+
+  if (loading) return <p>Loading profile...</p>;
 
   return (
     <div className="profile-page">
@@ -30,42 +88,17 @@ export default function Profile() {
         <form className="profile-form" onSubmit={handleSave}>
           <div className="form-group">
             <label>Name</label>
-            <input
-              type="text"
-              name="name"
-              value={user.name}
-              onChange={handleChange}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Email</label>
-            <input
-              type="email"
-              name="email"
-              value={user.email}
-              onChange={handleChange}
-            />
+            <input type="text" name="name" value={user.name} onChange={handleChange} />
           </div>
 
           <div className="form-group">
             <label>Role</label>
-            <input
-              type="text"
-              name="role"
-              value={user.role}
-              readOnly
-            />
+            <input type="text" name="role" value={user.role} readOnly />
           </div>
 
           <div className="form-group">
             <label>Department</label>
-            <input
-              type="text"
-              name="department"
-              value={user.department}
-              onChange={handleChange}
-            />
+            <input type="text" name="department" value={user.department} onChange={handleChange} />
           </div>
 
           <button type="submit" className="save-btn">

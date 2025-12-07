@@ -54,3 +54,20 @@
   left: 92px; /* collapsed sidebar width */
   width: calc(100% - 92px); /* expand topbar to fill extra space */
 }
+
+.logout-btn {
+  background: transparent;
+  border: none;
+  color: #495057; /* match other topbar icons */
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 16px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+  background-color: #f8f9fa; /* subtle hover background like a button */
+  color: #dc3545; /* red on hover */
+}

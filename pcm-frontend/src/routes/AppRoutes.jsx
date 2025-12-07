@@ -11,30 +11,35 @@ import Settings from "../pages/Settings";
 import Layout from "../Layouts/Layout";
 import Login from "../pages/Login";
 import Profile from "../pages/Profile";
+import ProtectedRoute from "../components/ProtectedRoute";
+
 export default function AppRoutes() {
   return (
     <BrowserRouter>
-    <Routes>
-      {/* Public route */}
-      <Route path="/login" element={<Login />} />
+      <Routes>
+        {/* Public route */}
+        <Route path="/login" element={<Login />} />
 
-      {/* All protected pages inside Layout */}
-      <Route element={<Layout />}>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/calendar" element={<Calendar />} />
-        <Route path="/chat" element={<Chat />} />
-        <Route path="/projects" element={<Projects />} />
-        <Route path="/tasks" element={<Tasks />} />
-        <Route path="/kanban" element={<Kanban />} />
-        <Route path="/users" element={<Users />} />
-        <Route path="/reports" element={<Reports />} />
-        <Route path="/settings" element={<Settings />} />
-
-        {/* Profile SHOULD be here */}
-        <Route path="/profile" element={<Profile />} />
-      </Route>
-    </Routes>
-  </BrowserRouter>
-
+        {/* Protected routes */}
+        <Route
+          element={
+            <ProtectedRoute>
+              <Layout />
+            </ProtectedRoute>
+          }
+        >
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/calendar" element={<Calendar />} />
+          <Route path="/chat" element={<Chat />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/tasks" element={<Tasks />} />
+          <Route path="/kanban" element={<Kanban />} />
+          <Route path="/users" element={<Users />} />
+          <Route path="/reports" element={<Reports />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/profile" element={<Profile />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }

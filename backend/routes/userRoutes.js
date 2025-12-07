@@ -1,7 +1,16 @@
-const express = require('express');
+import express from 'express';
+import {
+  getAllUsers,
+  getUserById,
+  updateUser,
+  deleteUser,
+  getUserProfile,
+  getUsersByRole,
+  createUser, // <-- import this
+} from '../controllers/usersController.js';
+import { authenticateToken, authorize } from '../middleware/authMiddleware.js';
+
 const router = express.Router();
-const { getAllUsers, getUserById, updateUser, deleteUser, getUserProfile, getUsersByRole } = require('../controllers/usersController');
-const { authenticateToken, authorize } = require('../middleware/authMiddleware');
 
 // Get current user profile
 router.get('/profile', authenticateToken, getUserProfile);
@@ -15,4 +24,7 @@ router.get('/:id', authenticateToken, getUserById);
 router.put('/:id', authenticateToken, updateUser);
 router.delete('/:id', authenticateToken, authorize(['admin']), deleteUser);
 
-module.exports = router;
+// Admin creates a new user
+router.post('/', authenticateToken, authorize(['admin']), createUser); // <-- Add this
+
+export default router;

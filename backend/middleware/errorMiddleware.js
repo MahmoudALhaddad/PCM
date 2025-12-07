@@ -1,4 +1,5 @@
-// Error handling middleware
+// middleware/errorMiddleware.js
+
 const errorMiddleware = (err, req, res, next) => {
   console.error('Error:', err);
 
@@ -28,4 +29,4 @@ const errorMiddleware = (err, req, res, next) => {
   });
 };
 
-module.exports = errorMiddleware;
+export default errorMiddleware;

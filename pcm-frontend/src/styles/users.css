@@ -1,0 +1,109 @@
+.users-page {
+  padding: 20px;
+}
+
+.add-user-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.add-user-form input,
+.add-user-form select {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ced4da;
+}
+
+.add-user-form button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: #495057;
+  color: #fff;
+  cursor: pointer;
+}
+
+.add-user-form button:hover {
+  background-color: #343a40;
+}
+
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.users-table th,
+.users-table td {
+  border: 1px solid #dee2e6;
+  padding: 10px;
+  text-align: left;
+}
+
+.delete-btn {
+  padding: 4px 8px;
+  border: none;
+  background-color: #dc3545;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.delete-btn:hover {
+  background-color: #c82333;
+}
+
+/* Inline edit inputs */
+.users-table input,
+.users-table select {
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #ced4da;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Save / Cancel buttons for inline edit */
+.users-table .save-btn,
+.users-table .cancel-btn {
+  padding: 4px 8px;
+  border: none;
+  border-radius: 4px;
+  margin-left: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.users-table .save-btn {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.users-table .save-btn:hover {
+  background-color: #218838;
+}
+
+.users-table .cancel-btn {
+  background-color: #6c757d;
+  color: #fff;
+}
+
+.users-table .cancel-btn:hover {
+  background-color: #5a6268;
+}
+
+/* Edit button for inline editing */
+.users-table .edit-btn {
+  padding: 4px 8px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff; /* blue */
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.85rem;
+  margin-right: 4px;
+}
+
+.users-table .edit-btn:hover {
+  background-color: #0069d9;
+}
