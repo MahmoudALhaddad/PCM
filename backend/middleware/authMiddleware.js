@@ -1,8 +1,9 @@
-const { verifyToken } = require('../utils/authUtils');
-const pool = require('../config/database');
+// middleware/authMiddleware.js
+import pool from '../config/database.js';
+import { verifyToken } from '../utils/authUtils.js';
 
 // Authentication middleware
-const authenticateToken = (req, res, next) => {
+export const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
@@ -20,7 +21,7 @@ const authenticateToken = (req, res, next) => {
 };
 
 // Authorization middleware based on roles
-const authorize = (requiredRoles) => {
+export const authorize = (requiredRoles) => {
   return async (req, res, next) => {
     try {
       const result = await pool.query(
@@ -44,9 +45,4 @@ const authorize = (requiredRoles) => {
       return res.status(500).json({ error: 'Authorization error' });
     }
   };
-};
-
-module.exports = {
-  authenticateToken,
-  authorize,
 };

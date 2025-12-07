@@ -4,16 +4,14 @@ import { FaHome, FaUser, FaProjectDiagram, FaTasks, FaCalendarAlt, FaComments, F
 import "../styles/sidebar.css";
 
 import logoFullBright from "../assets/brightModeLogo.png";
-import logoFullDark from "../assets/darkModeLogo.png";
 import logoIconBright from "../assets/collabsedLOGO.png";
-import logoIconDark from "../assets/collabsedLOGO.png";
 
-export default function Sidebar({ collapsed }) {
+export default function Sidebar({ collapsed, currentUser }) {
   const location = useLocation();
 
   const menuItems = [
     { name: "Dashboard", icon: <FaHome />, path: "/" },
-    { name: "Users", icon: <FaUser />, path: "/users" },
+    ...(currentUser?.role !== "employee" ? [{ name: "Users", icon: <FaUser />, path: "/users" }] : []),
     { name: "Projects", icon: <FaProjectDiagram />, path: "/projects" },
     { name: "Tasks", icon: <FaTasks />, path: "/tasks" },
     { name: "Calendar", icon: <FaCalendarAlt />, path: "/calendar" },

@@ -1,10 +1,11 @@
-const pool = require('../config/database');
+// controllers/usersController.js
+import pool from '../config/database.js';
 
 // Get all users
-const getAllUsers = async (req, res) => {
+export const getAllUsers = async (req, res) => {
   try {
     const result = await pool.query(
-      'SELECT id, name, email, role, department, created_at FROM users ORDER BY created_at DESC'
+      'SELECT id, name, role, department, created_at FROM users ORDER BY created_at DESC'
     );
     res.json(result.rows);
   } catch (error) {
@@ -14,11 +15,11 @@ const getAllUsers = async (req, res) => {
 };
 
 // Get user by ID
-const getUserById = async (req, res) => {
+export const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
     const result = await pool.query(
-      `SELECT id, name, email, role, department, created_at FROM users WHERE id = $1`,
+      'SELECT id, name, role, department, created_at FROM users WHERE id = $1',
       [id]
     );
 
@@ -34,24 +35,30 @@ const getUserById = async (req, res) => {
 };
 
 // Update user
-const updateUser = async (req, res) => {
+export const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, department, role } = req.body;
+    const { name, department, role, password } = req.body;
 
-    // If role is being updated, validate it
     if (role && !['admin', 'manager', 'employee'].includes(role)) {
       return res.status(400).json({ error: 'Invalid role' });
+    }
+
+    let hashedPassword;
+    if (password) {
+      const { hashPassword } = await import('../utils/authUtils.js');
+      hashedPassword = await hashPassword(password);
     }
 
     const result = await pool.query(
       `UPDATE users 
        SET name = COALESCE($1, name),
-           department = COALESCE($2, department),
-           role = COALESCE($3, role)
-       WHERE id = $4
-       RETURNING id, name, email, role, department`,
-      [name, department, role, id]
+           password = COALESCE($2, password),
+           department = COALESCE($3, department),
+           role = COALESCE($4, role)
+       WHERE id = $5
+       RETURNING id, name, role, department`,
+      [name, hashedPassword, department, role, id]
     );
 
     if (result.rows.length === 0) {
@@ -66,12 +73,12 @@ const updateUser = async (req, res) => {
 };
 
 // Delete user
-const deleteUser = async (req, res) => {
+export const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
 
     const result = await pool.query(
-      'DELETE FROM users WHERE id = $1 RETURNING id, name, email',
+      'DELETE FROM users WHERE id = $1 RETURNING id, name, role, department',
       [id]
     );
 
@@ -87,12 +94,12 @@ const deleteUser = async (req, res) => {
 };
 
 // Get user profile
-const getUserProfile = async (req, res) => {
+export const getUserProfile = async (req, res) => {
   try {
     const userId = req.userId;
 
     const userResult = await pool.query(
-      `SELECT id, name, email, role, department, created_at FROM users WHERE id = $1`,
+      'SELECT id, name, role, department, created_at FROM users WHERE id = $1',
       [userId]
     );
 
@@ -108,7 +115,7 @@ const getUserProfile = async (req, res) => {
 };
 
 // Get users by role
-const getUsersByRole = async (req, res) => {
+export const getUsersByRole = async (req, res) => {
   try {
     const { role } = req.params;
 
@@ -118,7 +125,7 @@ const getUsersByRole = async (req, res) => {
     }
 
     const result = await pool.query(
-      'SELECT id, name, email, role, department, created_at FROM users WHERE role = $1 ORDER BY created_at DESC',
+      'SELECT id, name, role, department, created_at FROM users WHERE role = $1 ORDER BY created_at DESC',
       [role]
     );
 
@@ -129,11 +136,36 @@ const getUsersByRole = async (req, res) => {
   }
 };
 
-module.exports = {
-  getAllUsers,
-  getUserById,
-  updateUser,
-  deleteUser,
-  getUserProfile,
-  getUsersByRole,
+// Create new user (admin only)
+export const createUser = async (req, res) => {
+  try {
+    const { name, password, role, department } = req.body;
+
+    // Validate required fields
+    if (!name || !password || !role || !department) {
+      return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    // Validate role
+    if (!['admin', 'manager', 'employee'].includes(role)) {
+      return res.status(400).json({ error: 'Invalid role' });
+    }
+
+    // Import hashing function dynamically
+    const { hashPassword } = await import('../utils/authUtils.js');
+    const hashedPassword = await hashPassword(password);
+
+    // Insert new user
+    const result = await pool.query(
+      `INSERT INTO users (name, password, role, department)
+       VALUES ($1, $2, $3, $4)
+       RETURNING id, name, role, department`,
+      [name, hashedPassword, role, department]
+    );
+
+    res.status(201).json({ message: 'User created successfully', user: result.rows[0] });
+  } catch (error) {
+    console.error('Create user error:', error);
+    res.status(500).json({ error: 'Failed to create user' });
+  }
 };
