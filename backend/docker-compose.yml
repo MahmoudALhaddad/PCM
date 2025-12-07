@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: pcm_postgres
+    environment:
+      POSTGRES_USER: pcm_user
+      POSTGRES_PASSWORD: pcm_password
+      POSTGRES_DB: pcm_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - pcm_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pcm_user -d pcm_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pcm_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@pcm.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "5050:80"
+    networks:
+      - pcm_network
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
+
+networks:
+  pcm_network:
+    driver: bridge
