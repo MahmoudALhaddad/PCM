@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation,useNavigate } from "react-router-dom";
 import { FaHome, FaUser, FaProjectDiagram, FaTasks, FaCalendarAlt, FaComments, FaClipboardList, FaCog, FaSignOutAlt, FaFolder } from "react-icons/fa";
 import "../styles/sidebar.css";
 
@@ -8,10 +8,14 @@ import logoIconBright from "../assets/collabsedLOGO.png";
 
 export default function Sidebar({ collapsed, currentUser }) {
   const location = useLocation();
-
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // Remove the JWT token
+    navigate("/login"); // Redirect to login page
+  };
   const menuItems = [
     { name: "Dashboard", icon: <FaHome />, path: "/" },
-    ...(currentUser?.role !== "employee" ? [{ name: "Users", icon: <FaUser />, path: "/users" }] : []),
+    ...((currentUser?.role === "admin" || currentUser?.role === "manager") ? [{ name: "Users", icon: <FaUser />, path: "/users" }] : []),
     { name: "Projects", icon: <FaProjectDiagram />, path: "/projects" },
     { name: "Tasks", icon: <FaTasks />, path: "/tasks" },
     { name: "Calendar", icon: <FaCalendarAlt />, path: "/calendar" },
@@ -39,12 +43,11 @@ export default function Sidebar({ collapsed, currentUser }) {
       </ul>
 
       <ul className="sidebar-menu mt-auto">
-        <li>
-          <Link to="/logout">
-            <FaSignOutAlt />
-            {!collapsed && <span>Logout</span>}
-          </Link>
-        </li>
+        <FaSignOutAlt/>
+
+        <button className="logout-btn" onClick={handleLogout}>
+          Logout
+        </button>
       </ul>
     </div>
   );

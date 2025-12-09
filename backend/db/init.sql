@@ -1,8 +1,12 @@
 -- Create Users Table
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
+<<<<<<< HEAD
     name VARCHAR(100) NOT NULL UNIQUE,
     email VARCHAR(150) UNIQUE NOT NULL,
+=======
+    name VARCHAR(100) UNIQUE NOT NULL,
+>>>>>>> ee66cc6 (update 9/12)
     password TEXT NOT NULL,
     role VARCHAR(20) NOT NULL CHECK (role IN ('admin', 'manager', 'employee')),
     department VARCHAR(50),
@@ -28,6 +32,14 @@ CREATE TABLE project_members (
     user_id INT REFERENCES users(id) ON DELETE CASCADE,
     added_at TIMESTAMP DEFAULT NOW(),
     UNIQUE(project_id, user_id)
+);
+
+CREATE TABLE task_members (
+    id SERIAL PRIMARY KEY,
+    task_id INT REFERENCES tasks(id) ON DELETE CASCADE,
+    user_id INT REFERENCES users(id) ON DELETE CASCADE,
+    added_at TIMESTAMP DEFAULT NOW(),
+    UNIQUE(task_id, user_id)
 );
 
 -- Create Tasks Table
