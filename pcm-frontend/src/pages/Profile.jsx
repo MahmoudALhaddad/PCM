@@ -87,23 +87,38 @@ export default function Profile() {
 
         <form className="profile-form" onSubmit={handleSave}>
           <div className="form-group">
-            <label>Name</label>
-            <input type="text" name="name" value={user.name} onChange={handleChange} />
-          </div>
+          <label>Name</label>
+          <input
+            type="text"
+            name="name"
+            value={user.name}
+            onChange={handleChange}
+            readOnly={!(user.role === "admin" || user.role === "manager")}
+          />
+        </div>
 
-          <div className="form-group">
-            <label>Role</label>
-            <input type="text" name="role" value={user.role} readOnly />
-          </div>
+        <div className="form-group">
+          <label>Role</label>
+          <input type="text" name="role" value={user.role} readOnly />
+        </div>
 
-          <div className="form-group">
-            <label>Department</label>
-            <input type="text" name="department" value={user.department} onChange={handleChange} />
-          </div>
+        <div className="form-group">
+          <label>Department</label>
+          <input
+            type="text"
+            name="department"
+            value={user.department}
+            onChange={handleChange}
+            readOnly={!(user.role === "admin" || user.role === "manager")}
+          />
+        </div>
 
+        {(user.role === "admin" || user.role === "manager") && (
           <button type="submit" className="save-btn">
             Save Changes
           </button>
+        )}
+
         </form>
       </div>
     </div>

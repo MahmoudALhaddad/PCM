@@ -3,35 +3,40 @@ import "../styles/login.css";
 import logoFullBright from "../assets/brightModeLogo.png";
 
 export default function Login() {
-  const [name, setName] = useState(""); // changed from email
+  const [name, setName] = useState(""); // username instead of email
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
-        method: 'POST',
+      const response = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name, password }), // send name instead of email
+        body: JSON.stringify({ name, password }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        // Save the token in localStorage or sessionStorage
-        localStorage.setItem('token', data.token);
+        // Store token and user info
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
 
-        // Redirect to dashboard
-        window.location.href = '/';
+        // Redirect to dashboard or projects page
+        window.location.href = "/";
       } else {
-        alert(data.error || 'Login failed');
+        alert(data.error || "Login failed");
       }
     } catch (error) {
-      console.error('Login error:', error);
-      alert('Something went wrong');
+      console.error("Login error:", error);
+      alert("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -47,7 +52,7 @@ export default function Login() {
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <input
-              type="text" // changed from email
+              type="text"
               placeholder="Username"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -65,8 +70,8 @@ export default function Login() {
             />
           </div>
 
-          <button type="submit" className="login-btn">
-            Sign In
+          <button type="submit" className="login-btn" disabled={loading}>
+            {loading ? "Signing In..." : "Sign In"}
           </button>
         </form>
 

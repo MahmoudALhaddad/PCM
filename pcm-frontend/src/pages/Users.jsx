@@ -100,7 +100,7 @@ export default function Users() {
       <h2>Users</h2>
 
       {/* Add user form (admins only) */}
-      {currentUser?.role === "admin" && (
+      {(currentUser?.role === "admin" || currentUser?.role === "manager") && (
         <form className="add-user-form" onSubmit={handleAddUser}>
           <input
             type="text"
@@ -138,7 +138,7 @@ export default function Users() {
             <th>Name</th>
             <th>Role</th>
             <th>Department</th>
-            {currentUser?.role === "admin" && <th>Actions</th>}
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -180,7 +180,7 @@ export default function Users() {
                 user.department
             )}
             </td>
-            {currentUser?.role === "admin" && (
+            {(currentUser?.role === "admin" || currentUser?.role === "manager") && (
             <td>
                 {editingUser?.id === user.id ? (
                 <>
