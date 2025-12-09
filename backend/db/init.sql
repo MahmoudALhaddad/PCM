@@ -1,7 +1,7 @@
 -- Create Users Table
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
+    name VARCHAR(100) NOT NULL UNIQUE,
     email VARCHAR(150) UNIQUE NOT NULL,
     password TEXT NOT NULL,
     role VARCHAR(20) NOT NULL CHECK (role IN ('admin', 'manager', 'employee')),
@@ -63,6 +63,44 @@ CREATE TABLE activity_log (
     created_at TIMESTAMP DEFAULT NOW()
 );
 
+-- Create Messages Table for chat
+CREATE TABLE messages (
+    id SERIAL PRIMARY KEY,
+    sender_id INT REFERENCES users(id) ON DELETE CASCADE,
+    recipient_id INT REFERENCES users(id) ON DELETE SET NULL,
+    project_id INT REFERENCES projects(id) ON DELETE CASCADE,
+    content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Create Files Table for uploads and folder mapping
+CREATE TABLE files (
+    id SERIAL PRIMARY KEY,
+    project_id INT REFERENCES projects(id) ON DELETE CASCADE,
+    task_id INT REFERENCES tasks(id) ON DELETE SET NULL,
+    uploaded_by INT REFERENCES users(id) ON DELETE SET NULL,
+    original_name TEXT NOT NULL,
+    stored_name TEXT NOT NULL,
+    mime_type TEXT,
+    size BIGINT,
+    folder_path TEXT DEFAULT '/',
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Create User Settings Table
+CREATE TABLE user_settings (
+    id SERIAL PRIMARY KEY,
+    user_id INT UNIQUE REFERENCES users(id) ON DELETE CASCADE,
+    theme VARCHAR(30) DEFAULT 'light',
+    language VARCHAR(10) DEFAULT 'en',
+    timezone VARCHAR(100) DEFAULT 'UTC',
+    notifications_enabled BOOLEAN DEFAULT TRUE,
+    email_notifications BOOLEAN DEFAULT TRUE,
+    desktop_notifications BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
 -- Create Notifications Table
 CREATE TABLE notifications (
     id SERIAL PRIMARY KEY,
@@ -101,3 +139,8 @@ CREATE INDEX idx_notifications_user_id ON notifications(user_id);
 CREATE INDEX idx_notifications_read ON notifications(read);
 CREATE INDEX idx_refresh_tokens_user_id ON refresh_tokens(user_id);
 CREATE INDEX idx_refresh_tokens_token ON refresh_tokens(token);
+CREATE INDEX idx_users_name ON users(name);
+CREATE INDEX idx_messages_recipient_id ON messages(recipient_id);
+CREATE INDEX idx_messages_project_id ON messages(project_id);
+CREATE INDEX idx_files_project_id ON files(project_id);
+CREATE INDEX idx_files_task_id ON files(task_id);
