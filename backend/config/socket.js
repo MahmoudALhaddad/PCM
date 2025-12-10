@@ -75,7 +75,7 @@ export const initializeSocket = (server) => {
         // Emit confirmation to sender with full message data
         socket.emit('message_sent', messagePayload);
 
-        // Create and emit notification to recipient
+        // faisal - Create and emit notification to recipient
         const senderUser = user; // already fetched at connection time
         const notification = await createNotification(
           recipientId,

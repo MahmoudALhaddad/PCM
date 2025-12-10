@@ -1,6 +1,7 @@
 import express from 'express';
 import { getChatHistory, getConversations, searchUsers } from '../controllers/chatController.js';
 import { authenticateToken } from '../middleware/authMiddleware.js';
+import { authorize } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
