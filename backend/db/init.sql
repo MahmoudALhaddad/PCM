@@ -118,6 +118,10 @@ CREATE TABLE notifications (
     id SERIAL PRIMARY KEY,
     user_id INT REFERENCES users(id) ON DELETE CASCADE,
     message TEXT NOT NULL,
+    type VARCHAR(50) DEFAULT 'general',
+    entity_id INT,
+    link TEXT,
+    metadata JSONB DEFAULT '{}'::jsonb,
     read BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT NOW()
 );
@@ -133,7 +137,6 @@ CREATE TABLE refresh_tokens (
 );
 
 -- Create indexes for better query performance
-CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_projects_created_by ON projects(created_by);
 CREATE INDEX idx_projects_status ON projects(status);
 CREATE INDEX idx_project_members_project_id ON project_members(project_id);
@@ -149,10 +152,13 @@ CREATE INDEX idx_activity_log_project_id ON activity_log(project_id);
 CREATE INDEX idx_activity_log_task_id ON activity_log(task_id);
 CREATE INDEX idx_notifications_user_id ON notifications(user_id);
 CREATE INDEX idx_notifications_read ON notifications(read);
+CREATE INDEX idx_notifications_created_at ON notifications(created_at);
 CREATE INDEX idx_refresh_tokens_user_id ON refresh_tokens(user_id);
 CREATE INDEX idx_refresh_tokens_token ON refresh_tokens(token);
 CREATE INDEX idx_users_name ON users(name);
 CREATE INDEX idx_messages_recipient_id ON messages(recipient_id);
 CREATE INDEX idx_messages_project_id ON messages(project_id);
+CREATE INDEX idx_messages_sender_id ON messages(sender_id);--faisal
+CREATE INDEX idx_messages_created_at ON messages(created_at);--faisal
 CREATE INDEX idx_files_project_id ON files(project_id);
 CREATE INDEX idx_files_task_id ON files(task_id);

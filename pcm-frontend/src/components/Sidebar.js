@@ -3,6 +3,7 @@ import { Link, useLocation,useNavigate } from "react-router-dom";
 import { FaHome, FaUser, FaProjectDiagram, FaTasks, FaCalendarAlt, FaComments, FaClipboardList, FaCog, FaSignOutAlt, FaFolder } from "react-icons/fa";
 import "../styles/sidebar.css";
 
+
 import logoFullBright from "../assets/brightModeLogo.png";
 import logoIconBright from "../assets/collabsedLOGO.png";
 

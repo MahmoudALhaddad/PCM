@@ -1,7 +1,5 @@
 // controllers/usersController.js
 import pool from '../config/database.js';
-import { hashPassword } from '../utils/authUtils.js';
-import { ROLES } from '../utils/constants.js';
 
 // Get all users
 export const getAllUsers = async (req, res) => {
@@ -42,41 +40,15 @@ export const updateUser = async (req, res) => {
     const { id } = req.params;
     const { name, department, role, password } = req.body;
 
-    // Determine acting user permissions
-    const actingUser = await pool.query('SELECT id, role FROM users WHERE id = $1', [req.userId]);
-    const actingRole = actingUser.rows[0]?.role;
-
-    if (!actingRole) {
-      return res.status(403).json({ error: 'Unauthorized' });
-    }
-
-    const isAdmin = actingRole === 'admin';
-    const isManager = actingRole === 'manager';
-    const isSelf = Number(id) === req.userId;
-
-    if (!(isAdmin || isManager || isSelf)) {
-      return res.status(403).json({ error: 'Insufficient permissions' });
-    }
-
-    if (role && !ROLES.includes(role)) {
+    if (role && !['admin', 'manager', 'employee'].includes(role)) {
       return res.status(400).json({ error: 'Invalid role' });
     }
 
-    // Only admins can change roles
-    const roleToUse = isAdmin ? role : null;
-
-    // Ensure unique name when updating
-    if (name) {
-      const existingName = await pool.query(
-        'SELECT id FROM users WHERE name = $1 AND id <> $2',
-        [name, id]
-      );
-      if (existingName.rows.length > 0) {
-        return res.status(409).json({ error: 'Name already in use' });
-      }
+    let hashedPassword;
+    if (password) {
+      const { hashPassword } = await import('../utils/authUtils.js');
+      hashedPassword = await hashPassword(password);
     }
-
-    const hashedPassword = password ? await hashPassword(password) : null;
 
     const result = await pool.query(
       `UPDATE users 
@@ -86,7 +58,7 @@ export const updateUser = async (req, res) => {
            role = COALESCE($4, role)
        WHERE id = $5
        RETURNING id, name, role, department`,
-      [name, hashedPassword, department, roleToUse, id]
+      [name, hashedPassword, department, role, id]
     );
 
     if (result.rows.length === 0) {
@@ -130,13 +102,10 @@ export const getUserProfile = async (req, res) => {
       'SELECT id, name, role, department, created_at FROM users WHERE id = $1',
       [userId]
     );
-        const requester = await pool.query('SELECT role FROM users WHERE id = $1', [req.userId]);
-        const requesterRole = requester.rows[0]?.role;
-        const isSelf = Number(id) === req.userId;
 
-        if (!(requesterRole === 'admin' || requesterRole === 'manager' || isSelf)) {
-          return res.status(403).json({ error: 'Insufficient permissions' });
-        }
+    if (userResult.rows.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
 
     res.json(userResult.rows[0]);
   } catch (error) {
@@ -150,7 +119,8 @@ export const getUsersByRole = async (req, res) => {
   try {
     const { role } = req.params;
 
-    if (!ROLES.includes(role)) {
+    const validRoles = ['admin', 'manager', 'employee'];
+    if (!validRoles.includes(role)) {
       return res.status(400).json({ error: 'Invalid role' });
     }
 
@@ -171,25 +141,21 @@ export const createUser = async (req, res) => {
   try {
     const { name, password, role, department } = req.body;
 
-    if (!name || !password || !role) {
-      return res.status(400).json({ error: 'Name, password and role are required' });
+    // Validate required fields
+    if (!name || !password || !role || !department) {
+      return res.status(400).json({ error: 'All fields are required' });
     }
 
-    if (!ROLES.includes(role)) {
+    // Validate role
+    if (!['admin', 'manager', 'employee'].includes(role)) {
       return res.status(400).json({ error: 'Invalid role' });
     }
 
-    const conflictCheck = await pool.query(
-      'SELECT id FROM users WHERE name = $1',
-      [name]
-    );
-
-    if (conflictCheck.rows.length > 0) {
-      return res.status(409).json({ error: 'User with that name already exists' });
-    }
-
+    // Import hashing function dynamically
+    const { hashPassword } = await import('../utils/authUtils.js');
     const hashedPassword = await hashPassword(password);
 
+    // Insert new user faisal
     const result = await pool.query(
       `INSERT INTO users (name, password, role, department)
        VALUES ($1, $2, $3, $4)
