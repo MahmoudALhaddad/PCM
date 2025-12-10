@@ -1,153 +1,152 @@
-// src/pages/MyTasks.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../styles/myTasks.css";
 
 function MyTasks() {
   const [tasks, setTasks] = useState([]);
-  const [currentUser, setCurrentUser] = useState(null);
+  const [projects, setProjects] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [fileTaskId, setFileTaskId] = useState(null);
   const [file, setFile] = useState(null);
 
-  // Load currentUser from localStorage
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setCurrentUser(JSON.parse(storedUser));
-    }
-  }, []);
+    const fetchData = async () => {
+      const token = localStorage.getItem("token");
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (!token || !user) {
+        setError("User not logged in");
+        setLoading(false);
+        return;
+      }
 
-  // Fetch tasks assigned to this user
-  useEffect(() => {
-    if (!currentUser) return;
-
-    const fetchTasks = async () => {
       try {
-        const token = localStorage.getItem("token");
-
-        const res = await axios.get("http://localhost:5000/api/tasks", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        // Fetch all tasks
+        const tasksRes = await axios.get("http://localhost:5000/api/tasks", {
+          headers: { Authorization: `Bearer ${token}` },
         });
 
-        console.log("Tasks API Response:", res.data);
-
-        // Filter tasks assigned to this user
-        const userTasks = res.data.filter(
-          (task) => task.assignedTo === currentUser.id
+        // Filter tasks assigned to current user
+        const myTasks = tasksRes.data.filter(
+          (task) =>
+            Array.isArray(task.assigned_to) &&
+            task.assigned_to.some((u) => u.user_id === user.id)
         );
 
-        setTasks(userTasks);
+        setTasks(myTasks);
+
+        // Fetch project names
+        const projectIds = [...new Set(myTasks.map((t) => t.project_id))];
+        const projectData = {};
+        await Promise.all(
+          projectIds.map(async (id) => {
+            try {
+              const res = await axios.get(
+                `http://localhost:5000/api/projects/${id}`,
+                { headers: { Authorization: `Bearer ${token}` } }
+              );
+              projectData[id] = res.data.name || `Project #${id}`;
+            } catch {
+              projectData[id] = `Project #${id}`;
+            }
+          })
+        );
+        setProjects(projectData);
       } catch (err) {
-        setError("Failed to load tasks.");
+        console.error(err);
+        setError("Failed to load tasks");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchTasks();
-  }, [currentUser]);
+    fetchData();
+  }, []);
 
-  // Group tasks by project name
+  // Group tasks by project_id
   const groupedTasks = tasks.reduce((acc, task) => {
-    if (!acc[task.projectName]) acc[task.projectName] = [];
-    acc[task.projectName].push(task);
+    const key = task.project_id;
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(task);
     return acc;
   }, {});
 
-  // Accept / Done button
   const handleAction = async (task) => {
-    if (task.status === "Pending") {
-      await updateTaskStatus(task.id, "In Progress");
-    } else if (task.status === "In Progress") {
+    if (task.status === "todo" || task.status === "review") {
+      await updateTaskStatus(task.id, "in_progress");
+    } else if (task.status === "in_progress") {
       setFileTaskId(task.id);
     }
   };
 
-  // Upload file + finish task
   const handleFileUpload = async () => {
-    if (!file) {
-      alert("Please select a file first.");
-      return;
-    }
+    if (!file) return alert("Please select a file");
 
     const token = localStorage.getItem("token");
-
     const formData = new FormData();
     formData.append("file", file);
 
     try {
-      await axios.post(
+      await axios.put(
         `http://localhost:5000/api/tasks/${fileTaskId}/upload`,
         formData,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
+          headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" },
         }
       );
 
-      await updateTaskStatus(fileTaskId, "Done");
-
+      await updateTaskStatus(fileTaskId, "done");
       setFileTaskId(null);
       setFile(null);
     } catch (err) {
-      console.error("Upload failed:", err);
+      console.error(err);
+      alert("File upload failed");
     }
   };
 
-  // PATCH status using axios
   const updateTaskStatus = async (taskId, status) => {
     const token = localStorage.getItem("token");
-
-    await axios.patch(
-      `http://localhost:5000/api/tasks/${taskId}`,
-      { status },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    setTasks((prev) =>
-      prev.map((t) => (t.id === taskId ? { ...t, status } : t))
-    );
+    try {
+      await axios.put(
+        `http://localhost:5000/api/tasks/${taskId}`,
+        { status },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setTasks((prev) => prev.map((t) => (t.id === taskId ? { ...t, status } : t)));
+    } catch (err) {
+      console.error(err);
+      alert("Failed to update task status");
+    }
   };
 
-  // UI states
   if (loading) return <p>Loading tasks...</p>;
-  if (error) return <p>{error}</p>;
-  if (!currentUser) return <p>No user logged in.</p>;
+  if (error) return <p style={{ color: "red" }}>{error}</p>;
+  if (tasks.length === 0) return <p>No tasks assigned to you.</p>;
 
   return (
-    <div className="tasks-page">
+    <div className="mytasks-wrapper">
       <h1>My Tasks</h1>
 
-      {Object.entries(groupedTasks).map(([projectName, projectTasks]) => (
-        <div key={projectName} className="project-container">
-          <h2>{projectName}</h2>
+      {Object.entries(groupedTasks).map(([projectId, projectTasks]) => (
+        <div key={projectId} className="project-block">
+          <h2>{projects[projectId]}</h2>
 
-          <div className="task-cards">
+          <div className="task-list">
             {projectTasks.map((task) => (
-              <div
-                key={task.id}
-                className={`task-card ${task.status.toLowerCase()}`}
-              >
+              <div key={task.id} className={`task-card ${task.status}`}>
                 <h3>{task.title}</h3>
                 <p>{task.description}</p>
                 <p>Status: {task.status}</p>
-                <p>Priority: {task.priority}</p>
-                <p>Deadline: {task.deadline}</p>
-
+                <p>Priority: {task.priority || "medium"}</p>
+                <p>Deadline: {task.deadline || "Not set"}</p>
+                <p>
+                  Assigned To:{" "}
+                  {task.assigned_to.map((u) => u.full_name).join(", ")}
+                </p>
                 <button onClick={() => handleAction(task)}>
-                  {task.status === "Pending"
+                  {task.status === "todo" || task.status === "review"
                     ? "Accept"
-                    : task.status === "In Progress"
+                    : task.status === "in_progress"
                     ? "Done"
                     : "✔ Done"}
                 </button>
@@ -157,7 +156,6 @@ function MyTasks() {
         </div>
       ))}
 
-      {/* File Upload Popup */}
       {fileTaskId && (
         <div className="file-upload-popup">
           <h3>Upload File</h3>

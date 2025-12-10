@@ -1,4 +1,52 @@
 import pool from '../config/database.js';
+import path from 'path';
+import fs from 'fs';
+import multer from 'multer';
+
+
+// Multer storage setup
+const storage = multer.diskStorage({
+  destination: async (req, file, cb) => {
+    const { taskId } = req.params;
+
+    // Fetch project_id from DB
+    const taskRes = await pool.query('SELECT project_id FROM tasks WHERE id = $1', [taskId]);
+    if (taskRes.rows.length === 0) return cb(new Error('Task not found'));
+    const projectId = taskRes.rows[0].project_id;
+
+    const dir = path.join('uploads', `project_${projectId}`, `task_${taskId}`);
+    fs.mkdirSync(dir, { recursive: true });
+    cb(null, dir);
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}_${file.originalname}`); // avoid overwriting files
+  }
+});
+
+export const upload = multer({ storage });
+
+// Upload route
+export const uploadTaskFile = async (req, res) => {
+  const { taskId } = req.params;
+
+  try {
+    const hasAccess = await canAccessTask(taskId, req.userId);
+    if (!hasAccess) return res.status(403).json({ error: 'Insufficient permissions' });
+
+    if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+
+    // Optionally save file path in DB
+    await pool.query(
+      'INSERT INTO task_files (task_id, file_name, file_path, uploaded_by) VALUES ($1, $2, $3, $4)',
+      [taskId, req.file.filename, req.file.path, req.userId]
+    );
+
+    res.json({ message: 'File uploaded successfully', path: req.file.path });
+  } catch (err) {
+    console.error('File upload error:', err);
+    res.status(500).json({ error: 'File upload failed' });
+  }
+};
 
 const getUserRole = async (userId) => {
   const result = await pool.query('SELECT role FROM users WHERE id = $1', [userId]);

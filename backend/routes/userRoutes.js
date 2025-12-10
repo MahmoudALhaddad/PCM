@@ -19,12 +19,12 @@ router.get('/profile', authenticateToken, getUserProfile);
 router.get('/role/:role', authenticateToken, authorize(['admin', 'manager']), getUsersByRole);
 
 // Admin routes
-router.get('/', authenticateToken, authorize(['admin']), getAllUsers);
+router.get('/', authenticateToken, authorize(['admin', 'manager']), getAllUsers);
 router.get('/:id', authenticateToken, getUserById);
 router.put('/:id', authenticateToken, updateUser);
 router.delete('/:id', authenticateToken, authorize(['admin']), deleteUser);
 
 // Admin creates a new user
-router.post('/', authenticateToken, authorize(['admin']), createUser); // <-- Add this
+router.post('/', authenticateToken, authorize(['admin', 'manager']), createUser); // <-- Add this
 
 export default router;

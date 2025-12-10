@@ -8,24 +8,26 @@ export default function EditTaskModal({ show, onClose, task, refreshTasks }) {
   const [priority, setPriority] = useState("medium");
   const [status, setStatus] = useState("todo");
   const [dueDate, setDueDate] = useState("");
-  const [users, setUsers] = useState([]);
-  const [assignedTo, setAssignedTo] = useState([]);
+  const [users, setUsers] = useState([]); // project members only
+  const [assignedTo, setAssignedTo] = useState([]); // flat array of objects { userId, fullName }
 
-  // Load all users
+  // Load project members
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchProjectMembers = async () => {
+      if (!task) return;
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("http://localhost:5000/api/users", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await axios.get(
+          `http://localhost:5000/api/projects/${task.project_id}/members`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
         setUsers(res.data);
       } catch (err) {
-        console.error("Error loading users:", err);
+        console.error("Error loading project members:", err);
       }
     };
-    fetchUsers();
-  }, []);
+    fetchProjectMembers();
+  }, [task]);
 
   // Pre-fill task data
   useEffect(() => {
@@ -35,7 +37,7 @@ export default function EditTaskModal({ show, onClose, task, refreshTasks }) {
       setPriority(task.priority || "medium");
       setStatus(task.status || "todo");
       setDueDate(task.due_date ? task.due_date.split("T")[0] : "");
-      setAssignedTo(task.assigned_to.map(u => ({ userId: u.user_id })));
+      setAssignedTo(task.assigned_to.map(u => ({ userId: u.user_id, fullName: u.name })));
     }
   }, [task]);
 
@@ -51,10 +53,16 @@ export default function EditTaskModal({ show, onClose, task, refreshTasks }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const assignedIds = assignedTo.map(u => u.userId);
 
-    const payload = { title, description, priority, status, dueDate, assignedTo: assignedIds };
+    const payload = {
+      title,
+      description,
+      priority,
+      status,
+      dueDate,
+      assignedTo: assignedIds,
+    };
 
     try {
       const token = localStorage.getItem("token");
@@ -79,20 +87,20 @@ export default function EditTaskModal({ show, onClose, task, refreshTasks }) {
         <h2>Edit Task</h2>
         <form onSubmit={handleSubmit}>
           <label>Title</label>
-          <input value={title} onChange={e => setTitle(e.target.value)} required />
+          <input value={title} onChange={(e) => setTitle(e.target.value)} required />
 
           <label>Description</label>
-          <textarea value={description} onChange={e => setDescription(e.target.value)} />
+          <textarea value={description} onChange={(e) => setDescription(e.target.value)} />
 
           <label>Priority</label>
-          <select value={priority} onChange={e => setPriority(e.target.value)}>
+          <select value={priority} onChange={(e) => setPriority(e.target.value)}>
             <option value="low">Low</option>
             <option value="medium">Medium</option>
             <option value="high">High</option>
           </select>
 
           <label>Status</label>
-          <select value={status} onChange={e => setStatus(e.target.value)}>
+          <select value={status} onChange={(e) => setStatus(e.target.value)}>
             <option value="todo">To Do</option>
             <option value="in_progress">In Progress</option>
             <option value="review">Review</option>
@@ -100,17 +108,17 @@ export default function EditTaskModal({ show, onClose, task, refreshTasks }) {
           </select>
 
           <label>Due Date</label>
-          <input type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} />
+          <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
 
           <label>Assign To</label>
           <div className="team-members-checkboxes">
-            {users.map(user => (
+            {users.map((user) => (
               <label key={user.id} className="checkbox-label">
                 {user.name} ({user.role})
                 <input
                   type="checkbox"
-                  checked={!!assignedTo.find(u => u.userId === user.id)}
-                  onChange={() => handleCheckboxChange({ userId: user.id })}
+                  checked={!!assignedTo.find((u) => u.userId === user.id)}
+                  onChange={() => handleCheckboxChange({ userId: user.id, fullName: user.name })}
                 />
               </label>
             ))}
@@ -118,7 +126,9 @@ export default function EditTaskModal({ show, onClose, task, refreshTasks }) {
 
           <div className="modal-buttons">
             <button type="submit">Update Task</button>
-            <button type="button" className="cancel-btn" onClick={onClose}>Cancel</button>
+            <button type="button" className="cancel-btn" onClick={onClose}>
+              Cancel
+            </button>
           </div>
         </form>
       </div>

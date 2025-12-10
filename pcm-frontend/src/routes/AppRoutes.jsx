@@ -11,6 +11,7 @@ import Settings from "../pages/Settings";
 import Layout from "../Layouts/Layout";
 import Login from "../pages/Login";
 import Profile from "../pages/Profile";
+import MyTasks from "../pages/MyTasks"
 import ProtectedRoute from "../components/ProtectedRoute";
 
 export default function AppRoutes() {
@@ -32,6 +33,7 @@ export default function AppRoutes() {
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/projects" element={<Projects />} />
+          <Route path="/my-tasks" element={<MyTasks />} />
           <Route path="/tasks" element={<Tasks />} />
           <Route path="/kanban" element={<Kanban />} />
           <Route path="/users" element={<Users />} />

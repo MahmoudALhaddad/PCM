@@ -339,3 +339,25 @@ export const getProjectsWithTasks = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch projects with tasks' });
   }
 };
+
+// GET project members
+// Get members of a specific project
+export const getProjectMembers = async (req, res) => {
+  try {
+    const { projectId } = req.params;
+
+    const members = await pool.query(
+      `SELECT u.id, u.name, u.role
+       FROM project_members pm
+       JOIN users u ON u.id = pm.user_id
+       WHERE pm.project_id = $1
+       ORDER BY u.name`,
+      [projectId]
+    );
+
+    res.json(members.rows);
+  } catch (err) {
+    console.error("Get project members error:", err);
+    res.status(500).json({ error: "Failed to load project members" });
+  }
+};
