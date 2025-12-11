@@ -1,7 +1,16 @@
 -- Create Users Table
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
+<<<<<<< HEAD
     name VARCHAR(100) UNIQUE NOT NULL,
+=======
+<<<<<<< HEAD
+    name VARCHAR(100) NOT NULL UNIQUE,
+    email VARCHAR(150) UNIQUE NOT NULL,
+=======
+    name VARCHAR(100) UNIQUE NOT NULL,
+>>>>>>> ee66cc6 (update 9/12)
+>>>>>>> allinone
     password TEXT NOT NULL,
     role VARCHAR(20) NOT NULL CHECK (role IN ('admin', 'manager', 'employee')),
     department VARCHAR(50),
@@ -70,11 +79,59 @@ CREATE TABLE activity_log (
     created_at TIMESTAMP DEFAULT NOW()
 );
 
+<<<<<<< HEAD
+=======
+-- Create Messages Table for chat
+CREATE TABLE messages (
+    id SERIAL PRIMARY KEY,
+    sender_id INT REFERENCES users(id) ON DELETE CASCADE,
+    recipient_id INT REFERENCES users(id) ON DELETE SET NULL,
+    project_id INT REFERENCES projects(id) ON DELETE CASCADE,
+    content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Create Files Table for uploads and folder mapping
+CREATE TABLE files (
+    id SERIAL PRIMARY KEY,
+    project_id INT REFERENCES projects(id) ON DELETE CASCADE,
+    task_id INT REFERENCES tasks(id) ON DELETE SET NULL,
+    uploaded_by INT REFERENCES users(id) ON DELETE SET NULL,
+    original_name TEXT NOT NULL,
+    stored_name TEXT NOT NULL,
+    mime_type TEXT,
+    size BIGINT,
+    folder_path TEXT DEFAULT '/',
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Create User Settings Table
+CREATE TABLE user_settings (
+    id SERIAL PRIMARY KEY,
+    user_id INT UNIQUE REFERENCES users(id) ON DELETE CASCADE,
+    theme VARCHAR(30) DEFAULT 'light',
+    language VARCHAR(10) DEFAULT 'en',
+    timezone VARCHAR(100) DEFAULT 'UTC',
+    notifications_enabled BOOLEAN DEFAULT TRUE,
+    email_notifications BOOLEAN DEFAULT TRUE,
+    desktop_notifications BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+>>>>>>> allinone
 -- Create Notifications Table
 CREATE TABLE notifications (
     id SERIAL PRIMARY KEY,
     user_id INT REFERENCES users(id) ON DELETE CASCADE,
     message TEXT NOT NULL,
+<<<<<<< HEAD
+=======
+    type VARCHAR(50) DEFAULT 'general',
+    entity_id INT,
+    link TEXT,
+    metadata JSONB DEFAULT '{}'::jsonb,
+>>>>>>> allinone
     read BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT NOW()
 );
@@ -90,7 +147,10 @@ CREATE TABLE refresh_tokens (
 );
 
 -- Create indexes for better query performance
+<<<<<<< HEAD
 CREATE INDEX idx_users_email ON users(email);
+=======
+>>>>>>> allinone
 CREATE INDEX idx_projects_created_by ON projects(created_by);
 CREATE INDEX idx_projects_status ON projects(status);
 CREATE INDEX idx_project_members_project_id ON project_members(project_id);
@@ -106,5 +166,18 @@ CREATE INDEX idx_activity_log_project_id ON activity_log(project_id);
 CREATE INDEX idx_activity_log_task_id ON activity_log(task_id);
 CREATE INDEX idx_notifications_user_id ON notifications(user_id);
 CREATE INDEX idx_notifications_read ON notifications(read);
+<<<<<<< HEAD
 CREATE INDEX idx_refresh_tokens_user_id ON refresh_tokens(user_id);
 CREATE INDEX idx_refresh_tokens_token ON refresh_tokens(token);
+=======
+CREATE INDEX idx_notifications_created_at ON notifications(created_at);
+CREATE INDEX idx_refresh_tokens_user_id ON refresh_tokens(user_id);
+CREATE INDEX idx_refresh_tokens_token ON refresh_tokens(token);
+CREATE INDEX idx_users_name ON users(name);
+CREATE INDEX idx_messages_recipient_id ON messages(recipient_id);
+CREATE INDEX idx_messages_project_id ON messages(project_id);
+CREATE INDEX idx_messages_sender_id ON messages(sender_id);--faisal
+CREATE INDEX idx_messages_created_at ON messages(created_at);--faisal
+CREATE INDEX idx_files_project_id ON files(project_id);
+CREATE INDEX idx_files_task_id ON files(task_id);
+>>>>>>> allinone

@@ -156,6 +156,7 @@ export const createUser = async (req, res) => {
     const hashedPassword = await hashPassword(password);
 
     // Insert new user
+    // Insert new user faisal
     const result = await pool.query(
       `INSERT INTO users (name, password, role, department)
        VALUES ($1, $2, $3, $4)

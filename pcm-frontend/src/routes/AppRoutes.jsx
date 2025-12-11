@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Dashboard from "../pages/Dashboard";
 import Calendar from "../pages/Calendar";
-import Chat from "../pages/Chat";
 import Projects from "../pages/Projects";
 import Tasks from "../pages/Tasks";
 import Kanban from "../pages/Kanban";
@@ -13,6 +12,7 @@ import Login from "../pages/Login";
 import Profile from "../pages/Profile";
 import MyTasks from "../pages/MyTasks"
 import ProtectedRoute from "../components/ProtectedRoute";
+import Chat from "../components/Chat";//faisal
 
 export default function AppRoutes() {
   return (
@@ -40,6 +40,8 @@ export default function AppRoutes() {
           <Route path="/reports" element={<Reports />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/chat" element={<Chat />} />//faisal
+          
         </Route>
       </Routes>
     </BrowserRouter>
