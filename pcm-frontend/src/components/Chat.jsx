@@ -9,9 +9,9 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [allUsers, setAllUsers] = useState([]);
+  const [showUserModal, setShowUserModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-  const [showSearch, setShowSearch] = useState(false);
   const messagesEndRef = useRef(null);
   const selectedUserRef = useRef(null);
   const token = localStorage.getItem('token');
@@ -89,6 +89,21 @@ const Chat = () => {
       });
     });
 
+    // faisal - Listen for read status updates
+    newSocket.on('messages_marked_read', (data) => {
+      console.log('Messages marked as read event received:', data);
+      const { senderId, recipientId } = data;
+      // Update messages SENT BY current user that were just read
+      // senderId is who sent the messages, recipientId is who read them
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.sender_id === senderId && msg.recipient_id === recipientId
+            ? { ...msg, is_read: true }
+            : msg
+        )
+      );
+    });
+
     newSocket.on('disconnect', () => {
       console.log('Disconnected from chat server');
     });
@@ -104,35 +119,37 @@ const Chat = () => {
     fetchConversations();
   }, [fetchConversations]);
 
-  // Handle user search
-  const handleSearch = async (query) => {
-    if (!query.trim()) {
-      setSearchResults([]);
-      setShowSearch(false);
-      return;
-    }
+  // faisal - Fetch all users when modal opens
+  const fetchAllUsers = async () => {
+    if (!token) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/chat/search-users?query=${query}`, {
+      const res = await fetch('http://localhost:5000/api/users', {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.ok) {
         const data = await res.json();
-        setSearchResults(data);
-        setShowSearch(true);
+        // Filter out current user
+        const filtered = data.filter(u => u.id !== currentUser.id);
+        setAllUsers(filtered);
+        setShowUserModal(true);
       }
     } catch (error) {
-      console.error('Search error:', error);
+      console.error('Failed to fetch users:', error);
     }
   };
 
-  // Handle selecting a user from search results
-  const handleSelectSearchResult = (user) => {
+  // faisal - Handle selecting a user from modal
+  const handleSelectUser = (user) => {
     setSelectedUser({ id: user.id, name: user.name });
-    setShowSearch(false);
+    setShowUserModal(false);
     setSearchQuery('');
-    setSearchResults([]);
-    setMessages([]); // Clear messages since this is a new conversation
+    setMessages([]); // Clear messages for new conversation
   };
+
+  // faisal - Filter users based on search
+  const filteredUsers = allUsers.filter(user =>
+    user.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   // Fetch chat history when user selected
   useEffect(() => {
@@ -149,6 +166,27 @@ const Chat = () => {
           const data = await res.json();
           console.log('Loaded messages:', data.messages.length, data.messages);
           setMessages(data.messages);
+          
+          // faisal - Mark all messages from sender as read
+          const senderIds = [selectedUser.id];
+          if (senderIds.length > 0) {
+            try {
+              await fetch('http://localhost:5000/api/chat/mark-read', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ senderIds }),
+              });
+              // Update messages to show as read
+              setMessages(prev => prev.map(msg => 
+                msg.sender_id === selectedUser.id ? { ...msg, is_read: true } : msg
+              ));
+            } catch (error) {
+              console.error('Failed to mark messages as read:', error);
+            }
+          }
         }
       } catch (error) {
         console.error('Failed to fetch chat history:', error);
@@ -186,54 +224,67 @@ const Chat = () => {
   return (
     <div className="chat-container">
       <div className="conversations-list">
-        <h2>Messages</h2>
-        
-        <div className="search-box">
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-              handleSearch(e.target.value);
-            }}
-            placeholder="Search users..."
-            className="search-input"
-          />
+        <div className="messages-header">
+          <h2>Messages</h2>
+          {/* faisal - Add button to open user modal */}
+          <button className="add-user-btn" onClick={fetchAllUsers} title="Start new conversation">
+            +
+          </button>
         </div>
 
-        {showSearch && searchResults.length > 0 ? (
-          <div className="search-results">
-            {searchResults.map((user) => (
-              <div
-                key={user.id}
-                className="conversation-item"
-                onClick={() => handleSelectSearchResult(user)}
-              >
-                <h4>{user.name}</h4>
-                <p className="user-role">{user.role} - {user.department}</p>
+        {/* faisal - User selection modal */}
+        {showUserModal && (
+          <div className="user-modal-overlay" onClick={() => setShowUserModal(false)}>
+            <div className="user-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h3>Select a user</h3>
+                <button className="modal-close" onClick={() => setShowUserModal(false)}>×</button>
               </div>
-            ))}
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search users..."
+                className="modal-search"
+                autoFocus
+              />
+              <div className="modal-users-list">
+                {filteredUsers.length === 0 ? (
+                  <div className="no-users">No users found</div>
+                ) : (
+                  filteredUsers.map((user) => (
+                    <div
+                      key={user.id}
+                      className="modal-user-item"
+                      onClick={() => handleSelectUser(user)}
+                    >
+                      <h4>{user.name}</h4>
+                      <p>{user.role} - {user.department}</p>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
           </div>
+        )}
+
+        {/* faisal - Conversations list */}
+        {conversations.length === 0 ? (
+          <p className="no-conversations">No conversations yet. Click + to start chatting.</p>
         ) : (
-          <>
-            {conversations.length === 0 ? (
-              <p className="no-conversations">No conversations yet. Search for a user to start chatting.</p>
-            ) : (
-              conversations.map((conv) => (
-                <div
-                  key={conv.other_user_id}
-                  className={`conversation-item ${selectedUser?.id === conv.other_user_id ? 'active' : ''}`}
-                  onClick={() => setSelectedUser({ id: conv.other_user_id, name: conv.other_user_name })}
-                >
-                  <h4>{conv.other_user_name}</h4>
-                  <p className="last-message">{conv.last_message}</p>
-                  <span className="timestamp">
-                    {new Date(conv.last_message_time).toLocaleDateString()}
-                  </span>
-                </div>
-              ))
-            )}
-          </>
+          conversations.map((conv) => (
+            <div
+              key={conv.other_user_id}
+              className={`conversation-item ${selectedUser?.id === conv.other_user_id ? 'active' : ''}`}
+              onClick={() => setSelectedUser({ id: conv.other_user_id, name: conv.other_user_name })}
+            >
+              <h4>{conv.other_user_name}</h4>
+              <p className="last-message">{conv.last_message}</p>
+              <span className="timestamp">
+                {new Date(conv.last_message_time).toLocaleDateString()}
+              </span>
+            </div>
+          ))
         )}
       </div>
 
@@ -250,9 +301,17 @@ const Chat = () => {
                   className={`message ${msg.sender_id === currentUser.id ? 'sent' : 'received'}`}
                 >
                   <div className="message-content">{msg.content}</div>
-                  <span className="message-time">
-                    {new Date(msg.created_at).toLocaleTimeString()}
-                  </span>
+                  <div className="message-footer">
+                    <span className="message-time">
+                      {new Date(msg.created_at).toLocaleTimeString()}
+                    </span>
+                    {/* faisal - Show checkmarks for sent messages */}
+                    {msg.sender_id === currentUser.id && (
+                      <span className={`message-status ${msg.is_read ? 'read' : 'sent'}`}>
+                        ✔✔
+                      </span>
+                    )}
+                  </div>
                 </div>
               ))}
               {isTyping && <div className="typing-indicator">typing...</div>}

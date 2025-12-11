@@ -1,16 +1,7 @@
 -- Create Users Table
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-<<<<<<< HEAD
     name VARCHAR(100) UNIQUE NOT NULL,
-=======
-<<<<<<< HEAD
-    name VARCHAR(100) NOT NULL UNIQUE,
-    email VARCHAR(150) UNIQUE NOT NULL,
-=======
-    name VARCHAR(100) UNIQUE NOT NULL,
->>>>>>> ee66cc6 (update 9/12)
->>>>>>> allinone
     password TEXT NOT NULL,
     role VARCHAR(20) NOT NULL CHECK (role IN ('admin', 'manager', 'employee')),
     department VARCHAR(50),
@@ -79,15 +70,14 @@ CREATE TABLE activity_log (
     created_at TIMESTAMP DEFAULT NOW()
 );
 
-<<<<<<< HEAD
-=======
--- Create Messages Table for chat
+-- faisal - Create Messages Table for chat with read status
 CREATE TABLE messages (
     id SERIAL PRIMARY KEY,
     sender_id INT REFERENCES users(id) ON DELETE CASCADE,
     recipient_id INT REFERENCES users(id) ON DELETE SET NULL,
     project_id INT REFERENCES projects(id) ON DELETE CASCADE,
     content TEXT NOT NULL,
+    is_read BOOLEAN DEFAULT FALSE, --faisal - track if message is read
     created_at TIMESTAMP DEFAULT NOW()
 );
 
@@ -119,14 +109,11 @@ CREATE TABLE user_settings (
     updated_at TIMESTAMP DEFAULT NOW()
 );
 
->>>>>>> allinone
 -- Create Notifications Table
 CREATE TABLE notifications (
     id SERIAL PRIMARY KEY,
     user_id INT REFERENCES users(id) ON DELETE CASCADE,
     message TEXT NOT NULL,
-<<<<<<< HEAD
-=======
     type VARCHAR(50) DEFAULT 'general',
     entity_id INT,
     link TEXT,
