@@ -8,6 +8,17 @@ import {
   getProjectsWithTasks,
   getProjectMembers,
 } from '../controllers/projectsController.js';
+import {
+  listProjectFiles,
+  uploadProjectFile,
+  uploadTaskFile,
+  downloadFile,
+  deleteFile,
+  projectFilesUpload,
+  taskFilesUpload,
+  ensureTaskUploadAccess,
+  prepareTaskUpload,
+} from '../controllers/fileManagerController.js';
 import { authenticateToken, authorize } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
@@ -20,6 +31,31 @@ router.get('/', authenticateToken, getProjects);
 
 // Create project (manager/admin only)
 router.post('/', authenticateToken, authorize(['admin', 'manager']), createProject);
+
+// File management
+router.get('/:projectId/files', authenticateToken, listProjectFiles);
+router.put(
+  '/:projectId/project_files/upload',
+  authenticateToken,
+  authorize(['admin']),
+  projectFilesUpload.single('file'),
+  uploadProjectFile
+);
+router.put(
+  '/:projectId/task/upload',
+  authenticateToken,
+  ensureTaskUploadAccess,
+  prepareTaskUpload,
+  taskFilesUpload.single('file'),
+  uploadTaskFile
+);
+router.get('/:projectId/files/:folder/:fileName', authenticateToken, downloadFile);
+router.delete(
+  '/:projectId/files/:folder/:fileName',
+  authenticateToken,
+  authorize(['admin']),
+  deleteFile
+);
 
 // Get single project
 router.get('/:id', authenticateToken, getProjectById);
