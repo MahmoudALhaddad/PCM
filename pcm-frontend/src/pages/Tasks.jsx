@@ -10,18 +10,19 @@ function TasksPage() {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+   const [user, setUser] = useState(null);
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [currentProjectId, setCurrentProjectId] = useState(null);
   const [currentTask, setCurrentTask] = useState(null);
 
-  // ============================
-  // Fetch ALL projects
-  // ============================
+ 
   const fetchProjects = async () => {
     try {
       const token = localStorage.getItem("token");
+       const userData = JSON.parse(localStorage.getItem("user"));
+       setUser(userData);
       const res = await axios.get("http://localhost:5000/api/projects", {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -102,6 +103,7 @@ function TasksPage() {
         <div key={project.id} className="project-block">
           <div className="project-header">
             <h2>{project.name}</h2>
+             {(user?.role === "admin" || user?.role === "manager") && (
             <button
               className="add-task-btn"
               onClick={() => {
@@ -111,13 +113,14 @@ function TasksPage() {
             >
               + Add Task
             </button>
+             )}
           </div>
 
           <div className="divider"></div>
 
           {project.tasks.length === 0 ? (
             <p className="empty-text">
-              No tasks yet — click Add Task to create one.
+               No tasks yet.
             </p>
           ) : (
             <div className="tasks-grid">
@@ -137,7 +140,6 @@ function TasksPage() {
         </div>
       ))}
 
-      {/* Add Task Modal */}
       {showAddModal && (
         <AddTaskModal
           show={showAddModal}
@@ -146,8 +148,6 @@ function TasksPage() {
           refreshTasks={fetchTasks}
         />
       )}
-
-      {/* Edit Task Modal */}
       {showEditModal && currentTask && (
         <EditTaskModal
           show={showEditModal}
