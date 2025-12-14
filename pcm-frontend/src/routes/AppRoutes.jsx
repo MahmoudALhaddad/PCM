@@ -12,7 +12,7 @@ import Login from "../pages/Login";
 import Profile from "../pages/Profile";
 import MyTasks from "../pages/MyTasks"
 import ProtectedRoute from "../components/ProtectedRoute";
-import Chat from "../components/Chat";//faisal
+import Chat from "../components/Chat";
 
 export default function AppRoutes() {
   return (
