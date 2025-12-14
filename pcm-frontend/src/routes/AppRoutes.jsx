@@ -13,7 +13,7 @@ import Profile from "../pages/Profile";
 import MyTasks from "../pages/MyTasks"
 import ProtectedRoute from "../components/ProtectedRoute";
 import Chat from "../components/Chat";
-
+import FileManagementPage from "../pages/FileManagementPage";
 export default function AppRoutes() {
   return (
     <BrowserRouter>
@@ -40,8 +40,8 @@ export default function AppRoutes() {
           <Route path="/reports" element={<Reports />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/chat" element={<Chat />} />//faisal
-          
+          <Route path="/chat" element={<Chat />} />
+          <Route path="/files" element={<FileManagementPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
