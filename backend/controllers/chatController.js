@@ -12,7 +12,7 @@ export const getChatHistory = async (req, res) => {
 
     let params = [userId, withUserId];
     let query = `
-      SELECT m.id, m.sender_id, m.recipient_id, m.content, m.created_at,
+      SELECT m.id, m.sender_id, m.recipient_id, m.content, m.is_read, m.created_at,
              sender.name AS sender_name, recipient.name AS recipient_name
       FROM messages m
       LEFT JOIN users sender ON sender.id = m.sender_id
@@ -129,13 +129,13 @@ export const searchUsers = async (req, res) => {
   }
 };
 
-// Save message to database
+// faisal - Save message to database
 export const saveMessage = async (senderId, recipientId, content) => {
   try {
     const result = await pool.query(
-      `INSERT INTO messages (sender_id, recipient_id, content)
-       VALUES ($1, $2, $3)
-       RETURNING id, sender_id, recipient_id, content, created_at`,
+      `INSERT INTO messages (sender_id, recipient_id, content, is_read)
+       VALUES ($1, $2, $3, FALSE)
+       RETURNING id, sender_id, recipient_id, content, is_read, created_at`,
       [senderId, recipientId, content]
     );
     return result.rows[0];
@@ -156,5 +156,48 @@ export const getUserById = async (userId) => {
   } catch (error) {
     console.error('Get user error:', error);
     return null;
+  }
+};
+
+// faisal - Mark messages as read
+export const markMessagesAsRead = async (req, res, io, userId) => {
+  try {
+    const recipientId = userId;
+    const { senderIds } = req.body; // Array of sender IDs whose messages to mark as read
+
+    if (!Array.isArray(senderIds) || senderIds.length === 0) {
+      return res.status(400).json({ error: 'senderIds array is required' });
+    }
+
+    console.log('faisal - Marking messages as read:', { recipientId, senderIds, hasIo: !!io });
+
+    // Mark all messages from senders as read for this recipient
+    await pool.query(
+      `UPDATE messages
+       SET is_read = TRUE
+       WHERE recipient_id = $1 AND sender_id = ANY($2::int[])`,
+      [recipientId, senderIds]
+    );
+
+    console.log('faisal - Messages updated in database');
+
+    // faisal - Emit socket event to notify senders
+    senderIds.forEach(senderId => {
+      if (io) {
+        console.log(`faisal - Emitting messages_marked_read to user:${senderId}`);
+        io.to(`user:${senderId}`).emit('messages_marked_read', {
+          senderId,
+          recipientId,
+          timestamp: new Date(),
+        });
+      } else {
+        console.error('faisal - IO instance not available!');
+      }
+    });
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Mark messages as read error:', error);
+    res.status(500).json({ error: 'Failed to mark messages as read' });
   }
 };

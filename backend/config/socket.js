@@ -67,6 +67,7 @@ export const initializeSocket = (server) => {
           sender_id: message.sender_id,
           recipient_id: message.recipient_id,
           content: message.content,
+          is_read: message.is_read, //faisal - include read status
           created_at: message.created_at,
         };
 
@@ -106,6 +107,17 @@ export const initializeSocket = (server) => {
       io.to(`user:${recipientId}`).emit('user_typing', {
         userId,
         isTyping: false,
+      });
+    });
+
+    // faisal - Handle marking messages as read
+    socket.on('messages_read', (data) => {
+      const { senderId, recipientId } = data;
+      // Notify sender that their messages were read
+      io.to(`user:${senderId}`).emit('messages_marked_read', {
+        senderId,
+        recipientId,
+        timestamp: new Date(),
       });
     });
 

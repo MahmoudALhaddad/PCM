@@ -11,7 +11,10 @@ const PORT = process.env.PORT || 5000;
 
 // Create HTTP server for socket.io integration faisal
 const server = http.createServer(app);
-initializeSocket(server);
+const io = initializeSocket(server);
+
+// faisal - Store io instance in app for routes to access
+app.set('io', io);
 
 
 app.use(cors({

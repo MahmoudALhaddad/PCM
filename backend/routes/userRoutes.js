@@ -19,7 +19,7 @@ router.get('/profile', authenticateToken, getUserProfile);
 router.get('/role/:role', authenticateToken, authorize(['admin', 'manager']), getUsersByRole);
 
 // Admin routes
-router.get('/', authenticateToken, authorize(['admin', 'manager']), getAllUsers);
+router.get('/', authenticateToken,  getAllUsers);
 router.get('/:id', authenticateToken, getUserById);
 router.put('/:id', authenticateToken, updateUser);
 router.delete('/:id', authenticateToken, authorize(['admin']), deleteUser);
