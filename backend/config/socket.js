@@ -18,9 +18,7 @@ export const initializeSocket = (server) => {
   io.use((socket, next) => {
     try {
       const token = socket.handshake.auth.token;
-      if (!token) {
-        return next(new Error('Authentication token required'));
-      }
+      if (!token) return next(new Error('Authentication token required'));
 
       const decoded = verifyToken(token);
       socket.userId = decoded.userId;
@@ -40,80 +38,72 @@ export const initializeSocket = (server) => {
     // Join personal room for direct messages
     socket.join(`user:${userId}`);
 
-    // Join role-based rooms
+    // Join role-based room if needed
     const user = await getUserById(userId);
     if (user) {
       socket.join(`role:${user.role}`);
     }
 
-    // Handle sending message
+    // --- Send message ---
     socket.on('send_message', async (data) => {
       try {
         const { recipientId, content } = data;
-
-        // Validate input
         if (!recipientId || !content || content.trim().length === 0) {
-          return socket.emit('message_error', {
-            error: 'Recipient and content are required',
-          });
+          return socket.emit('message_error', { error: 'Recipient and content are required' });
         }
 
-        // Save to database
+        // Save message in DB
         const message = await saveMessage(userId, recipientId, content);
 
-        // Emit to recipient's room
         const messagePayload = {
           id: message.id,
           sender_id: message.sender_id,
           recipient_id: message.recipient_id,
           content: message.content,
-          is_read: message.is_read, //faisal - include read status
+          is_read: message.is_read,
           created_at: message.created_at,
         };
 
+        // Emit message to recipient
         io.to(`user:${recipientId}`).emit('receive_message', messagePayload);
 
-        // Emit confirmation to sender with full message data
+        // Emit confirmation to sender
         socket.emit('message_sent', messagePayload);
 
-        // faisal - Create and emit notification to recipient
-        const senderUser = user; // already fetched at connection time
-        const notification = await createNotification(
-          recipientId,
-          `New message from ${senderUser?.name || 'someone'}`,
-          'chat',
-          message.id,
-          '/chat',
-          { senderId: userId }
-        );
-        io.to(`user:${recipientId}`).emit('notification', notification);
+        // --- Create notification ---
+        const notification = await createNotification({
+          userId: recipientId,
+            fromUserId: userId, // 👈 THIS IS THE KEY
+          type: 'message',
+          title: `New message from ${user?.name || 'Someone'}`,
+          body: null,
+          link: '/chat',
+        });
+
+        // Emit notification to recipient
+        io.to(`user:${recipientId}`).emit('new_notification', notification);
+
       } catch (error) {
         console.error('Send message error:', error);
         socket.emit('message_error', { error: 'Failed to send message' });
       }
     });
 
-    // Handle typing indicator
+    // --- Typing indicators ---
     socket.on('typing', (data) => {
       const { recipientId } = data;
-      io.to(`user:${recipientId}`).emit('user_typing', {
-        userId,
-        isTyping: true,
-      });
+      io.to(`user:${recipientId}`).emit('user_typing', { userId, isTyping: true });
     });
 
     socket.on('stop_typing', (data) => {
       const { recipientId } = data;
-      io.to(`user:${recipientId}`).emit('user_typing', {
-        userId,
-        isTyping: false,
-      });
+      io.to(`user:${recipientId}`).emit('user_typing', { userId, isTyping: false });
     });
 
-    // faisal - Handle marking messages as read
+    // --- Mark messages as read ---
     socket.on('messages_read', (data) => {
       const { senderId, recipientId } = data;
-      // Notify sender that their messages were read
+      // Notify sender that messages were read
       io.to(`user:${senderId}`).emit('messages_marked_read', {
         senderId,
         recipientId,
@@ -121,7 +111,7 @@ export const initializeSocket = (server) => {
       });
     });
 
-    // Handle disconnect
+    // --- Disconnect ---
     socket.on('disconnect', () => {
       connectedUsers.delete(userId);
       console.log(`User ${userId} disconnected`);

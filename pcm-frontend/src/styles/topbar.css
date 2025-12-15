@@ -14,7 +14,7 @@
   z-index: 1000;
   box-sizing: border-box;
   box-shadow: 0 1px 5px rgba(0,0,0,0.05);
-  transition: left 0.3s ease, width 0.3s ease; /* add transition */
+  transition: left 0.3s ease, width 0.3s ease;
 }
 
 .burger-icon {
@@ -52,13 +52,13 @@
 
 .topbar.collapsed {
   left: 92px; /* collapsed sidebar width */
-  width: calc(100% - 92px); /* expand topbar to fill extra space */
+  width: calc(100% - 92px);
 }
 
 .logout-btn {
   background: transparent;
   border: none;
-  color: #495057; /* match other topbar icons */
+  color: #495057;
   cursor: pointer;
   font-weight: 500;
   font-size: 16px;
@@ -68,6 +68,64 @@
 }
 
 .logout-btn:hover {
-  background-color: #f8f9fa; /* subtle hover background like a button */
-  color: #dc3545; /* red on hover */
+  background-color: #f8f9fa;
+  color: #dc3545;
+}
+
+/* Notification Styles */
+.notification-wrapper {
+  position: relative; /* position relative for badge */
+  display: inline-block;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -5px; /* slightly above the bell */
+  right: -5px; /* slightly to the right */
+  background: red;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.notification-dropdown {
+  position: absolute;
+  right: 0;
+  top: 35px; /* slightly below bell icon */
+  background: white;
+  border: 1px solid #ccc;
+  width: 250px;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 100;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  border-radius: 6px;
+}
+
+.notification-item {
+  padding: 8px 12px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.notification-item:hover {
+  background-color: #f8f9fa;
+}
+
+.notification-item.unread {
+  background: #f0f8ff;
+}
+
+.notification-item.read {
+  background: #fff;
+}
+
+.no-notifications {
+  padding: 10px;
+  text-align: center;
+  color: #6c757d;
 }

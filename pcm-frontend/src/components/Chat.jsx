@@ -119,6 +119,17 @@ const Chat = () => {
     fetchConversations();
   }, [fetchConversations]);
 
+  useEffect(() => {
+    if (!token) return;
+
+    fetch("http://localhost:5000/api/notifications/mark-all-messages-read", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }, [token]);
+
   // faisal - Fetch all users when modal opens
   const fetchAllUsers = async () => {
     if (!token) return;
@@ -157,6 +168,18 @@ const Chat = () => {
 
     const fetchHistory = async () => {
       try {
+                  // 🔔 MARK MESSAGE NOTIFICATIONS AS READ
+          await fetch('http://localhost:5000/api/notifications/mark-chat-read', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              fromUserId: selectedUser.id,
+            }),
+          });
+
         console.log('Fetching history for user:', selectedUser.id);
         const res = await fetch(
           `http://localhost:5000/api/chat/history?withUserId=${selectedUser.id}&limit=1000`,

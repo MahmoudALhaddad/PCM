@@ -4,17 +4,24 @@ import {
   getNotifications,
   markNotificationsRead,
   markAllNotificationsRead,
+  markChatNotificationsRead,
+  markAllMessageNotificationsRead
 } from '../controllers/notificationController.js';
 
 const router = express.Router();
 
-// faisal - Get all notifications for current user
 router.get('/', authenticateToken, getNotifications);
-
-// faisal - Mark specific notifications as read
 router.post('/mark-read', authenticateToken, markNotificationsRead);
-
-// faisal - Mark all notifications as read
 router.post('/mark-all-read', authenticateToken, markAllNotificationsRead);
+router.post(
+  "/mark-chat-read",
+  authenticateToken,
+  markChatNotificationsRead
+);
+router.post(
+  "/mark-all-messages-read",
+  authenticateToken,
+  markAllMessageNotificationsRead
+);
 
 export default router;
