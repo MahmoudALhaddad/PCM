@@ -1,5 +1,6 @@
 import pool from '../config/database.js';
 import { ensureProjectBaseFolders } from './fileManagerController.js';
+import { logActivity } from '../utils/activityLogger.js';
 
 const getUserRole = async (userId) => {
   const result = await pool.query('SELECT role FROM users WHERE id = $1', [userId]);
@@ -165,6 +166,9 @@ export const createProject = async (req, res) => {
       [uniqueMembers]
     );
 
+    // Log activity
+    await logActivity(req.userId, `Created project "${name}"`, { projectId: project.id });
+
     res.status(201).json({ ...project, project_members: memberDetails.rows });
   } catch (error) {
     console.error('Create project error:', error);
@@ -232,7 +236,11 @@ export const updateProject = async (req, res) => {
 
     );
 
-    res.json({ ...updateResult.rows[0], project_members: updatedMembers.rows });
+    // Log activity
+    const updatedProject = updateResult.rows[0];
+    await logActivity(req.userId, `Updated project "${updatedProject.name}"`, { projectId: id });
+
+    res.json({ ...updatedProject, project_members: updatedMembers.rows });
   } catch (error) {
     console.error('Update project error:', error);
     res.status(500).json({ error: 'Failed to update project' });
@@ -254,7 +262,11 @@ export const deleteProject = async (req, res) => {
       return res.status(404).json({ error: 'Project not found' });
     }
 
-    res.json({ message: 'Project deleted', project: result.rows[0] });
+    // Log activity
+    const deletedProject = result.rows[0];
+    await logActivity(req.userId, `Deleted project "${deletedProject.name}"`, { projectId: id });
+
+    res.json({ message: 'Project deleted', project: deletedProject });
   } catch (error) {
     console.error('Delete project error:', error);
     res.status(500).json({ error: 'Failed to delete project' });

@@ -14,6 +14,7 @@ import MyTasks from "../pages/MyTasks"
 import ProtectedRoute from "../components/ProtectedRoute";
 import Chat from "../components/Chat";
 import FileManagementPage from "../pages/FileManagementPage";
+import ActivityLogs from "../pages/ActivityLogs";
 export default function AppRoutes() {
   return (
     <BrowserRouter>
@@ -40,6 +41,7 @@ export default function AppRoutes() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/files" element={<FileManagementPage />} />
+          <Route path="/activity" element={<ActivityLogs />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation,useNavigate } from "react-router-dom";
-import { FaHome, FaUser, FaProjectDiagram, FaTasks, FaCalendarAlt, FaComments, FaClipboardList, FaCog, FaSignOutAlt, FaFolder } from "react-icons/fa";
+import { FaHome, FaUser, FaProjectDiagram, FaTasks, FaCalendarAlt, FaComments, FaClipboardList, FaCog, FaSignOutAlt, FaFolder, FaHistory } from "react-icons/fa";
 import "../styles/sidebar.css";
 
 import logoFullBright from "../assets/brightModeLogo.png";
@@ -23,6 +23,7 @@ export default function Sidebar({ collapsed, currentUser }) {
     { name: "Kanban", icon: <FaClipboardList />, path: "/kanban" },
     { name: "Chat", icon: <FaComments />, path: "/chat" },
     { name: "File Manager", icon: <FaFolder />, path: "/files" },
+    ...((currentUser?.role === "admin" || currentUser?.role === "manager") ? [{ name: "Activity Logs", icon: <FaHistory />, path: "/activity" }] : []),
     { name: "Settings", icon: <FaCog />, path: "/settings" },
   ];
 

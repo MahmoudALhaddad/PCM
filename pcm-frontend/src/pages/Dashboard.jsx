@@ -26,10 +26,10 @@ export default function Dashboard() {
     teamMembers: 0,
   });
   const [kanbanData, setKanbanData] = useState({
-    planning: [],
+    todo: [],
     in_progress: [],
     review: [],
-    completed: [],
+    done: [],
   });
   const [upcomingDeadlines, setUpcomingDeadlines] = useState([]);
   const [recentActivity, setRecentActivity] = useState([]);
@@ -73,9 +73,9 @@ export default function Dashboard() {
       const completedProjects = projects.filter((p) => p.status === "completed").length;
 
       const totalTasks = tasks.length;
-      const completedTasks = tasks.filter((t) => t.status === "completed").length;
+      const completedTasks = tasks.filter((t) => t.status === "done").length;
       const inProgressTasks = tasks.filter((t) => t.status === "in_progress").length;
-      const planningTasks = tasks.filter((t) => t.status === "planning").length;
+      const planningTasks = tasks.filter((t) => t.status === "todo").length;
 
       setKpis({
         totalProjects,
@@ -90,10 +90,10 @@ export default function Dashboard() {
 
       // Organize tasks by status for Kanban
       const kanban = {
-        planning: tasks.filter((t) => t.status === "planning"),
+        todo: tasks.filter((t) => t.status === "todo"),
         in_progress: tasks.filter((t) => t.status === "in_progress"),
         review: tasks.filter((t) => t.status === "review"),
-        completed: tasks.filter((t) => t.status === "completed"),
+        done: tasks.filter((t) => t.status === "done"),
       };
 
       setKanbanData(kanban);
@@ -103,11 +103,11 @@ export default function Dashboard() {
       const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
       const deadlines = tasks
         .filter((t) => {
-          if (!t.deadline) return false;
-          const deadline = new Date(t.deadline);
-          return deadline >= now && deadline <= nextWeek && t.status !== "completed";
+          if (!t.due_date) return false;
+          const deadline = new Date(t.due_date);
+          return deadline >= now && deadline <= nextWeek && t.status !== "done";
         })
-        .sort((a, b) => new Date(a.deadline) - new Date(b.deadline))
+        .sort((a, b) => new Date(a.due_date) - new Date(b.due_date))
         .slice(0, 5);
 
       setUpcomingDeadlines(deadlines);
@@ -117,7 +117,7 @@ export default function Dashboard() {
       
       // Recent completed tasks
       const recentCompleted = tasks
-        .filter((t) => t.status === "completed" && t.completed_at)
+        .filter((t) => t.status === "done" && t.completed_at)
         .sort((a, b) => new Date(b.completed_at) - new Date(a.completed_at))
         .slice(0, 3);
       
@@ -154,8 +154,8 @@ export default function Dashboard() {
 
       // Team performance
       const performance = users.map((u) => {
-        const userTasks = tasks.filter((t) => t.assigned_to === u.name);
-        const completed = userTasks.filter((t) => t.status === "completed").length;
+        const userTasks = tasks.filter((t) => Array.isArray(t.assigned_to) && t.assigned_to.some(m => m.full_name === u.name));
+        const completed = userTasks.filter((t) => t.status === "done").length;
         const total = userTasks.length;
         return {
           name: u.name,
@@ -241,14 +241,14 @@ export default function Dashboard() {
           <div className="widget deadlines-widget">
             <div className="widget-header">
               <h3>⏰ Upcoming Deadlines</h3>
-              <span className="badge">{upcomingDeadlines.length}</span>
+              <span className="badge">{(upcomingDeadlines || []).length}</span >
             </div>
             <div className="widget-content">
-              {upcomingDeadlines.length === 0 ? (
+              {(upcomingDeadlines || []).length === 0 ? (
                 <p className="empty-state">No upcoming deadlines</p>
               ) : (
-                upcomingDeadlines.map((task) => {
-                  const daysUntil = Math.ceil((new Date(task.deadline) - new Date()) / (1000 * 60 * 60 * 24));
+                (upcomingDeadlines || []).map((task) => {
+                  const daysUntil = Math.ceil((new Date(task.due_date) - new Date()) / (1000 * 60 * 60 * 24));
                   const isUrgent = daysUntil <= 2;
                   return (
                     <div key={task.id} className={`deadline-item ${isUrgent ? "urgent" : ""}`}>
@@ -332,22 +332,24 @@ export default function Dashboard() {
         <div className="kanban-board">
           <div className="kanban-column">
             <div className="column-header">
-              <h3>Planning</h3>
-              <span className="count">{kanbanData.planning.length}</span>
+              <h3>To Do</h3>
+              <span className="count">{(kanbanData.todo || []).length}</span>
             </div>
             <div className="column-cards">
-              {kanbanData.planning.length === 0 ? (
+              {(kanbanData.todo || []).length === 0 ? (
                 <p className="empty">No tasks</p>
               ) : (
-                kanbanData.planning.map((task) => (
+                (kanbanData.todo || []).map((task) => (
                   <div key={task.id} className="kanban-card">
                     <div className="card-title">{task.title}</div>
                     <div className="card-meta">
                       <small>{task.project_name || "Unassigned"}</small>
-                      {task.assigned_to && <small className="assignee">👤 {task.assigned_to}</small>}
+                      {Array.isArray(task.assigned_to) && task.assigned_to.length > 0 && (
+                        <small className="assignee">👤 {task.assigned_to.map(m => m.full_name).join(', ')}</small>
+                      )}
                     </div>
-                    {task.deadline && (
-                      <div className="card-deadline">📅 {new Date(task.deadline).toLocaleDateString()}</div>
+                    {task.due_date && (
+                      <div className="card-deadline">📅 {new Date(task.due_date).toLocaleDateString()}</div>
                     )}
                   </div>
                 ))
@@ -358,21 +360,23 @@ export default function Dashboard() {
           <div className="kanban-column">
             <div className="column-header">
               <h3>In Progress</h3>
-              <span className="count">{kanbanData.in_progress.length}</span>
+              <span className="count">{(kanbanData.in_progress || []).length}</span>
             </div>
             <div className="column-cards">
-              {kanbanData.in_progress.length === 0 ? (
+              {(kanbanData.in_progress || []).length === 0 ? (
                 <p className="empty">No tasks</p>
               ) : (
-                kanbanData.in_progress.map((task) => (
+                (kanbanData.in_progress || []).map((task) => (
                   <div key={task.id} className="kanban-card in-progress">
                     <div className="card-title">{task.title}</div>
                     <div className="card-meta">
                       <small>{task.project_name || "Unassigned"}</small>
-                      {task.assigned_to && <small className="assignee">👤 {task.assigned_to}</small>}
+                      {Array.isArray(task.assigned_to) && task.assigned_to.length > 0 && (
+                        <small className="assignee">👤 {task.assigned_to.map(m => m.full_name).join(', ')}</small>
+                      )}
                     </div>
-                    {task.deadline && (
-                      <div className="card-deadline">📅 {new Date(task.deadline).toLocaleDateString()}</div>
+                    {task.due_date && (
+                      <div className="card-deadline">📅 {new Date(task.due_date).toLocaleDateString()}</div>
                     )}
                   </div>
                 ))
@@ -383,21 +387,23 @@ export default function Dashboard() {
           <div className="kanban-column">
             <div className="column-header">
               <h3>Review</h3>
-              <span className="count">{kanbanData.review.length}</span>
+              <span className="count">{(kanbanData.review || []).length}</span>
             </div>
             <div className="column-cards">
-              {kanbanData.review.length === 0 ? (
+              {(kanbanData.review || []).length === 0 ? (
                 <p className="empty">No tasks</p>
               ) : (
-                kanbanData.review.map((task) => (
+                (kanbanData.review || []).map((task) => (
                   <div key={task.id} className="kanban-card review">
                     <div className="card-title">{task.title}</div>
                     <div className="card-meta">
                       <small>{task.project_name || "Unassigned"}</small>
-                      {task.assigned_to && <small className="assignee">👤 {task.assigned_to}</small>}
+                      {Array.isArray(task.assigned_to) && task.assigned_to.length > 0 && (
+                        <small className="assignee">👤 {task.assigned_to.map(m => m.full_name).join(', ')}</small>
+                      )}
                     </div>
-                    {task.deadline && (
-                      <div className="card-deadline">📅 {new Date(task.deadline).toLocaleDateString()}</div>
+                    {task.due_date && (
+                      <div className="card-deadline">📅 {new Date(task.due_date).toLocaleDateString()}</div>
                     )}
                   </div>
                 ))
@@ -407,19 +413,21 @@ export default function Dashboard() {
 
           <div className="kanban-column">
             <div className="column-header">
-              <h3>Completed</h3>
-              <span className="count">{kanbanData.completed.length}</span>
+              <h3>Done</h3>
+              <span className="count">{(kanbanData.done || []).length}</span>
             </div>
             <div className="column-cards">
-              {kanbanData.completed.length === 0 ? (
+              {(kanbanData.done || []).length === 0 ? (
                 <p className="empty">No tasks</p>
               ) : (
-                kanbanData.completed.map((task) => (
+                (kanbanData.done || []).map((task) => (
                   <div key={task.id} className="kanban-card completed">
                     <div className="card-title">✓ {task.title}</div>
                     <div className="card-meta">
                       <small>{task.project_name || "Unassigned"}</small>
-                      {task.assigned_to && <small className="assignee">👤 {task.assigned_to}</small>}
+                      {Array.isArray(task.assigned_to) && task.assigned_to.length > 0 && (
+                        <small className="assignee">👤 {task.assigned_to.map(m => m.full_name).join(', ')}</small>
+                      )}
                     </div>
                     {task.completed_at && (
                       <div className="card-deadline">✓ {new Date(task.completed_at).toLocaleDateString()}</div>

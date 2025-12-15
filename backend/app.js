@@ -11,6 +11,7 @@ import projectRoutes from './routes/projectRoutes.js';
 import taskRoutes from './routes/taskRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';//faisal
 import notificationRoutes from './routes/notificationRoutes.js';
+import activityRoutes from './routes/activityRoutes.js';
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use('/api/projects', projectRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/chat', chatRoutes);//faisal
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/activity', activityRoutes);
 
 // 404 handler
 app.use((req, res) => {

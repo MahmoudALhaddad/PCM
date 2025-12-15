@@ -2,6 +2,7 @@ import pool from '../config/database.js';
 import path from 'path';
 import fs from 'fs';
 import multer from 'multer';
+import { logActivity } from '../utils/activityLogger.js';
 
 
 // Multer storage setup
@@ -270,8 +271,17 @@ export const createTask = async (req, res) => {
       [taskId]
     );
 
+    const createdTask = fullTask.rows[0];
+
+    // Log activity
+    await logActivity(
+      req.userId,
+      `Created task "${title}"`,
+      { projectId, taskId }
+    );
+
     res.status(201).json({
-      ...fullTask.rows[0],
+      ...createdTask,
       assigned_to: membersResult.rows,
     });
   } catch (error) {
@@ -383,8 +393,20 @@ export const updateTask = async (req, res) => {
       [id]
     );
 
+    const taskData = updatedTask.rows[0];
+
+    // Log activity
+    const actionParts = [];
+    if (status) actionParts.push(`status to "${status}"`);
+    if (canEditAll && title) actionParts.push('details');
+    const action = actionParts.length > 0 
+      ? `Updated task "${taskData.title}" (${actionParts.join(', ')})`
+      : `Updated task "${taskData.title}"`;
+    
+    await logActivity(req.userId, action, { projectId: taskData.project_id, taskId: id });
+
     res.json({
-      ...updatedTask.rows[0],
+      ...taskData,
       assigned_to: membersResult.rows,
     });
   } catch (error) {
@@ -408,7 +430,16 @@ export const deleteTask = async (req, res) => {
       return res.status(404).json({ error: 'Task not found' });
     }
 
-    res.json({ message: 'Task deleted', task: result.rows[0] });
+    const deletedTask = result.rows[0];
+    
+    // Log activity
+    await logActivity(
+      req.userId,
+      `Deleted task "${deletedTask.title}"`,
+      { projectId: deletedTask.project_id, taskId: id }
+    );
+
+    res.json({ message: 'Task deleted', task: deletedTask });
   } catch (error) {
     console.error('Delete task error:', error);
     res.status(500).json({ error: 'Failed to delete task' });

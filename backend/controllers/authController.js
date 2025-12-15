@@ -1,5 +1,6 @@
 import pool from '../config/database.js';
 import { comparePassword, generateToken } from '../utils/authUtils.js';
+import { logActivity } from '../utils/activityLogger.js';
 
 export const loginUser = async (req, res) => {
   const { name, password } = req.body;
@@ -14,6 +15,9 @@ export const loginUser = async (req, res) => {
     if (!isMatch) return res.status(401).json({ error: 'Invalid name or password' });
 
     const token = generateToken(user.id);
+
+    // Log successful login
+    await logActivity(user.id, 'Logged in');
 
     res.json({ 
       token, 

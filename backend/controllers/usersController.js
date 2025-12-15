@@ -1,5 +1,6 @@
 // controllers/usersController.js
 import pool from '../config/database.js';
+import { logActivity } from '../utils/activityLogger.js';
 
 // Get all users
 export const getAllUsers = async (req, res) => {
@@ -65,7 +66,12 @@ export const updateUser = async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    res.json({ message: 'User updated successfully', user: result.rows[0] });
+    const updatedUser = result.rows[0];
+    
+    // Log activity
+    await logActivity(req.userId, `Updated user profile "${updatedUser.name}"`);
+
+    res.json({ message: 'User updated successfully', user: updatedUser });
   } catch (error) {
     console.error('Update user error:', error);
     res.status(500).json({ error: 'Failed to update user' });
@@ -86,7 +92,12 @@ export const deleteUser = async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    res.json({ message: 'User deleted successfully', user: result.rows[0] });
+    const deletedUser = result.rows[0];
+    
+    // Log activity
+    await logActivity(req.userId, `Deleted user "${deletedUser.name}"`);
+
+    res.json({ message: 'User deleted successfully', user: deletedUser });
   } catch (error) {
     console.error('Delete user error:', error);
     res.status(500).json({ error: 'Failed to delete user' });
