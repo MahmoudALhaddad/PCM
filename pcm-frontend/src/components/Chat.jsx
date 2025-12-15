@@ -268,7 +268,6 @@ const Chat = () => {
           </div>
         )}
 
-        {/* faisal - Conversations list */}
         {conversations.length === 0 ? (
           <p className="no-conversations">No conversations yet. Click + to start chatting.</p>
         ) : (

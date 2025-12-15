@@ -1,4 +1,5 @@
 import pool from '../config/database.js';
+import { ensureProjectBaseFolders } from './fileManagerController.js';
 
 const getUserRole = async (userId) => {
   const result = await pool.query('SELECT role FROM users WHERE id = $1', [userId]);
@@ -138,6 +139,9 @@ export const createProject = async (req, res) => {
     );
 
     const project = insertResult.rows[0];
+
+    // Ensure uploads directory structure exists for this project
+    await ensureProjectBaseFolders(project.id);
 
     // Add creator and specified members to project
     const uniqueMembers = Array.from(new Set([...(memberIds || [])]));
