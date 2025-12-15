@@ -2,11 +2,15 @@
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
 <<<<<<< HEAD
+<<<<<<< HEAD
     name VARCHAR(100) NOT NULL UNIQUE,
     email VARCHAR(150) UNIQUE NOT NULL,
 =======
     name VARCHAR(100) UNIQUE NOT NULL,
 >>>>>>> ee66cc6 (update 9/12)
+=======
+    name VARCHAR(100) UNIQUE NOT NULL,
+>>>>>>> d305354eea06466a47a6ad04b8f6ebc6d4fd5e21
     password TEXT NOT NULL,
     role VARCHAR(20) NOT NULL CHECK (role IN ('admin', 'manager', 'employee')),
     department VARCHAR(50),
@@ -75,13 +79,18 @@ CREATE TABLE activity_log (
     created_at TIMESTAMP DEFAULT NOW()
 );
 
+<<<<<<< HEAD
 -- Create Messages Table for chat
+=======
+-- faisal - Create Messages Table for chat with read status
+>>>>>>> d305354eea06466a47a6ad04b8f6ebc6d4fd5e21
 CREATE TABLE messages (
     id SERIAL PRIMARY KEY,
     sender_id INT REFERENCES users(id) ON DELETE CASCADE,
     recipient_id INT REFERENCES users(id) ON DELETE SET NULL,
     project_id INT REFERENCES projects(id) ON DELETE CASCADE,
     content TEXT NOT NULL,
+    is_read BOOLEAN DEFAULT FALSE, --faisal - track if message is read
     created_at TIMESTAMP DEFAULT NOW()
 );
 
@@ -122,6 +131,10 @@ CREATE TABLE notifications (
     entity_id INT,
     link TEXT,
     metadata JSONB DEFAULT '{}'::jsonb,
+<<<<<<< HEAD
+=======
+>>>>>>> allinone
+>>>>>>> d305354eea06466a47a6ad04b8f6ebc6d4fd5e21
     read BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT NOW()
 );
@@ -137,6 +150,13 @@ CREATE TABLE refresh_tokens (
 );
 
 -- Create indexes for better query performance
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+CREATE INDEX idx_users_email ON users(email);
+=======
+>>>>>>> allinone
+>>>>>>> d305354eea06466a47a6ad04b8f6ebc6d4fd5e21
 CREATE INDEX idx_projects_created_by ON projects(created_by);
 CREATE INDEX idx_projects_status ON projects(status);
 CREATE INDEX idx_project_members_project_id ON project_members(project_id);
@@ -152,6 +172,13 @@ CREATE INDEX idx_activity_log_project_id ON activity_log(project_id);
 CREATE INDEX idx_activity_log_task_id ON activity_log(task_id);
 CREATE INDEX idx_notifications_user_id ON notifications(user_id);
 CREATE INDEX idx_notifications_read ON notifications(read);
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+CREATE INDEX idx_refresh_tokens_user_id ON refresh_tokens(user_id);
+CREATE INDEX idx_refresh_tokens_token ON refresh_tokens(token);
+=======
+>>>>>>> d305354eea06466a47a6ad04b8f6ebc6d4fd5e21
 CREATE INDEX idx_notifications_created_at ON notifications(created_at);
 CREATE INDEX idx_refresh_tokens_user_id ON refresh_tokens(user_id);
 CREATE INDEX idx_refresh_tokens_token ON refresh_tokens(token);
@@ -162,3 +189,7 @@ CREATE INDEX idx_messages_sender_id ON messages(sender_id);--faisal
 CREATE INDEX idx_messages_created_at ON messages(created_at);--faisal
 CREATE INDEX idx_files_project_id ON files(project_id);
 CREATE INDEX idx_files_task_id ON files(task_id);
+<<<<<<< HEAD
+=======
+>>>>>>> allinone
+>>>>>>> d305354eea06466a47a6ad04b8f6ebc6d4fd5e21

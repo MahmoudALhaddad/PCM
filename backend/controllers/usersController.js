@@ -155,6 +155,7 @@ export const createUser = async (req, res) => {
     const { hashPassword } = await import('../utils/authUtils.js');
     const hashedPassword = await hashPassword(password);
 
+    // Insert new user
     // Insert new user faisal
     const result = await pool.query(
       `INSERT INTO users (name, password, role, department)

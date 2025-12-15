@@ -10,14 +10,16 @@ import Settings from "../pages/Settings";
 import Layout from "../Layouts/Layout";
 import Login from "../pages/Login";
 import Profile from "../pages/Profile";
+import MyTasks from "../pages/MyTasks"
 import ProtectedRoute from "../components/ProtectedRoute";
-import Chat from "../components/Chat";//faisal
-
+import Chat from "../components/Chat";
+import FileManagementPage from "../pages/FileManagementPage";
 export default function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
+
         <Route
           element={
             <ProtectedRoute>
@@ -27,15 +29,17 @@ export default function AppRoutes() {
         >
           <Route path="/" element={<Dashboard />} />
           <Route path="/calendar" element={<Calendar />} />
+          <Route path="/chat" element={<Chat />} />
           <Route path="/projects" element={<Projects />} />
+          <Route path="/my-tasks" element={<MyTasks />} />
           <Route path="/tasks" element={<Tasks />} />
           <Route path="/kanban" element={<Kanban />} />
           <Route path="/users" element={<Users />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/chat" element={<Chat />} />//faisal
-          
+          <Route path="/chat" element={<Chat />} />
+          <Route path="/files" element={<FileManagementPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

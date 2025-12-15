@@ -13,9 +13,9 @@ export default function ProjectsPage() {
   const [manageProject, setManageProject] = useState(null); // for manage modal
 
   const handleDeleteProject = async (projectId) => {
-  if (!window.confirm("Are you sure you want to delete this project?")) return;
+    if (!window.confirm("Are you sure you want to delete this project?")) return;
 
-  try {
+    try {
       const token = localStorage.getItem("token");
       await axios.delete(`http://localhost:5000/api/projects/${projectId}`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -71,7 +71,7 @@ export default function ProjectsPage() {
               key={project.id}
               project={project}
               userRole={user?.role}
-              onManageClick={(proj) => setManageProject(proj)} 
+              onManageClick={(proj) => setManageProject(proj)}
               onDeleteClick={handleDeleteProject}
             />
           ))}

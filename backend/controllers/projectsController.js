@@ -1,4 +1,5 @@
 import pool from '../config/database.js';
+import { ensureProjectBaseFolders } from './fileManagerController.js';
 
 const getUserRole = async (userId) => {
   const result = await pool.query('SELECT role FROM users WHERE id = $1', [userId]);
@@ -24,6 +25,7 @@ const ensureProjectAccess = async (projectId, userId) => {
 
 // Get all projects
 export const getProjects = async (req, res) => {
+  console.log("we are in getProject")
   try {
     const { status } = req.query;
     const role = await getUserRole(req.userId);
@@ -138,6 +140,9 @@ export const createProject = async (req, res) => {
     );
 
     const project = insertResult.rows[0];
+
+    // Ensure uploads directory structure exists for this project
+    await ensureProjectBaseFolders(project.id);
 
     // Add creator and specified members to project
     const uniqueMembers = Array.from(new Set([...(memberIds || [])]));
@@ -337,5 +342,27 @@ export const getProjectsWithTasks = async (req, res) => {
   } catch (error) {
     console.error('Get projects with tasks error:', error);
     res.status(500).json({ error: 'Failed to fetch projects with tasks' });
+  }
+};
+
+// GET project members
+// Get members of a specific project
+export const getProjectMembers = async (req, res) => {
+  try {
+    const { projectId } = req.params;
+
+    const members = await pool.query(
+      `SELECT u.id, u.name, u.role
+       FROM project_members pm
+       JOIN users u ON u.id = pm.user_id
+       WHERE pm.project_id = $1
+       ORDER BY u.name`,
+      [projectId]
+    );
+
+    res.json(members.rows);
+  } catch (err) {
+    console.error("Get project members error:", err);
+    res.status(500).json({ error: "Failed to load project members" });
   }
 };

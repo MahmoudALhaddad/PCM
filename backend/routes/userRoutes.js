@@ -15,16 +15,18 @@ const router = express.Router();
 // Get current user profile
 router.get('/profile', authenticateToken, getUserProfile);
 
-// Get users by role
+// Get all users (accessible to all authenticated users for chat)
+router.get('/', authenticateToken, getAllUsers);
+
+// Get users by role (admin/manager only)
 router.get('/role/:role', authenticateToken, authorize(['admin', 'manager']), getUsersByRole);
 
-// Admin routes
-router.get('/', authenticateToken, authorize(['admin']), getAllUsers);
+// Get user by ID
 router.get('/:id', authenticateToken, getUserById);
 router.put('/:id', authenticateToken, updateUser);
 router.delete('/:id', authenticateToken, authorize(['admin']), deleteUser);
 
 // Admin creates a new user
-router.post('/', authenticateToken, authorize(['admin']), createUser); // <-- Add this
+router.post('/', authenticateToken, authorize(['admin', 'manager']), createUser); // <-- Add this
 
 export default router;
