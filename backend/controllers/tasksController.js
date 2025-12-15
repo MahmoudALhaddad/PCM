@@ -5,21 +5,32 @@ import multer from 'multer';
 
 
 // Multer storage setup
+// Multer storage setup for employee submissions
 const storage = multer.diskStorage({
   destination: async (req, file, cb) => {
     const { taskId } = req.params;
 
     // Fetch project_id from DB
-    const taskRes = await pool.query('SELECT project_id FROM tasks WHERE id = $1', [taskId]);
-    if (taskRes.rows.length === 0) return cb(new Error('Task not found'));
-    const projectId = taskRes.rows[0].project_id;
+    const taskRes = await pool.query(
+      `SELECT t.project_id, p.name AS project_name
+       FROM tasks t
+       JOIN projects p ON p.id = t.project_id
+       WHERE t.id = $1`,
+      [taskId]
+    );
 
-    const dir = path.join('uploads', `project_${projectId}`, `task_${taskId}`);
+    if (taskRes.rows.length === 0) return cb(new Error('Task not found'));
+
+    const projectName = taskRes.rows[0].project_name.replace(/[^a-zA-Z0-9_-]/g, '_');
+
+    // Correct folder: task_submissions (not employee_submissions)
+    const dir = path.join('uploads', projectName, 'task_submissions');
     fs.mkdirSync(dir, { recursive: true });
     cb(null, dir);
   },
   filename: (req, file, cb) => {
-    cb(null, `${Date.now()}_${file.originalname}`); // avoid overwriting files
+    const safeName = file.originalname.replace(/[^a-zA-Z0-9._-]/g, '_');
+    cb(null, `${req.userSafeName || 'user'}_${Date.now()}_${safeName}`);
   }
 });
 

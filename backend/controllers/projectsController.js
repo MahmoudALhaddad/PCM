@@ -25,6 +25,7 @@ const ensureProjectAccess = async (projectId, userId) => {
 
 // Get all projects
 export const getProjects = async (req, res) => {
+  console.log("we are in getProject")
   try {
     const { status } = req.query;
     const role = await getUserRole(req.userId);

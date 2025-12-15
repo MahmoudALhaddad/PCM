@@ -1,193 +1,246 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
-export default function FileManagementPage({ token, userRole }) {
+export default function FileManagementPage() {
   const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
-  const [files, setFiles] = useState({}); // { folderName: [file1, file2, ...] }
+  const [files, setFiles] = useState({ project_files: [], task_submissions: [] });
+  const [uploadFile, setUploadFile] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState("");
 
-  // Fetch projects on mount
-  useEffect(() => {
-    fetchProjects();
-  }, []);
+  const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user"));
+  const isManagerOrAdmin = user?.role === "manager" || user?.role === "admin";
 
   const fetchProjects = async () => {
     try {
-      setLoading(true);
-      const res = await fetch("/api/projects", {
+      const res = await axios.get("http://localhost:5000/api/projects", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      const data = await res.json();
-      setProjects(data);
+      setProjects(res.data);
+      if (res.data.length > 0) setSelectedProject(res.data[0]);
     } catch (err) {
-      console.error("Failed to fetch projects:", err);
-    } finally {
-      setLoading(false);
+      console.error(err);
+      setError(err.response?.data?.error || "Failed to fetch projects");
     }
   };
-
-  // Fetch files when project changes
-  useEffect(() => {
-    if (!selectedProject) return;
-    fetchFiles(selectedProject.id);
-  }, [selectedProject]);
 
   const fetchFiles = async (projectId) => {
     try {
       setLoading(true);
-      const res = await fetch(`/api/projects/${projectId}/files`, {
-        headers: { Authorization: `Bearer ${token}` },
+      const res = await axios.get(
+        `http://localhost:5000/api/projects/${projectId}/files`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setFiles({
+        project_files: res.data.project_files || [],
+        task_submissions: res.data.task_submissions || [],
       });
-      const data = await res.json();
-      setFiles(data.files || {});
     } catch (err) {
-      console.error("Failed to fetch files:", err);
+      console.error(err);
+      setError(err.response?.data?.error || "Failed to fetch files");
     } finally {
       setLoading(false);
     }
   };
 
-  // Download file
-  const handleDownload = (folder, file) => {
-    window.open(
-      `/api/projects/${selectedProject.id}/files/${folder}/${file}/download`,
-      "_blank"
-    );
+  useEffect(() => {
+    fetchProjects();
+  }, []);
+
+  useEffect(() => {
+    if (selectedProject) fetchFiles(selectedProject.id);
+  }, [selectedProject]);
+
+  const handleUpload = async (e) => {
+    e.preventDefault();
+    if (!uploadFile || !selectedProject) return;
+
+    const formData = new FormData();
+    formData.append("file", uploadFile);
+
+    try {
+      setLoading(true);
+      await axios.post(
+        `http://localhost:5000/api/projects/${selectedProject.id}/project_files/upload`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setUploadFile(null);
+      fetchFiles(selectedProject.id);
+    } catch (err) {
+      console.error(err);
+      setError(err.response?.data?.error || "Failed to upload file");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Delete file (Admin only)
-  const handleDelete = async (folder, file) => {
-    if (!window.confirm(`Delete ${file}?`)) return;
+  const handleDownload = async (folder, fileName) => {
+    if (!selectedProject) return;
     try {
-      await fetch(
-        `/api/projects/${selectedProject.id}/files/${folder}/${file}`,
+      const res = await axios.get(
+        `http://localhost:5000/api/projects/${selectedProject.id}/files/${folder}/${fileName}`,
         {
-          method: "DELETE",
           headers: { Authorization: `Bearer ${token}` },
+          responseType: "blob",
         }
+      );
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", fileName);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (err) {
+      console.error("Download failed:", err.response?.data || err.message);
+    }
+  };
+
+  const handleDelete = async (folder, fileName) => {
+    if (!selectedProject) return;
+    if (!window.confirm(`Are you sure you want to delete ${fileName}?`)) return;
+
+    try {
+      await axios.delete(
+        `http://localhost:5000/api/projects/${selectedProject.id}/files/${folder}/${fileName}`,
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       fetchFiles(selectedProject.id);
     } catch (err) {
-      console.error("Failed to delete file:", err);
+      console.error("Delete failed:", err.response?.data || err.message);
     }
   };
 
-  // Upload file (Admin only)
-  const handleUpload = async (folder, e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      setUploading(true);
-      await fetch(`/api/projects/${selectedProject.id}/${folder}/upload`, {
-        method: "PUT",
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData,
-      });
-      fetchFiles(selectedProject.id);
-    } catch (err) {
-      console.error("Failed to upload file:", err);
-    } finally {
-      setUploading(false);
-    }
+  const containerStyle = {
+    maxWidth: "900px",
+    margin: "40px auto",
+    fontFamily: "Arial, sans-serif",
+    padding: "0 20px",
   };
+  const cardStyle = {
+    background: "#f9f9f9",
+    borderRadius: "8px",
+    padding: "15px 20px",
+    marginBottom: "20px",
+    boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+  };
+  const buttonStyle = {
+    padding: "6px 12px",
+    marginLeft: "10px",
+    borderRadius: "4px",
+    border: "none",
+    cursor: "pointer",
+    background: "#3b82f6",
+    color: "#fff",
+    transition: "background 0.2s",
+  };
+  const deleteButtonStyle = {
+    ...buttonStyle,
+    background: "#ef4444",
+  };
+  const fileItemStyle = {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: "5px 0",
+    borderBottom: "1px solid #eee",
+  };
+
+  const projectFiles = files.project_files || [];
+  const taskSubmissions = files.task_submissions || [];
 
   return (
-    <div style={{ display: "flex", padding: "20px", gap: "20px" }}>
-      {/* Sidebar: Projects */}
-      <div style={{ width: "250px", borderRight: "1px solid #ccc" }}>
-        <h3>Projects</h3>
-        {loading ? (
-          <p>Loading projects...</p>
+    <div style={containerStyle}>
+      <h1 style={{ textAlign: "center", marginBottom: "30px" }}>📁 File Management</h1>
+      {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>}
+
+      {/* Project Selector */}
+      <div style={{ ...cardStyle, display: "flex", alignItems: "center", gap: "10px" }}>
+        <label>Select Project:</label>
+        <select
+          value={selectedProject?.id || ""}
+          onChange={(e) => {
+            const project = projects.find((p) => p.id === parseInt(e.target.value));
+            setSelectedProject(project);
+          }}
+          style={{ flex: 1, padding: "6px", borderRadius: "4px", border: "1px solid #ccc" }}
+        >
+          {projects.map((p) => (
+            <option key={p.id} value={p.id}>{p.name}</option>
+          ))}
+        </select>
+      </div>
+
+      {/* Upload Form */}
+      {isManagerOrAdmin && (
+        <form
+          onSubmit={handleUpload}
+          style={{ ...cardStyle, display: "flex", alignItems: "center", gap: "10px" }}
+        >
+          <input type="file" onChange={(e) => setUploadFile(e.target.files[0])} style={{ flex: 1 }} />
+          <button type="submit" style={buttonStyle} disabled={loading || !uploadFile}>
+            Upload Project File
+          </button>
+        </form>
+      )}
+
+      {loading && <p style={{ textAlign: "center" }}>Loading files...</p>}
+
+      {/* Project Files */}
+      <div style={cardStyle}>
+        <h2>Project Files</h2>
+        {projectFiles.length === 0 ? (
+          <p>No files found.</p>
         ) : (
-          <ul>
-            {projects.map((p) => (
-              <li
-                key={p.id}
-                style={{
-                  cursor: "pointer",
-                  marginBottom: "8px",
-                  fontWeight: selectedProject?.id === p.id ? "bold" : "normal",
-                }}
-                onClick={() => setSelectedProject(p)}
-              >
-                {p.name}
+          <ul style={{ listStyle: "none", padding: 0 }}>
+            {projectFiles.map((f) => (
+              <li key={f.name} style={fileItemStyle}>
+                <span>{f.name} ({(f.size / 1024).toFixed(1)} KB)</span>
+                <div>
+                  <button style={buttonStyle} onClick={() => handleDownload("project_files", f.name)}>
+                    Download
+                  </button>
+                  {isManagerOrAdmin && (
+                    <button style={deleteButtonStyle} onClick={() => handleDelete("project_files", f.name)}>
+                      Delete
+                    </button>
+                  )}
+                </div>
               </li>
             ))}
           </ul>
         )}
       </div>
 
-      {/* Main Area: File Tree */}
-      <div style={{ flex: 1 }}>
-        <h2>
-          {selectedProject
-            ? `Files for ${selectedProject.name}`
-            : "Select a project"}
-        </h2>
-
-        {selectedProject && (
-          <>
-            {loading ? (
-              <p>Loading files...</p>
-            ) : (
-              Object.keys(files).map((folder) => (
-                <div
-                  key={folder}
-                  style={{
-                    marginBottom: "20px",
-                    border: "1px solid #ddd",
-                    padding: "10px",
-                    borderRadius: "6px",
-                  }}
-                >
-                  <h4>{folder}</h4>
-                  {files[folder].length === 0 && <p>No files in this folder.</p>}
-                  <ul>
-                    {files[folder].map((file) => (
-                      <li
-                        key={file}
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "10px",
-                          marginBottom: "5px",
-                        }}
-                      >
-                        <span>{file}</span>
-                        <button onClick={() => handleDownload(folder, file)}>
-                          Download
-                        </button>
-                        {userRole === "admin" && (
-                          <button onClick={() => handleDelete(folder, file)}>
-                            Delete
-                          </button>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-
-                  {/* Upload input for project_files folder (Admin only) */}
-                  {userRole === "admin" && folder === "project_files" && (
-                    <div style={{ marginTop: "10px" }}>
-                      <input
-                        type="file"
-                        onChange={(e) => handleUpload(folder, e)}
-                        disabled={uploading}
-                      />
-                      {uploading && <span> Uploading...</span>}
-                    </div>
-                  )}
-                </div>
-              ))
-            )}
-          </>
-        )}
-      </div>
+      {/* Task Submissions */}
+      {taskSubmissions.length > 0 && (
+        <div style={cardStyle}>
+          <h2>Task Submissions</h2>
+          {taskSubmissions.map((file) => (
+            <div key={file.name} style={fileItemStyle}>
+              <span>{file.name} ({(file.size / 1024).toFixed(1)} KB)</span>
+              <div>
+                <button style={buttonStyle} onClick={() => handleDownload("task_submissions", file.name)}>
+                  Download
+                </button>
+                {isManagerOrAdmin && (
+                  <button style={deleteButtonStyle} onClick={() => handleDelete("task_submissions", file.name)}>
+                    Delete
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
