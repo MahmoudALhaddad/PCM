@@ -3,15 +3,15 @@ import axios from "axios";
 import "../styles/activityLogs.css";
 
 const getTimeAgo = (timestamp) => {
-  const now = new Date();
   const time = new Date(timestamp);
-  const diff = Math.floor((now - time) / 1000);
-
-  if (diff < 60) return "Just now";
-  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-  if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`;
-  return time.toLocaleDateString() + ' ' + time.toLocaleTimeString();
+  
+  const day = String(time.getDate()).padStart(2, '0');
+  const month = time.toLocaleString('en-US', { month: 'short' });
+  const hours = String(time.getHours()).padStart(2, '0');
+  const minutes = String(time.getMinutes()).padStart(2, '0');
+  const seconds = String(time.getSeconds()).padStart(2, '0');
+  
+  return `${day} ${month} | ${hours}:${minutes}:${seconds}`;
 };
 
 const getActivityIcon = (action) => {
@@ -38,14 +38,14 @@ export default function ActivityLogs() {
     hasMore: false,
   });
   const [filters, setFilters] = useState({
-    userId: '',
-    projectId: '',
-    taskId: '',
+    userName: '',
+    projectName: '',
+    taskTitle: '',
   });
 
   useEffect(() => {
     fetchActivityLogs();
-  }, [pagination.offset, filters]);
+  }, [pagination.offset, filters.userName, filters.projectName, filters.taskTitle]);
 
   const fetchActivityLogs = async () => {
     try {
@@ -56,10 +56,12 @@ export default function ActivityLogs() {
       const params = new URLSearchParams({
         limit: pagination.limit,
         offset: pagination.offset,
-        ...(filters.userId && { userId: filters.userId }),
-        ...(filters.projectId && { projectId: filters.projectId }),
-        ...(filters.taskId && { taskId: filters.taskId }),
+        ...(filters.userName && { userName: filters.userName }),
+        ...(filters.projectName && { projectName: filters.projectName }),
+        ...(filters.taskTitle && { taskTitle: filters.taskTitle }),
       });
+
+      console.log('Fetching with params:', params.toString());
 
       const res = await axios.get(`http://localhost:5000/api/activity?${params}`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -85,7 +87,7 @@ export default function ActivityLogs() {
   };
 
   const clearFilters = () => {
-    setFilters({ userId: '', projectId: '', taskId: '' });
+    setFilters({ userName: '', projectName: '', taskTitle: '' });
     setPagination(prev => ({ ...prev, offset: 0 }));
   };
 
@@ -117,30 +119,30 @@ export default function ActivityLogs() {
 
       <div className="filters-section">
         <div className="filter-group">
-          <label>User ID</label>
+          <label>User Name</label>
           <input
-            type="number"
-            placeholder="Filter by user ID"
-            value={filters.userId}
-            onChange={(e) => handleFilterChange('userId', e.target.value)}
+            type="text"
+            placeholder="Filter by user name"
+            value={filters.userName}
+            onChange={(e) => handleFilterChange('userName', e.target.value)}
           />
         </div>
         <div className="filter-group">
-          <label>Project ID</label>
+          <label>Project Name</label>
           <input
-            type="number"
-            placeholder="Filter by project ID"
-            value={filters.projectId}
-            onChange={(e) => handleFilterChange('projectId', e.target.value)}
+            type="text"
+            placeholder="Filter by project name"
+            value={filters.projectName}
+            onChange={(e) => handleFilterChange('projectName', e.target.value)}
           />
         </div>
         <div className="filter-group">
-          <label>Task ID</label>
+          <label>Task Title</label>
           <input
-            type="number"
-            placeholder="Filter by task ID"
-            value={filters.taskId}
-            onChange={(e) => handleFilterChange('taskId', e.target.value)}
+            type="text"
+            placeholder="Filter by task title"
+            value={filters.taskTitle}
+            onChange={(e) => handleFilterChange('taskTitle', e.target.value)}
           />
         </div>
         <button className="clear-btn" onClick={clearFilters}>
