@@ -5,20 +5,30 @@ import { getActivityLogs, getActivityCount } from '../utils/activityLogger.js';
  */
 export const getActivityLog = async (req, res) => {
   try {
-    const { userId, projectId, taskId, limit = 50, offset = 0 } = req.query;
+    const { userId, projectId, taskId, userName, projectName, taskTitle, limit = 50, offset = 0 } = req.query;
+    
+    console.log('Activity API called with params:', { userId, projectId, taskId, userName, projectName, taskTitle, limit, offset });
     
     const filters = {
-      userId: userId ? parseInt(userId) : undefined,
-      projectId: projectId ? parseInt(projectId) : undefined,
-      taskId: taskId ? parseInt(taskId) : undefined,
       limit: parseInt(limit),
       offset: parseInt(offset),
     };
+    
+    if (userId) filters.userId = parseInt(userId);
+    if (projectId) filters.projectId = parseInt(projectId);
+    if (taskId) filters.taskId = parseInt(taskId);
+    if (userName) filters.userName = userName;
+    if (projectName) filters.projectName = projectName;
+    if (taskTitle) filters.taskTitle = taskTitle;
+    
+    console.log('Filters object:', filters);
     
     const [logs, total] = await Promise.all([
       getActivityLogs(filters),
       getActivityCount(filters),
     ]);
+    
+    console.log('Result - Logs:', logs.length, 'Total:', total);
     
     res.json({
       logs,

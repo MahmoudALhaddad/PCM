@@ -15,6 +15,20 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import Chat from "../components/Chat";
 import FileManagementPage from "../pages/FileManagementPage";
 import ActivityLogs from "../pages/ActivityLogs";
+
+const RoleProtectedRoute = ({ children, requiredRoles }) => {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  
+  if (!requiredRoles.includes(user.role)) {
+    return <div style={{ padding: "20px", textAlign: "center", color: "red" }}>
+      <h2>Access Denied</h2>
+      <p>You don't have permission to view this page. Only {requiredRoles.join(" and ")} can access this.</p>
+    </div>;
+  }
+  
+  return children;
+};
+
 export default function AppRoutes() {
   return (
     <BrowserRouter>
@@ -41,7 +55,14 @@ export default function AppRoutes() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/files" element={<FileManagementPage />} />
-          <Route path="/activity" element={<ActivityLogs />} />
+          <Route 
+            path="/activity" 
+            element={
+              <RoleProtectedRoute requiredRoles={["admin", "manager"]}>
+                <ActivityLogs />
+              </RoleProtectedRoute>
+            } 
+          />
         </Route>
       </Routes>
     </BrowserRouter>

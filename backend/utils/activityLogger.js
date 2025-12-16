@@ -28,24 +28,39 @@ export const logActivity = async (userId, action, options = {}) => {
  */
 export const getActivityLogs = async (filters = {}) => {
   try {
-    const { userId, projectId, taskId, limit = 50, offset = 0 } = filters;
+    const { userId, projectId, taskId, userName, projectName, taskTitle, limit = 50, offset = 0 } = filters;
     
     const conditions = [];
     const params = [];
     
-    if (userId) {
+    if (userId !== undefined) {
       params.push(userId);
       conditions.push(`al.user_id = $${params.length}`);
     }
     
-    if (projectId) {
+    if (projectId !== undefined) {
       params.push(projectId);
       conditions.push(`al.project_id = $${params.length}`);
     }
     
-    if (taskId) {
+    if (taskId !== undefined) {
       params.push(taskId);
       conditions.push(`al.task_id = $${params.length}`);
+    }
+    
+    if (userName !== undefined) {
+      params.push(`%${userName}%`);
+      conditions.push(`u.name ILIKE $${params.length}`);
+    }
+    
+    if (projectName !== undefined) {
+      params.push(`%${projectName}%`);
+      conditions.push(`p.name ILIKE $${params.length}`);
+    }
+    
+    if (taskTitle !== undefined) {
+      params.push(`%${taskTitle}%`);
+      conditions.push(`t.title ILIKE $${params.length}`);
     }
     
     const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
@@ -53,8 +68,7 @@ export const getActivityLogs = async (filters = {}) => {
     params.push(limit, offset);
     const limitOffset = `LIMIT $${params.length - 1} OFFSET $${params.length}`;
     
-    const result = await pool.query(
-      `SELECT 
+    const query = `SELECT 
         al.id, 
         al.action, 
         al.created_at,
@@ -71,9 +85,12 @@ export const getActivityLogs = async (filters = {}) => {
        LEFT JOIN tasks t ON t.id = al.task_id
        ${whereClause}
        ORDER BY al.created_at DESC
-       ${limitOffset}`,
-      params
-    );
+       ${limitOffset}`;
+    
+    console.log('Activity Query:', query);
+    console.log('Params:', params);
+    
+    const result = await pool.query(query, params);
     
     return result.rows;
   } catch (error) {
@@ -87,32 +104,53 @@ export const getActivityLogs = async (filters = {}) => {
  */
 export const getActivityCount = async (filters = {}) => {
   try {
-    const { userId, projectId, taskId } = filters;
+    const { userId, projectId, taskId, userName, projectName, taskTitle } = filters;
     
     const conditions = [];
     const params = [];
     
-    if (userId) {
+    if (userId !== undefined) {
       params.push(userId);
-      conditions.push(`user_id = $${params.length}`);
+      conditions.push(`al.user_id = $${params.length}`);
     }
     
-    if (projectId) {
+    if (projectId !== undefined) {
       params.push(projectId);
-      conditions.push(`project_id = $${params.length}`);
+      conditions.push(`al.project_id = $${params.length}`);
     }
     
-    if (taskId) {
+    if (taskId !== undefined) {
       params.push(taskId);
-      conditions.push(`task_id = $${params.length}`);
+      conditions.push(`al.task_id = $${params.length}`);
+    }
+    
+    if (userName !== undefined) {
+      params.push(`%${userName}%`);
+      conditions.push(`u.name ILIKE $${params.length}`);
+    }
+    
+    if (projectName !== undefined) {
+      params.push(`%${projectName}%`);
+      conditions.push(`p.name ILIKE $${params.length}`);
+    }
+    
+    if (taskTitle !== undefined) {
+      params.push(`%${taskTitle}%`);
+      conditions.push(`t.title ILIKE $${params.length}`);
     }
     
     const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
     
-    const result = await pool.query(
-      `SELECT COUNT(*) as total FROM activity_log ${whereClause}`,
-      params
-    );
+    const countQuery = `SELECT COUNT(*) as total FROM activity_log al
+       LEFT JOIN users u ON u.id = al.user_id
+       LEFT JOIN projects p ON p.id = al.project_id
+       LEFT JOIN tasks t ON t.id = al.task_id
+       ${whereClause}`;
+    
+    console.log('Count Query:', countQuery);
+    console.log('Count Params:', params);
+    
+    const result = await pool.query(countQuery, params);
     
     return parseInt(result.rows[0].total);
   } catch (error) {
