@@ -20,11 +20,10 @@ export default function Sidebar({ collapsed, currentUser }) {
     ...((currentUser?.role === "admin" || currentUser?.role === "manager") ? [{ name: "Tasks", icon: <FaTasks />, path: "/tasks" }] : []),
     ...((currentUser?.role === "employee") ? [{ name: "My Tasks", icon: <FaTasks />, path: "/my-tasks" }] : []),
     { name: "Calendar", icon: <FaCalendarAlt />, path: "/calendar" },
-    { name: "Kanban", icon: <FaClipboardList />, path: "/kanban" },
     { name: "Chat", icon: <FaComments />, path: "/chat" },
     { name: "File Manager", icon: <FaFolder />, path: "/files" },
     ...((currentUser?.role === "admin" || currentUser?.role === "manager") ? [{ name: "Activity Logs", icon: <FaHistory />, path: "/activity" }] : []),
-    { name: "Settings", icon: <FaCog />, path: "/settings" },
+    
   ];
 
   return (

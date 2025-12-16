@@ -3,10 +3,8 @@ import Dashboard from "../pages/Dashboard";
 import Calendar from "../pages/Calendar";
 import Projects from "../pages/Projects";
 import Tasks from "../pages/Tasks";
-import Kanban from "../pages/Kanban";
 import Users from "../pages/Users";
 import Reports from "../pages/Reports";
-import Settings from "../pages/Settings";
 import Layout from "../Layouts/Layout";
 import Login from "../pages/Login";
 import Profile from "../pages/Profile";
@@ -48,10 +46,8 @@ export default function AppRoutes() {
           <Route path="/projects" element={<Projects />} />
           <Route path="/my-tasks" element={<MyTasks />} />
           <Route path="/tasks" element={<Tasks />} />
-          <Route path="/kanban" element={<Kanban />} />
           <Route path="/users" element={<Users />} />
           <Route path="/reports" element={<Reports />} />
-          <Route path="/settings" element={<Settings />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/files" element={<FileManagementPage />} />
