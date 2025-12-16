@@ -59,16 +59,16 @@ export default function CalendarPage() {
     fetchTasks();
   }, []);
 
-  useEffect(() => {
-    const mapByDate = {};
-    tasks.forEach((task) => {
-      const dateStr = task.due_date.split("T")[0];
-      if (!mapByDate[dateStr]) mapByDate[dateStr] = [];
-      mapByDate[dateStr].push(task);
-    });
-    setEventsByDate(mapByDate);
-  }, [tasks]);
-
+useEffect(() => {
+  const mapByDate = {};
+  tasks.forEach((task) => {
+    if (!task.due_date) return; // skip tasks without a due date
+    const dateStr = task.due_date.split("T")[0];
+    if (!mapByDate[dateStr]) mapByDate[dateStr] = [];
+    mapByDate[dateStr].push(task);
+  });
+  setEventsByDate(mapByDate);
+}, [tasks]);
   // Helpers for month/week grid
   const getMonthDays = () => {
     const start = startOfMonth(currentDate);
@@ -80,17 +80,17 @@ export default function CalendarPage() {
     }
     return days;
   };
-
-  const getWeekDays = () => {
-    const start = startOfWeek(currentDate, { weekStartsOn: 0 });
-    const days = [];
-    for (let i = 0; i < 7; i++) {
-      const dateObj = addDays(start, i);
-      const dateStr = format(dateObj, "yyyy-MM-dd");
-      days.push({ date: dateStr, day: dateObj.getDate() });
-    }
-    return days;
-  };
+const getWeekDays = () => {
+  // Set week to start on Monday (change 1 to 0 if you want Sunday)
+  const start = startOfWeek(currentDate, { weekStartsOn: 1 });
+  const days = [];
+  for (let i = 0; i < 7; i++) {
+    const dateObj = addDays(start, i);
+    const dateStr = format(dateObj, "yyyy-MM-dd");
+    days.push({ date: dateStr, day: dateObj.getDate() });
+  }
+  return days;
+};
 
   // Render events for a day
   const renderEvents = (events) => {

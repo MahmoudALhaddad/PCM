@@ -231,7 +231,7 @@ export default function Dashboard() {
         <button className="action-btn tertiary" onClick={() => window.location.href = "/chat"}>
           💬 Messages
         </button>
-        <button className="action-btn quaternary" onClick={() => window.location.href = "/file-manager"}>
+        <button className="action-btn quaternary" onClick={() => window.location.href = "/files"}>
           📁 Files
         </button>
       </div>
