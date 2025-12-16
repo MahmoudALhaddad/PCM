@@ -9,33 +9,47 @@ export default function Topbar({ collapsed, toggleSidebar, currentUser, socket }
 
   const [notifications, setNotifications] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [hideBadge, setHideBadge] = useState(false); // 👈 NEW
 
   const unreadCount = notifications.filter(n => !n.is_read).length;
 
+  // =============================
   // Fetch notifications on mount
+  // =============================
   const fetchNotifications = async () => {
-    const res = await fetch("http://localhost:5000/api/notifications", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    const data = await res.json();
-    setNotifications(data);
+    try {
+      const res = await fetch("http://localhost:5000/api/notifications", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      setNotifications(data);
+    } catch (err) {
+      console.error("Failed to fetch notifications:", err);
+    }
   };
 
   useEffect(() => {
     fetchNotifications();
   }, []);
 
-  // Listen to new notifications from socket
+  // ======================================
+  // Listen to socket notifications
+  // ======================================
   useEffect(() => {
     if (!socket) return;
+
     const handleNewNotification = (notification) => {
       setNotifications(prev => [notification, ...prev]);
+      setHideBadge(false); // 👈 show badge again on new notification
     };
+
     socket.on("new_notification", handleNewNotification);
     return () => socket.off("new_notification", handleNewNotification);
   }, [socket]);
 
+  // ======================================
   // Mark notification as read
+  // ======================================
   const handleNotificationClick = async (id, link) => {
     try {
       await fetch("http://localhost:5000/api/notifications/mark-read", {
@@ -47,25 +61,42 @@ export default function Topbar({ collapsed, toggleSidebar, currentUser, socket }
         body: JSON.stringify({ ids: [id] }),
       });
 
-      // update local state so it doesn't reappear
       setNotifications(prev =>
         prev.map(n => (n.id === id ? { ...n, is_read: true } : n))
       );
 
       setShowDropdown(false);
 
-      if (link) {
-        navigate(link);
-      }
+      if (link) navigate(link);
     } catch (err) {
       console.error("Failed to mark notification as read:", err);
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
+  // =============================
+  // Bell click handler
+  // =============================
+  const handleBellClick = async () => {
+    setShowDropdown(prev => !prev);
+    setHideBadge(true);
+
+    try {
+      await fetch("http://localhost:5000/api/notifications/mark-all-read", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // Update local state so refresh doesn't bring them back
+      setNotifications(prev =>
+        prev.map(n => ({ ...n, is_read: true }))
+      );
+    } catch (err) {
+      console.error("Failed to mark all notifications read:", err);
+    }
   };
+
 
   return (
     <div className={`topbar ${collapsed ? "collapsed" : ""}`}>
@@ -76,9 +107,13 @@ export default function Topbar({ collapsed, toggleSidebar, currentUser, socket }
         <FaSearch className="search-icon" />
       </div>
 
+      {/* ================= NOTIFICATIONS ================= */}
       <div className="notification-container" style={{ position: "relative" }}>
-        <FaBell className="topbar-icon" onClick={() => setShowDropdown(!showDropdown)} />
-        {unreadCount > 0 && <span className="notification-badge">{unreadCount}</span>}
+        <FaBell className="topbar-icon" onClick={handleBellClick} />
+
+        {unreadCount > 0 && !hideBadge && (
+          <span className="notification-badge">{unreadCount}</span>
+        )}
 
         {showDropdown && (
           <div className="notification-dropdown">
@@ -88,7 +123,7 @@ export default function Topbar({ collapsed, toggleSidebar, currentUser, socket }
               notifications.map(n => (
                 <div
                   key={n.id}
-                  className={`notification-item ${n.is_read ? 'read' : 'unread'}`}
+                  className={`notification-item ${n.is_read ? "read" : "unread"}`}
                   onClick={() => handleNotificationClick(n.id, n.link)}
                 >
                   {n.title}
@@ -99,13 +134,11 @@ export default function Topbar({ collapsed, toggleSidebar, currentUser, socket }
         )}
       </div>
 
-      <Link to={"/profile"}>
+      <Link to="/profile">
         <FaUserCircle className="topbar-icon" />
       </Link>
 
-      <button className="logout-btn" onClick={handleLogout}>
-        Logout
-      </button>
+
     </div>
   );
 }

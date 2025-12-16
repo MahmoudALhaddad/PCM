@@ -93,6 +93,7 @@ export const markAllNotificationsRead = async (req, res) => {
   }
 };
 
+
 // Create notification (used by socket)
 export const createNotification = async ({
   userId,

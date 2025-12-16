@@ -27,7 +27,6 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  flex: 1;
 }
 
 .sidebar-menu li {
@@ -84,4 +83,37 @@
 
 .sidebar.collapsed .sidebar-logo img {
   max-width: 40px; /* small logo */
+}
+/* Footer for logout */
+.sidebar-footer {
+  margin-top: 20px;
+  padding-top: 10px;
+  border-top: 1px solid #dee2e6;
+}
+
+/* Logout button default (expanded) */
+.logout-btn {
+  width: 100%;
+  display: flex;           /* icon + text */
+  align-items: center;
+  gap: 12px;
+  background: none;
+  border: none;
+  color: #ef4444;
+  padding: 10px;
+  font-size: 15px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.logout-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+}
+
+/* Collapsed sidebar */
+.sidebar.collapsed .logout-btn {
+  display: block;          /* remove flex */
+  text-align: center;      /* center icon */
+  padding: 10px 0;         /* vertical spacing */
+  gap: 0;                  /* remove gap */
 }
