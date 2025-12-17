@@ -109,38 +109,37 @@ export default function Topbar({ collapsed, toggleSidebar, currentUser, socket }
         <FaSearch className="search-icon" />
       </div>
 
-      {/* ================= NOTIFICATIONS ================= */}
-      <div className="notification-container" style={{ position: "relative" }}>
-        <FaBell className="topbar-icon" onClick={handleBellClick} />
+      <div className="topbar-right">
+        <div className="notification-container" style={{ position: "relative" }}>
+          <FaBell className="topbar-icon" onClick={handleBellClick} />
 
-        {unreadCount > 0 && !hideBadge && (
-          <span className="notification-badge">{unreadCount}</span>
-        )}
+          {unreadCount > 0 && !hideBadge && (
+            <span className="notification-badge">{unreadCount}</span>
+          )}
 
-        {showDropdown && (
-          <div className="notification-dropdown">
-            {notifications.length === 0 ? (
-              <div className="notification-item">No notifications</div>
-            ) : (
-              notifications.map(n => (
-                <div
-                  key={n.id}
-                  className={`notification-item ${n.is_read ? "read" : "unread"}`}
-                  onClick={() => handleNotificationClick(n.id, n.link)}
-                >
-                  {n.title}
-                </div>
-              ))
-            )}
-          </div>
-        )}
+          {showDropdown && (
+            <div className="notification-dropdown">
+              {notifications.length === 0 ? (
+                <div className="notification-item">No notifications</div>
+              ) : (
+                notifications.map(n => (
+                  <div
+                    key={n.id}
+                    className={`notification-item ${n.is_read ? "read" : "unread"}`}
+                    onClick={() => handleNotificationClick(n.id, n.link)}
+                  >
+                    {n.title}
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+        </div>
+
+        <Link to="/profile">
+          <FaUserCircle className="topbar-icon" />
+        </Link>
       </div>
-
-      <Link to="/profile">
-        <FaUserCircle className="topbar-icon" />
-      </Link>
-
-
     </div>
   );
 }

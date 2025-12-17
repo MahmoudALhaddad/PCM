@@ -3,13 +3,15 @@ import "../styles/login.css";
 import logoFullBright from "../assets/brightModeLogo.png";
 
 export default function Login() {
-  const [name, setName] = useState(""); // username instead of email
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
 
     try {
       const response = await fetch("http://localhost:5000/api/auth/login", {
@@ -30,11 +32,11 @@ export default function Login() {
         // Redirect to dashboard or projects page
         window.location.href = "/";
       } else {
-        alert(data.error || "Login failed");
+        setError(data.error || "Login failed");
       }
     } catch (error) {
       console.error("Login error:", error);
-      alert("Something went wrong. Please try again.");
+      setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -42,41 +44,85 @@ export default function Login() {
 
   return (
     <div className="login-page">
-      <div className="login-bg"></div>
-
-      <div className="login-container">
-        <img src={logoFullBright} alt="PCM Logo" className="login-logo" />
-        <h2>Welcome Back</h2>
-        <p>Sign in to your dashboard</p>
-
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <input
-              type="text"
-              placeholder="Username"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
+      <div className="login-left">
+        <div className="login-form-wrapper">
+          <div className="login-logo-container">
+            <img src={logoFullBright} alt="PCM Logo" className="login-logo" />
           </div>
 
-          <div className="form-group">
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+          <h1 className="login-title">Welcome to PCM</h1>
+          <p className="login-subtitle">
+            Manage your projects, collaborate with your team, and track progress seamlessly.
+          </p>
+
+          <form onSubmit={handleSubmit} className="login-form">
+            <div className="form-group">
+              <label htmlFor="username">Username</label>
+              <input
+                type="text"
+                id="username"
+                placeholder=" username"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                disabled={loading}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={loading}
+                required
+              />
+            </div>
+
+            {error && <div className="error-message">{error}</div>}
+
+            <button 
+              type="submit" 
+              className="login-btn"
+              disabled={loading}
+            >
+              {loading ? "Signing In..." : "Sign In"}
+            </button>
+          </form>
+
+         </div>
+      </div>
+
+      <div className="login-right">
+        <div className="vision-content">
+          <h2 className="vision-title">Empower Your Business</h2>
+          
+          <div className="vision-highlights">
+            <div className="vision-item">
+              <div className="vision-icon">🚀</div>
+              <h3>Enhance Digital Presence</h3>
+              <p>Help businesses establish and strengthen their online presence in today's digital marketplace.</p>
+            </div>
+
+            <div className="vision-item">
+              <div className="vision-icon">⚙️</div>
+              <h3>Optimize IT Infrastructure</h3>
+              <p>Streamline your technology infrastructure for improved efficiency, scalability, and reliability.</p>
+            </div>
+
+            <div className="vision-item">
+              <div className="vision-icon">📈</div>
+              <h3>Drive Growth & Success</h3>
+              <p>Leverage technology consulting and digital marketing strategies to accelerate your business growth.</p>
+            </div>
           </div>
 
-          <button type="submit" className="login-btn" disabled={loading}>
-            {loading ? "Signing In..." : "Sign In"}
-          </button>
-        </form>
-
-        <div className="login-footer">
-          <a href="#">Forgot password?</a>
+          <div className="vision-quote">
+            <p>"Transform your business with intelligent technology solutions and strategic digital marketing expertise."</p>
+          </div>
         </div>
       </div>
     </div>
