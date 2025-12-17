@@ -76,8 +76,6 @@ export default function Sidebar({ collapsed, currentUser }) {
           </li>
         ))}
       </ul>
-
-      {/* Logout */}
       <div className="sidebar-footer">
         <button className="logout-btn" onClick={handleLogout}>
           <FaSignOutAlt />

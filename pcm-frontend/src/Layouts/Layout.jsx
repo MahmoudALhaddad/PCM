@@ -86,7 +86,10 @@ export default function Layout() {
 
   return (
     <div className="layout">
-      <Sidebar collapsed={sidebarCollapsed} currentUser={currentUser} />
+      <Sidebar
+        collapsed={sidebarCollapsed}
+        currentUser={currentUser}
+      />
       <div
         className={`backdrop ${isMobile && !sidebarCollapsed ? "show" : ""}`}
         onClick={() => setSidebarCollapsed(true)}
@@ -95,7 +98,7 @@ export default function Layout() {
         collapsed={sidebarCollapsed}
         toggleSidebar={toggleSidebar}
         currentUser={currentUser}
-        socket={socket} // <-- pass socket to Topbar
+        socket={socket}
       />
       <div className={`main-content ${sidebarCollapsed ? "collapsed" : ""}`}>
         <div className="page-content">

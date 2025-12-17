@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
+import { FaArrowLeft } from 'react-icons/fa';
 import "../styles/chat.css";
 
 const Chat = () => {
@@ -246,7 +247,7 @@ const Chat = () => {
 
   return (
     <div className="chat-container">
-      <div className="conversations-list">
+      <div className={`conversations-list ${selectedUser ? 'has-active-chat' : ''}`}>
         <div className="messages-header">
           <h2>Messages</h2>
           {/* faisal - Add button to open user modal */}
@@ -310,10 +311,13 @@ const Chat = () => {
         )}
       </div>
 
-      <div className="chat-window">
+      <div className={`chat-window ${selectedUser ? 'active' : ''}`}>
         {selectedUser ? (
           <>
             <div className="chat-header">
+              <button className="back-button" onClick={() => setSelectedUser(null)}>
+                <FaArrowLeft />
+              </button>
               <h3>{selectedUser.name}</h3>
             </div>
             <div className="messages-list">

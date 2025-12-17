@@ -26,6 +26,10 @@ const SplashScreen = ({ onFinish }) => {
     <div className={`splash-screen ${fadeOut ? 'fade-out' : ''}`}>
       <div className="splash-content">
         <img src={logo} alt="Company Logo" className="splash-logo" />
+        <div className="splash-text">
+          <h2>Project Collaboration Manager</h2>
+          <p>Initializing your workspace...</p>
+        </div>
         <div className="splash-loader">
           <div className="spinner"></div>
         </div>
