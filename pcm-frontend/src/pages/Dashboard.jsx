@@ -186,8 +186,8 @@ export default function Dashboard() {
   return (
     <div className="dashboard">
       <div className="welcome-section">
-        <h1>Welcome back, {user?.name || "User"}!</h1>
-        <p>Here's what's happening with your projects today.</p>
+        <h1>Dashboard</h1>
+        
       </div>
 
       <div className="stats-grid">
@@ -231,7 +231,7 @@ export default function Dashboard() {
         <button className="action-btn tertiary" onClick={() => window.location.href = "/chat"}>
           💬 Messages
         </button>
-        <button className="action-btn quaternary" onClick={() => window.location.href = "/file-manager"}>
+        <button className="action-btn quaternary" onClick={() => window.location.href = "/files"}>
           📁 Files
         </button>
       </div>
@@ -241,7 +241,7 @@ export default function Dashboard() {
           <div className="widget deadlines-widget">
             <div className="widget-header">
               <h3>⏰ Upcoming Deadlines</h3>
-              <span className="badge">{(upcomingDeadlines || []).length}</span >
+              <span className="badge">{(upcomingDeadlines || []).length}</span>
             </div>
             <div className="widget-content">
               {(upcomingDeadlines || []).length === 0 ? (

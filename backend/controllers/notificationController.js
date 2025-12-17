@@ -114,6 +114,7 @@ export const createNotification = async ({
 
   return result.rows[0];
 };
+
 export const markAllMessageNotificationsRead = async (req, res) => {
   try {
     const userId = req.userId;

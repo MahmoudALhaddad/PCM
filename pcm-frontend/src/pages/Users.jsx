@@ -132,74 +132,80 @@ export default function Users() {
       )}
 
       {/* Users table */}
+      <div className="users-table-container">
       <table className="users-table">
         <thead>
           <tr>
+            <th>ID</th> {/* New ID column */}
             <th>Name</th>
             <th>Role</th>
             <th>Department</th>
-            <th>Actions</th>
+            {(currentUser?.role === "admin" || currentUser?.role === "manager") && (
+              <th>Actions</th>
+            )}
           </tr>
         </thead>
         <tbody>
           {users.map((user) => (
-        <tr key={user.id}>
-            <td>
-            {editingUser?.id === user.id ? (
-                <input
-                type="text"
-                value={editingUser.name}
-                onChange={(e) => setEditingUser({ ...editingUser, name: e.target.value })}
-                />
-            ) : (
-                user.name
-            )}
-            </td>
-            <td>
-            {editingUser?.id === user.id ? (
-                <select
-                value={editingUser.role}
-                onChange={(e) => setEditingUser({ ...editingUser, role: e.target.value })}
-                >
-                <option value="admin">Admin</option>
-                <option value="manager">Manager</option>
-                <option value="employee">Employee</option>
-                </select>
-            ) : (
-                user.role
-            )}
-            </td>
-            <td>
-            {editingUser?.id === user.id ? (
-                <input
-                type="text"
-                value={editingUser.department}
-                onChange={(e) => setEditingUser({ ...editingUser, department: e.target.value })}
-                />
-            ) : (
-                user.department
-            )}
-            </td>
-            {(currentUser?.role === "admin" || currentUser?.role === "manager") && (
-            <td>
+            <tr key={user.id}>
+              <td>{user.id}</td> {/* Display user ID */}
+              <td>
                 {editingUser?.id === user.id ? (
-                <>
-                    <button className="save-btn" onClick={() => handleUpdateUser(editingUser)}>Save</button>
-                    <button className="cancel-btn" onClick={() => setEditingUser(null)}>Cancel</button>
-                </>
+                  <input
+                    type="text"
+                    value={editingUser.name}
+                    onChange={(e) => setEditingUser({ ...editingUser, name: e.target.value })}
+                  />
                 ) : (
-                <>
-                    <button className="edit-btn" onClick={() => setEditingUser(user)}>Edit</button>
-                    <button className="delete-btn" onClick={() => handleDeleteUser(user.id)}>Delete</button>
-                </>
+                  user.name
                 )}
-            </td>
-            )}
-        </tr>
-        ))}
-
+              </td>
+              <td>
+                {editingUser?.id === user.id ? (
+                  <select
+                    value={editingUser.role}
+                    onChange={(e) => setEditingUser({ ...editingUser, role: e.target.value })}
+                  >
+                    <option value="admin">Admin</option>
+                    <option value="manager">Manager</option>
+                    <option value="employee">Employee</option>
+                  </select>
+                ) : (
+                  user.role
+                )}
+              </td>
+              <td>
+                {editingUser?.id === user.id ? (
+                  <input
+                    type="text"
+                    value={editingUser.department}
+                    onChange={(e) => setEditingUser({ ...editingUser, department: e.target.value })}
+                  />
+                ) : (
+                  user.department
+                )}
+              </td>
+              {(currentUser?.role === "admin" || currentUser?.role === "manager") && (
+                <td>
+                  {editingUser?.id === user.id ? (
+                    <>
+                      <button className="save-btn" onClick={() => handleUpdateUser(editingUser)}>Save</button>
+                      <button className="cancel-btn" onClick={() => setEditingUser(null)}>Cancel</button>
+                    </>
+                  ) : (
+                    <>
+                      <button className="edit-btn" onClick={() => setEditingUser({ ...user })}>Edit</button>
+                      <button className="delete-btn" onClick={() => handleDeleteUser(user.id)}>Delete</button>
+                    </>
+                  )}
+                </td>
+              )}
+            </tr>
+          ))}
         </tbody>
       </table>
+      </div>
+
     </div>
   );
 }

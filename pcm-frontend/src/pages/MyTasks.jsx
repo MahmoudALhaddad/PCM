@@ -32,7 +32,7 @@ function MyTasks() {
             Array.isArray(task.assigned_to) &&
             task.assigned_to.some((u) => u.user_id === user.id)
         );
-
+        console.log("My Tasks:", myTasks);
         setTasks(myTasks);
 
         // Fetch project names
@@ -138,7 +138,11 @@ function MyTasks() {
                 <p>{task.description}</p>
                 <p>Status: {task.status}</p>
                 <p>Priority: {task.priority || "medium"}</p>
-                <p>Deadline: {task.deadline || "Not set"}</p>
+                <p>
+                  Deadline: {task.due_date 
+                    ? new Date(task.due_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+                    : "Not set"}
+                </p>
                 <p>
                   Assigned To:{" "}
                   {task.assigned_to.map((u) => u.full_name).join(", ")}

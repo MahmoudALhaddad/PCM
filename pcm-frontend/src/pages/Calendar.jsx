@@ -62,12 +62,14 @@ export default function CalendarPage() {
   useEffect(() => {
     const mapByDate = {};
     tasks.forEach((task) => {
+      if (!task.due_date) return; // skip tasks without a due date
       const dateStr = task.due_date.split("T")[0];
       if (!mapByDate[dateStr]) mapByDate[dateStr] = [];
       mapByDate[dateStr].push(task);
     });
     setEventsByDate(mapByDate);
   }, [tasks]);
+
 
   // Helpers for month/week grid
   const getMonthDays = () => {
@@ -82,7 +84,8 @@ export default function CalendarPage() {
   };
 
   const getWeekDays = () => {
-    const start = startOfWeek(currentDate, { weekStartsOn: 0 });
+    // Set week to start on Monday (change 1 to 0 if you want Sunday)
+    const start = startOfWeek(currentDate, { weekStartsOn: 1 });
     const days = [];
     for (let i = 0; i < 7; i++) {
       const dateObj = addDays(start, i);
@@ -91,6 +94,7 @@ export default function CalendarPage() {
     }
     return days;
   };
+
 
   // Render events for a day
   const renderEvents = (events) => {

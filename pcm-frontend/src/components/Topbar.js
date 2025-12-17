@@ -11,7 +11,9 @@ export default function Topbar({ collapsed, toggleSidebar, currentUser, socket }
   const [showDropdown, setShowDropdown] = useState(false);
   const [hideBadge, setHideBadge] = useState(false); // 👈 NEW
 
-  const unreadCount = notifications.filter(n => !n.is_read).length;
+  const unreadCount = Array.isArray(notifications)
+    ? notifications.filter(n => !n.is_read).length
+    : 0;
 
   // =============================
   // Fetch notifications on mount
@@ -22,7 +24,7 @@ export default function Topbar({ collapsed, toggleSidebar, currentUser, socket }
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
-      setNotifications(data);
+      setNotifications(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("Failed to fetch notifications:", err);
     }
@@ -39,7 +41,7 @@ export default function Topbar({ collapsed, toggleSidebar, currentUser, socket }
     if (!socket) return;
 
     const handleNewNotification = (notification) => {
-      setNotifications(prev => [notification, ...prev]);
+      setNotifications(prev => [notification, ...((Array.isArray(prev) ? prev : []))]);
       setHideBadge(false); // 👈 show badge again on new notification
     };
 
@@ -62,7 +64,7 @@ export default function Topbar({ collapsed, toggleSidebar, currentUser, socket }
       });
 
       setNotifications(prev =>
-        prev.map(n => (n.id === id ? { ...n, is_read: true } : n))
+        (Array.isArray(prev) ? prev : []).map(n => (n.id === id ? { ...n, is_read: true } : n))
       );
 
       setShowDropdown(false);
@@ -90,7 +92,7 @@ export default function Topbar({ collapsed, toggleSidebar, currentUser, socket }
 
       // Update local state so refresh doesn't bring them back
       setNotifications(prev =>
-        prev.map(n => ({ ...n, is_read: true }))
+        (Array.isArray(prev) ? prev : []).map(n => ({ ...n, is_read: true }))
       );
     } catch (err) {
       console.error("Failed to mark all notifications read:", err);
@@ -107,38 +109,37 @@ export default function Topbar({ collapsed, toggleSidebar, currentUser, socket }
         <FaSearch className="search-icon" />
       </div>
 
-      {/* ================= NOTIFICATIONS ================= */}
-      <div className="notification-container" style={{ position: "relative" }}>
-        <FaBell className="topbar-icon" onClick={handleBellClick} />
+      <div className="topbar-right">
+        <div className="notification-container" style={{ position: "relative" }}>
+          <FaBell className="topbar-icon" onClick={handleBellClick} />
 
-        {unreadCount > 0 && !hideBadge && (
-          <span className="notification-badge">{unreadCount}</span>
-        )}
+          {unreadCount > 0 && !hideBadge && (
+            <span className="notification-badge">{unreadCount}</span>
+          )}
 
-        {showDropdown && (
-          <div className="notification-dropdown">
-            {notifications.length === 0 ? (
-              <div className="notification-item">No notifications</div>
-            ) : (
-              notifications.map(n => (
-                <div
-                  key={n.id}
-                  className={`notification-item ${n.is_read ? "read" : "unread"}`}
-                  onClick={() => handleNotificationClick(n.id, n.link)}
-                >
-                  {n.title}
-                </div>
-              ))
-            )}
-          </div>
-        )}
+          {showDropdown && (
+            <div className="notification-dropdown">
+              {notifications.length === 0 ? (
+                <div className="notification-item">No notifications</div>
+              ) : (
+                notifications.map(n => (
+                  <div
+                    key={n.id}
+                    className={`notification-item ${n.is_read ? "read" : "unread"}`}
+                    onClick={() => handleNotificationClick(n.id, n.link)}
+                  >
+                    {n.title}
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+        </div>
+
+        <Link to="/profile">
+          <FaUserCircle className="topbar-icon" />
+        </Link>
       </div>
-
-      <Link to="/profile">
-        <FaUserCircle className="topbar-icon" />
-      </Link>
-
-
     </div>
   );
 }

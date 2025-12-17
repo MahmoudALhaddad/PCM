@@ -54,7 +54,7 @@ export default function ProjectsPage() {
   return (
     <div className="projects-page">
       <div className="projects-header">
-        <h1>Projects</h1>
+        <h2>Projects</h2>
         {(user?.role === "admin" || user?.role === "manager") && (
           <button className="add-project-btn" onClick={() => setShowAddModal(true)}>
             + Add Project

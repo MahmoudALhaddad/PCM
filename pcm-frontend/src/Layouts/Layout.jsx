@@ -6,7 +6,9 @@ import { io } from "socket.io-client";
 import "../styles/layout.css";
 
 export default function Layout() {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  // Sidebar collapsed state; default collapsed on mobile
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(window.innerWidth <= 768);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [currentUser, setCurrentUser] = useState(null);
   const [socket, setSocket] = useState(null); // <-- socket state
   const navigate = useNavigate();
@@ -37,6 +39,21 @@ export default function Layout() {
 
   useEffect(() => {
     fetchProfile();
+  }, []);
+
+  // Track viewport width for responsive sidebar behavior
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth <= 768;
+      setIsMobile(mobile);
+      if (mobile) {
+        // Keep sidebar collapsed by default on mobile
+        setSidebarCollapsed(true);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   // Initialize socket after currentUser is loaded
@@ -70,6 +87,10 @@ export default function Layout() {
   return (
     <div className="layout">
       <Sidebar collapsed={sidebarCollapsed} currentUser={currentUser} />
+      <div
+        className={`backdrop ${isMobile && !sidebarCollapsed ? "show" : ""}`}
+        onClick={() => setSidebarCollapsed(true)}
+      />
       <Topbar
         collapsed={sidebarCollapsed}
         toggleSidebar={toggleSidebar}
@@ -78,7 +99,7 @@ export default function Layout() {
       />
       <div className={`main-content ${sidebarCollapsed ? "collapsed" : ""}`}>
         <div className="page-content">
-          <Outlet context={{ currentUser, socket }} /> {/* optional: pass socket to pages */}
+          <Outlet context={{ currentUser, socket }} /> 
         </div>
       </div>
     </div>

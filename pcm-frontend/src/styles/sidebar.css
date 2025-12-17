@@ -1,63 +1,114 @@
 .sidebar {
-  width: 210px;
+  width: 242px;
   height: 100vh;
   position: fixed;
-  background-color: #fff; /* light background */
-  color: #495057; /* dark text for light background */
+  background-color: #f8f9fa;
+  color: #495057;
   display: flex;
   flex-direction: column;
-  padding: 1rem;
   border-right: 1px solid #dee2e6;
   transition: width 0.3s ease;
   box-shadow: 1px 0 5px rgba(0,0,0,0.05);
+  z-index: 999;
+  top: 0;
+  left: 0;
 }
 
 .sidebar.collapsed {
-  width: 60px; /* only icons */
+  width: 92px;
 }
 
 .sidebar-logo {
   text-align: center;
-  margin-bottom: 2rem;
-  font-weight: bold;
-  font-size: 1.5rem;
+  padding: 15px 10px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-logo img {
+  width: 160px;   /* lock size to avoid accidental scaling */
+  max-width: 160px;
+  height: auto;
+  display: block;
+}
+
+.sidebar {
+  width: 242px;
+  height: 100vh;
+  position: fixed;
+  background-color: #f8f9fa;
+  color: #495057;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0;
+  border-right: 1px solid #dee2e6;
+  transition: width 0.3s ease, transform 0.3s ease;
+  box-shadow: 1px 0 5px rgba(0,0,0,0.05);
+  z-index: 1001; /* above backdrop */
+  top: 0;
+  left: 0;
+}
+.sidebar.collapsed .sidebar-logo img {
+  max-width: 50px;
 }
 
 .sidebar-menu {
   list-style: none;
   padding: 0;
   margin: 0;
+  flex: 1;
+  overflow-y: auto;
 }
 
 .sidebar-menu li {
-  margin-bottom: 0.5rem;
+  margin: 0;
 }
 
 .sidebar-menu li a {
   color: #495057;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px;
-  border-radius: 6px;
-  transition: all 0.2s ease-in-out;
+  gap: 15px;
+  padding: 12px 20px;
   text-decoration: none;
-}
-
-.sidebar-menu li a:hover {
-  background-color: #f1f3f5;
-}
-
-.sidebar-menu li.active a {
-  background-color: #e9ecef;
+  transition: all 0.2s ease;
+  font-size: 14px;
   font-weight: 500;
 }
 
+.sidebar-menu li a:hover {
+  background-color: #e9ecef;
+  color: #2563eb;
+}
+
+.sidebar-menu li.active a {
+  background-color: #dbeafe;
+  color: #2563eb;
+  border-left: 4px solid #2563eb;
+  padding-left: 16px;
+}
+
 .sidebar.collapsed .sidebar-menu li a {
+  padding: 12px 0;
   justify-content: center;
+  gap: 0;
+}
+
+.sidebar.collapsed .sidebar-menu li.active a {
+  border-left: 0;
+  border-top: 4px solid #2563eb;
+  padding-left: 0;
+}
+
+.sidebar-menu li a svg {
+  font-size: 18px;
+  flex-shrink: 0;
 }
 
 .sidebar-menu li span {
+  white-space: nowrap;
   transition: opacity 0.3s;
 }
 
@@ -66,54 +117,72 @@
   display: none;
 }
 
-.sidebar-menu.mt-auto li a {
+.sidebar-footer {
+  padding: 15px 20px;
+  border-top: 1px solid #dee2e6;
   margin-top: auto;
 }
 
-
-.sidebar-logo {
-  text-align: center;
-  padding: 5px 0;
-}
-
-.sidebar-logo img {
-  max-width: 160px; /* full logo */
-  height: auto;
-}
-
-.sidebar.collapsed .sidebar-logo img {
-  max-width: 40px; /* small logo */
-}
-/* Footer for logout */
-.sidebar-footer {
-  margin-top: 20px;
-  padding-top: 10px;
-  border-top: 1px solid #dee2e6;
-}
-
-/* Logout button default (expanded) */
 .logout-btn {
   width: 100%;
-  display: flex;           /* icon + text */
+  display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 15px;
+  padding: 12px 15px;
   background: none;
   border: none;
   color: #ef4444;
-  padding: 10px;
-  font-size: 15px;
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
   border-radius: 6px;
+  transition: all 0.2s ease;
+  text-align: left;
 }
 
 .logout-btn:hover {
-  background: rgba(239, 68, 68, 0.15);
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
 }
 
-/* Collapsed sidebar */
+.logout-btn svg {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
 .sidebar.collapsed .logout-btn {
-  display: block;          /* remove flex */
-  text-align: center;      /* center icon */
-  padding: 10px 0;         /* vertical spacing */
-  gap: 0;                  /* remove gap */
+  padding: 12px 0;
+  justify-content: center;
+  gap: 0;
+}
+
+/* Mobile: turn sidebar into slide-in panel */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 85vw;              /* panel width */
+    max-width: 320px;
+    transform: translateX(-100%); /* hidden by default */
+    box-shadow: 2px 0 12px rgba(0,0,0,0.15);
+    background-color: #ffffff;
+  }
+
+  .sidebar-logo img {
+    width: 120px;
+    max-width: 120px;
+  }
+
+  /* When not collapsed, show the panel */
+  .sidebar:not(.collapsed) {
+    transform: translateX(0);
+  }
+
+  /* Ignore the compact width when collapsed on mobile */
+  .sidebar.collapsed {
+    width: 85vw; /* keep full panel width even when hidden */
+  }
+
+  /* Center menu icons on mobile collapsed state */
+  .sidebar.collapsed .sidebar-menu li a {
+    padding: 14px 0;
+  }
 }
