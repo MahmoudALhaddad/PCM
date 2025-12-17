@@ -16,3 +16,27 @@ body {
   margin-left: 80px; /* collapsed sidebar */
 }
 
+/* Backdrop for mobile sidebar */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 1000; /* below sidebar (1001) */
+}
+
+.backdrop.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .main-content,
+  .main-content.collapsed {
+    margin-left: 0; /* do not reserve sidebar space on mobile */
+  }
+}
+

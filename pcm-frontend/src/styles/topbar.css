@@ -168,3 +168,12 @@
   text-align: center;
   color: #6c757d;
 }
+
+/* Mobile: topbar always full width */
+@media (max-width: 768px) {
+  .topbar,
+  .topbar.collapsed {
+    left: 0;
+    width: 100%;
+  }
+}

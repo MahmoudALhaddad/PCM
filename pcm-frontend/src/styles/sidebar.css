@@ -21,19 +21,35 @@
 .sidebar-logo {
   text-align: center;
   padding: 15px 10px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-bottom: 1px solid #dee2e6;
 }
 
 .sidebar-logo img {
+  width: 160px;   /* lock size to avoid accidental scaling */
   max-width: 160px;
-  width: 100%;
   height: auto;
+  display: block;
 }
 
+.sidebar {
+  width: 242px;
+  height: 100vh;
+  position: fixed;
+  background-color: #f8f9fa;
+  color: #495057;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0;
+  border-right: 1px solid #dee2e6;
+  transition: width 0.3s ease, transform 0.3s ease;
+  box-shadow: 1px 0 5px rgba(0,0,0,0.05);
+  z-index: 1001; /* above backdrop */
+  top: 0;
+  left: 0;
+}
 .sidebar.collapsed .sidebar-logo img {
   max-width: 50px;
 }
@@ -138,4 +154,35 @@
   padding: 12px 0;
   justify-content: center;
   gap: 0;
+}
+
+/* Mobile: turn sidebar into slide-in panel */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 85vw;              /* panel width */
+    max-width: 320px;
+    transform: translateX(-100%); /* hidden by default */
+    box-shadow: 2px 0 12px rgba(0,0,0,0.15);
+    background-color: #ffffff;
+  }
+
+  .sidebar-logo img {
+    width: 120px;
+    max-width: 120px;
+  }
+
+  /* When not collapsed, show the panel */
+  .sidebar:not(.collapsed) {
+    transform: translateX(0);
+  }
+
+  /* Ignore the compact width when collapsed on mobile */
+  .sidebar.collapsed {
+    width: 85vw; /* keep full panel width even when hidden */
+  }
+
+  /* Center menu icons on mobile collapsed state */
+  .sidebar.collapsed .sidebar-menu li a {
+    padding: 14px 0;
+  }
 }
