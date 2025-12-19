@@ -99,7 +99,6 @@ export default function Users() {
     <div className="users-page">
       <h2>Users</h2>
 
-      {/* Add user form (admins only) */}
       {(currentUser?.role === "admin" || currentUser?.role === "manager") && (
         <form className="add-user-form" onSubmit={handleAddUser}>
           <input
@@ -131,7 +130,6 @@ export default function Users() {
         </form>
       )}
 
-      {/* Users table */}
       <table className="users-table">
         <thead>
           <tr>

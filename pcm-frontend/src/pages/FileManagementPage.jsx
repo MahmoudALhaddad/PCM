@@ -162,7 +162,6 @@ export default function FileManagementPage() {
       <h1 style={{ textAlign: "center", marginBottom: "30px" }}>📁 File Management</h1>
       {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>}
 
-      {/* Project Selector */}
       <div style={{ ...cardStyle, display: "flex", alignItems: "center", gap: "10px" }}>
         <label>Select Project:</label>
         <select
@@ -179,7 +178,6 @@ export default function FileManagementPage() {
         </select>
       </div>
 
-      {/* Upload Form */}
       {isManagerOrAdmin && (
         <form
           onSubmit={handleUpload}
@@ -194,7 +192,6 @@ export default function FileManagementPage() {
 
       {loading && <p style={{ textAlign: "center" }}>Loading files...</p>}
 
-      {/* Project Files */}
       <div style={cardStyle}>
         <h2>Project Files</h2>
         {projectFiles.length === 0 ? (
@@ -220,7 +217,6 @@ export default function FileManagementPage() {
         )}
       </div>
 
-      {/* Task Submissions */}
       {taskSubmissions.length > 0 && (
         <div style={cardStyle}>
           <h2>Task Submissions</h2>

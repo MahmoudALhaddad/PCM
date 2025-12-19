@@ -143,7 +143,6 @@ const getWeekDays = () => {
 
   return (
     <div className="calendar-page-container">
-      {/* Header */}
       <div className="calendar-header">
         <button onClick={prev}>&lt;</button>
         <h2>
@@ -168,7 +167,6 @@ const getWeekDays = () => {
         </button>
       </div>
 
-      {/* Weekday names */}
       <div className={`weekdays ${currentView}`}>
         {weekdays.map((d) => (
           <div key={d} className="weekday">
@@ -177,7 +175,6 @@ const getWeekDays = () => {
         ))}
       </div>
 
-      {/* Calendar grid */}
       <div className={`calendar-grid ${currentView}`}>
         {(currentView === "month" ? getMonthDays() : getWeekDays()).map((day) => (
           <div key={day.date} className="day-cell">
@@ -187,7 +184,6 @@ const getWeekDays = () => {
         ))}
       </div>
 
-      {/* +N more popup */}
       {showMorePopup && (
         <div className="more-popup-overlay" onClick={() => setShowMorePopup(false)}>
           <div className="more-popup" onClick={(e) => e.stopPropagation()}>
@@ -214,7 +210,6 @@ const getWeekDays = () => {
         </div>
       )}
 
-      {/* Event detail modal */}
       {selectedEvent && (
         <div className="calendar-modal-overlay" onClick={() => setSelectedEvent(null)}>
           <div className="calendar-modal" onClick={(e) => e.stopPropagation()}>

@@ -33,9 +33,8 @@ function TasksPage() {
     }
   };
 
-  // ============================
+
   // Fetch ALL tasks
-  // ============================
   const fetchTasks = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -49,9 +48,7 @@ function TasksPage() {
     }
   };
 
-  // ============================
   // Delete task
-  // ============================
   const handleDeleteTask = async (taskId) => {
     if (!window.confirm("Are you sure you want to delete this task?")) return;
 
@@ -68,9 +65,7 @@ function TasksPage() {
     }
   };
 
-  // ============================
   // Load both tasks + projects
-  // ============================
   useEffect(() => {
     const loadData = async () => {
       await fetchProjects();
@@ -80,9 +75,7 @@ function TasksPage() {
     loadData();
   }, []);
 
-  // ============================
   // Attach tasks to projects
-  // ============================
   const projectList = projects.map((project) => ({
     ...project,
     tasks: tasks.filter((task) => task.project_id === project.id),

@@ -15,9 +15,7 @@ export default function Topbar({ collapsed, toggleSidebar, currentUser, socket }
     ? notifications.filter(n => !n.is_read).length
     : 0;
 
-  // =============================
   // Fetch notifications on mount
-  // =============================
   const fetchNotifications = async () => {
     try {
       const res = await fetch("http://localhost:5000/api/notifications", {
@@ -34,9 +32,7 @@ export default function Topbar({ collapsed, toggleSidebar, currentUser, socket }
     fetchNotifications();
   }, []);
 
-  // ======================================
   // Listen to socket notifications
-  // ======================================
   useEffect(() => {
     if (!socket) return;
 
@@ -49,9 +45,7 @@ export default function Topbar({ collapsed, toggleSidebar, currentUser, socket }
     return () => socket.off("new_notification", handleNewNotification);
   }, [socket]);
 
-  // ======================================
   // Mark notification as read
-  // ======================================
   const handleNotificationClick = async (id, link) => {
     try {
       await fetch("http://localhost:5000/api/notifications/mark-read", {
@@ -75,9 +69,7 @@ export default function Topbar({ collapsed, toggleSidebar, currentUser, socket }
     }
   };
 
-  // =============================
   // Bell click handler
-  // =============================
   const handleBellClick = async () => {
     setShowDropdown(prev => !prev);
     setHideBadge(true);

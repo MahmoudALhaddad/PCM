@@ -11,7 +11,7 @@ function App() {
     // You can add any initial data loading here
     setTimeout(() => {
       setIsReady(true);
-    }, 1000);
+    }, 5000);
   }, []);
 
   const handleSplashFinish = () => {
