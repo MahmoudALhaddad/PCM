@@ -1,12 +1,14 @@
 .users-page {
   --bg: #f7f9fb;
-  --card: #ffffff;
+  --card: #f1f1f18a;
   --muted: #6c757d;
   --accent: #007bff;
   --danger: #dc3545;
-  padding: 30px 40px;
+  padding: 30px 20px;
   margin: 10px auto;
   background: linear-gradient(180deg, rgba(0,0,0,0.02), transparent);
+    background-color: #f5f5f5;
+
 }
 
 .users-page > h2 {

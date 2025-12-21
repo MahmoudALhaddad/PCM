@@ -93,7 +93,7 @@ function TasksPage() {
 
   return (
     <div className="tasks-page">
-      <h1 className="tasks-title">TASKS</h1>
+      <h2 className="tasks-title">Tasks</h2>
 
       {projectList.length === 0 && (
         <p className="empty-text">No projects found.</p>

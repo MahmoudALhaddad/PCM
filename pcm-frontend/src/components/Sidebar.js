@@ -16,7 +16,7 @@ import "../styles/sidebar.css";
 import logoFullBright from "../assets/brightModeLogo.png";
 import logoIconBright from "../assets/collabsedLOGO.png";
 
-export default function Sidebar({ collapsed, currentUser }) {
+export default function Sidebar({ collapsed, currentUser, isMobile, toggleSidebar }) {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -69,7 +69,12 @@ export default function Sidebar({ collapsed, currentUser }) {
             key={item.name}
             className={location.pathname === item.path ? "active" : ""}
           >
-            <Link to={item.path}>
+            <Link
+              to={item.path}
+              onClick={() => {
+                if (isMobile) toggleSidebar(); // <-- collapse sidebar on mobile
+              }}
+            >
               {item.icon}
               {!collapsed && <span>{item.name}</span>}
             </Link>
@@ -77,7 +82,6 @@ export default function Sidebar({ collapsed, currentUser }) {
         ))}
       </ul>
 
-      {/* Logout */}
       <div className="sidebar-footer">
         <button className="logout-btn" onClick={handleLogout}>
           <FaSignOutAlt />

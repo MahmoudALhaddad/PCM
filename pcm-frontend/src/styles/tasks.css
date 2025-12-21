@@ -2,17 +2,18 @@
    PAGE
 ================================ */
 .tasks-page {
-  padding: 25px 35px;
-  background-color: #f9fafb;
+  padding: 20px 30px;
+  background-color: #f5f5f5;
   min-height: 100vh;
   font-family: "Inter", sans-serif;
 }
 
 .tasks-title {
-  font-size: 34px;
-  font-weight: 700;
+  margin-top: 10px;
   margin-bottom: 35px;
   color: #111827;
+  font-size: 1.5rem;
+
 }
 
 .loading-text,

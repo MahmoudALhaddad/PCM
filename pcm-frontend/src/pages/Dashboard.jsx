@@ -186,7 +186,7 @@ export default function Dashboard() {
   return (
     <div className="dashboard">
       <div className="welcome-section">
-        <h1>Dashboard</h1>
+        <h2>Dashboard</h2>
         
       </div>
 

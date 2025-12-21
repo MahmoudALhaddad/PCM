@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaBell, FaUserCircle, FaSearch, FaBars } from "react-icons/fa";
+import { FaBell, FaUserCircle, FaSearch, FaBars, FaExpand, FaCompress } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/topbar.css";
 
@@ -9,15 +9,14 @@ export default function Topbar({ collapsed, toggleSidebar, currentUser, socket }
 
   const [notifications, setNotifications] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [hideBadge, setHideBadge] = useState(false); // 👈 NEW
+  const [hideBadge, setHideBadge] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const unreadCount = Array.isArray(notifications)
     ? notifications.filter(n => !n.is_read).length
     : 0;
 
-  // =============================
-  // Fetch notifications on mount
-  // =============================
+  // Fetch notifications
   const fetchNotifications = async () => {
     try {
       const res = await fetch("http://localhost:5000/api/notifications", {
@@ -34,24 +33,20 @@ export default function Topbar({ collapsed, toggleSidebar, currentUser, socket }
     fetchNotifications();
   }, []);
 
-  // ======================================
   // Listen to socket notifications
-  // ======================================
   useEffect(() => {
     if (!socket) return;
 
     const handleNewNotification = (notification) => {
-      setNotifications(prev => [notification, ...((Array.isArray(prev) ? prev : []))]);
-      setHideBadge(false); // 👈 show badge again on new notification
+      setNotifications(prev => [notification, ...(Array.isArray(prev) ? prev : [])]);
+      setHideBadge(false);
     };
 
     socket.on("new_notification", handleNewNotification);
     return () => socket.off("new_notification", handleNewNotification);
   }, [socket]);
 
-  // ======================================
   // Mark notification as read
-  // ======================================
   const handleNotificationClick = async (id, link) => {
     try {
       await fetch("http://localhost:5000/api/notifications/mark-read", {
@@ -75,9 +70,6 @@ export default function Topbar({ collapsed, toggleSidebar, currentUser, socket }
     }
   };
 
-  // =============================
-  // Bell click handler
-  // =============================
   const handleBellClick = async () => {
     setShowDropdown(prev => !prev);
     setHideBadge(true);
@@ -85,12 +77,9 @@ export default function Topbar({ collapsed, toggleSidebar, currentUser, socket }
     try {
       await fetch("http://localhost:5000/api/notifications/mark-all-read", {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
 
-      // Update local state so refresh doesn't bring them back
       setNotifications(prev =>
         (Array.isArray(prev) ? prev : []).map(n => ({ ...n, is_read: true }))
       );
@@ -99,6 +88,24 @@ export default function Topbar({ collapsed, toggleSidebar, currentUser, socket }
     }
   };
 
+  // Fullscreen toggle
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(err => {
+        console.error(`Error attempting to enable full-screen mode: ${err.message}`);
+      });
+      setIsFullscreen(true);
+    } else {
+      document.exitFullscreen();
+      setIsFullscreen(false);
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/login");
+  };
 
   return (
     <div className={`topbar ${collapsed ? "collapsed" : ""}`}>
@@ -110,9 +117,14 @@ export default function Topbar({ collapsed, toggleSidebar, currentUser, socket }
       </div>
 
       <div className="topbar-right">
+        {/* Fullscreen Button */}
+        <div className="fullscreen-btn" onClick={toggleFullscreen}>
+          {isFullscreen ? <FaCompress className="topbar-icon" /> : <FaExpand className="topbar-icon" />}
+        </div>
+
+        {/* Notifications */}
         <div className="notification-container" style={{ position: "relative" }}>
           <FaBell className="topbar-icon" onClick={handleBellClick} />
-
           {unreadCount > 0 && !hideBadge && (
             <span className="notification-badge">{unreadCount}</span>
           )}
@@ -136,6 +148,7 @@ export default function Topbar({ collapsed, toggleSidebar, currentUser, socket }
           )}
         </div>
 
+        {/* Profile */}
         <Link to="/profile">
           <FaUserCircle className="topbar-icon" />
         </Link>
