@@ -93,11 +93,6 @@ Check the route files for exact paths and parameters: `backend/routes/*.js`.
 
 - Multiple per-project upload folders exist under `backend/uploads/` (e.g., `backend/uploads/project_30/` etc.).
 
-## Notes & Next Steps
-
-- Add explicit API documentation (request/response examples) for each route.
-- Add Postman/OpenAPI spec for easier integration and testing.
-- Add database migration tooling (e.g., Knex, Sequelize, or Flyway) for schema management.
 
 ---
 
