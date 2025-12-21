@@ -168,7 +168,10 @@
   text-align: center;
   color: #6c757d;
 }
-
+.fullscreen-btn {
+  cursor: pointer;
+  margin-right: 10px;
+}
 /* Mobile: topbar always full width */
 @media (max-width: 768px) {
   .topbar,
