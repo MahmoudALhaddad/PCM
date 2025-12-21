@@ -1,7 +1,7 @@
 .calendar-page-container {
   padding: 20px;
   font-family: 'Inter', sans-serif;
-  background: #f3f4f6;
+  background: var(--color-bg-primary);
 }
 
 /* Header */
@@ -16,12 +16,12 @@
 .calendar-header h2 {
   font-size: 28px;
   font-weight: 700;
-  color: #111827;
+  color: var(--color-text-primary);
   letter-spacing: 0.5px;
 }
 
 .calendar-header button {
-  background: #3b82f6;
+  background: var(--color-primary);
   color: white;
   border: none;
   padding: 6px 12px;
@@ -32,7 +32,7 @@
 }
 
 .calendar-header button:hover {
-  background: #2563eb;
+  background: var(--color-primary-dark);
   transform: scale(1.05);
 }
 
@@ -47,7 +47,7 @@
 .calendar-view-toggle button {
   padding: 6px 14px;
   border: none;
-  background: #e5e7eb;
+  background: var(--color-bg-tertiary);
   border-radius: 8px;
   cursor: pointer;
   font-weight: 500;
@@ -55,13 +55,13 @@
 }
 
 .calendar-view-toggle button.active {
-  background: #3b82f6;
+  background: var(--color-primary);
   color: white;
   font-weight: 600;
 }
 
 .calendar-view-toggle button:hover:not(.active) {
-  background: #d1d5db;
+  background: var(--color-border);
 }
 
 /* Weekdays */
@@ -74,9 +74,9 @@
 .weekday {
   text-align: center;
   font-weight: 600;
-  color: #374151;
+  color: var(--color-text-secondary);
   padding: 6px 0;
-  background: #e0e7ff;
+  background: rgba(37, 99, 235, 0.1);
   border-radius: 6px;
   letter-spacing: 0.5px;
 }
@@ -99,24 +99,24 @@
 .day-cell {
   min-height: 100px;
   border-radius: 8px;
-  background: white;
+  background: var(--color-bg-secondary);
   display: flex;
   flex-direction: column;
   padding: 6px;
   position: relative;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: var(--shadow-sm);
   transition: all 0.2s ease;
 }
 
 .day-cell:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  box-shadow: var(--shadow-md);
 }
 
 /* Highlight today */
 .day-cell.today {
-  border: 2px solid #3b82f6;
-  background: #eff6ff;
+  border: 2px solid var(--color-primary);
+  background: rgba(37, 99, 235, 0.05);
 }
 
 /* Day number */
@@ -124,12 +124,12 @@
   font-weight: 600;
   margin-bottom: 6px;
   text-align: right;
-  color: #111827;
+  color: var(--color-text-primary);
 }
 
 /* Weekends */
 .day-cell.weekend {
-  background: #f9fafb;
+  background: var(--color-bg-tertiary);
 }
 
 /* Events */
@@ -190,13 +190,13 @@
 }
 
 .more-popup {
-  background: white;
+  background: var(--color-bg-secondary);
   padding: 24px;
   border-radius: 12px;
   max-height: 400px;
   overflow-y: auto;
   width: 320px;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+  box-shadow: var(--shadow-lg);
 }
 
 /* Event detail modal */
@@ -211,31 +211,33 @@
 }
 
 .calendar-modal {
-  background: white;
+  background: var(--color-bg-secondary);
   padding: 28px;
   width: 380px;
   border-radius: 14px;
-  box-shadow: 0 12px 24px rgba(0,0,0,0.25);
+  box-shadow: var(--shadow-2xl);
 }
 
 .calendar-modal h2 {
   margin-bottom: 12px;
   font-size: 20px;
-  color: #111827;
+  color: var(--color-text-primary);
 }
 
 .close-btn {
   margin-top: 18px;
   padding: 8px 16px;
-  background: #1f2937;
-  color: white;
-  border: none;
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   cursor: pointer;
-  font-weight: 500;
-  transition: background 0.2s ease;
+  font-weight: 600;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .close-btn:hover {
-  background: #111827;
+  background: var(--color-bg-secondary);
+  border-color: var(--color-border-dark);
+  color: var(--color-text-primary);
 }

@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  background-color: #f8f9fa; /* page background */
+  background-color: var(--color-bg-primary);
   font-family: sans-serif;
   overflow-x: hidden;
 }
@@ -9,7 +9,7 @@ body {
   margin-left: 240px; /* full sidebar width */
   padding-top: 60px; /* topbar height */
   min-height: 100vh;
-  background-color: #f8f9fa; /* same as body */
+  background-color: var(--color-bg-primary);
   transition: all 0.3s ease;
 }
 

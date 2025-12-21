@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { FaBell, FaUserCircle, FaSearch, FaBars, FaExpand, FaCompress } from "react-icons/fa";
+import { FaBell, FaUserCircle, FaSearch, FaBars, FaExpand, FaCompress, FaMoon, FaSun } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
+import { useTheme } from "../contexts/ThemeContext";
 import "../styles/topbar.css";
 
 export default function Topbar({ collapsed, toggleSidebar, currentUser, socket }) {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+  const { theme, toggleTheme, isDark } = useTheme();
 
   const [notifications, setNotifications] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -117,6 +119,10 @@ export default function Topbar({ collapsed, toggleSidebar, currentUser, socket }
       </div>
 
       <div className="topbar-right">
+        <div className="theme-toggle-btn" onClick={toggleTheme} title={`Switch to ${isDark ? 'light' : 'dark'} mode`}>
+          {isDark ? <FaSun className="topbar-icon" /> : <FaMoon className="topbar-icon" />}
+        </div>
+
         {/* Fullscreen Button */}
         <div className="fullscreen-btn" onClick={toggleFullscreen}>
           {isFullscreen ? <FaCompress className="topbar-icon" /> : <FaExpand className="topbar-icon" />}

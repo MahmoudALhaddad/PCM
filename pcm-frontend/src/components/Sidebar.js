@@ -10,15 +10,19 @@ import {
   FaSignOutAlt,
   FaFolder,
   FaHistory,
+  FaMoon,
+  FaSun,
 } from "react-icons/fa";
 import "../styles/sidebar.css";
 
 import logoFullBright from "../assets/brightModeLogo.png";
 import logoIconBright from "../assets/collabsedLOGO.png";
+import { useTheme } from "../contexts/ThemeContext";
 
 export default function Sidebar({ collapsed, currentUser, isMobile, toggleSidebar }) {
   const location = useLocation();
   const navigate = useNavigate();
+  const { isDark, toggleTheme } = useTheme();
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -83,6 +87,10 @@ export default function Sidebar({ collapsed, currentUser, isMobile, toggleSideba
       </ul>
 
       <div className="sidebar-footer">
+        <button className="sidebar-theme-toggle" onClick={toggleTheme}>
+          {isDark ? <FaSun /> : <FaMoon />}
+          {!collapsed && <span>{isDark ? "Light Mode" : "Dark Mode"}</span>}
+        </button>
         <button className="logout-btn" onClick={handleLogout}>
           <FaSignOutAlt />
           {!collapsed && <span>Logout</span>}

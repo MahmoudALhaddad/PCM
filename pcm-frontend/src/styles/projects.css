@@ -1,6 +1,6 @@
 .projects-page {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f5f5f5;
+  background-color: var(--color-bg-primary);
   min-height: 100vh;
   padding: 10px 20px;
 }
@@ -14,12 +14,12 @@
 
 .projects-header h1 {
   font-size: 2rem;
-  color: #333;
+  color: var(--color-text-primary);
 }
 
 .add-project-btn {
   padding: 0.5rem 1rem;
-  background-color: #4f46e5;
+  background-color: var(--color-secondary);
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -29,7 +29,7 @@
 }
 
 .add-project-btn:hover {
-  background-color: #3730a3;
+  background-color: var(--color-secondary-dark);
 }
 
 .projects-grid {
@@ -39,9 +39,9 @@
 }
 
 .project-card {
-  background-color: #fff;
+  background-color: var(--color-bg-secondary);
   border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: var(--shadow-md);
   padding: 1.5rem;
   position: relative;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -57,18 +57,18 @@
   font-size: 1.25rem;
   font-weight: bold;
   margin-bottom: 0.5rem;
-  color: #111;
+  color: var(--color-text-primary);
 }
 
 .project-description {
   font-size: 0.95rem;
-  color: #555;
+  color: var(--color-text-secondary);
   margin-bottom: 1rem;
 }
 
 .project-info {
   font-size: 0.85rem;
-  color: #777;
+  color: var(--color-text-tertiary);
   display: flex;
   justify-content: space-between;
   margin-bottom: 1rem;
@@ -98,8 +98,8 @@
 
 /* Project Members Panel */
 .project-members {
-  background-color: #e6e6e6; /* slightly lighter */
-  border-top: 1px solid #e5e7eb;
+  background-color: var(--color-bg-tertiary);
+  border-top: 1px solid var(--color-border);
   padding: 0;
   max-height: 0;
   overflow: hidden;
@@ -127,23 +127,25 @@
 }
 
 .member:hover {
-  background-color: #e5e7eb;
+  background-color: var(--color-bg-secondary);
 }
 
 /* Editable Input */
 .member input[type="text"] {
   flex: 1;
   padding: 0.25rem 0.5rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--color-border);
   border-radius: 4px;
   font-size: 0.9rem;
   margin-right: 0.5rem;
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
 }
 
 /* Remove Button */
 .member button {
   padding: 0.25rem 0.5rem;
-  background-color: #ef4444;
+  background-color: var(--color-danger);
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -153,7 +155,7 @@
 }
 
 .member button:hover {
-  background-color: #b91c1c;
+  background-color: var(--color-danger-light);
 }
 
 /* Manage Button */
@@ -162,7 +164,7 @@
   margin-top: 0.5rem;
   width: 100%;
   padding: 0.5rem 0;
-  background-color: #3b82f6; /* change to blue */
+  background-color: var(--color-primary);
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -173,13 +175,13 @@
 }
 
 .manage-btn:hover {
-  background-color: #1e40af;
+  background-color: var(--color-primary-dark);
 }
 
 .loading {
   text-align: center;
   font-size: 1.2rem;
-  color: #555;
+  color: var(--color-text-secondary);
   margin-top: 2rem;
 }
 
@@ -199,14 +201,14 @@
 
 /* Modal content */
 .modal-content {
-  background-color: #ffffff;
+  background-color: var(--color-bg-secondary);
   border-radius: 16px;
   width: 100%;
   max-width: 600px;
   max-height: 80vh;
   overflow-y: auto;
   padding: 30px 100px;
-  box-shadow: 0 16px 40px rgba(0,0,0,0.2);
+  box-shadow: var(--shadow-2xl);
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -222,7 +224,7 @@
   font-size: 1.6rem;
   font-weight: 700;
   text-align: center;
-  color: #111827;
+  color: var(--color-text-primary);
   margin-bottom: 10px;
 }
 
@@ -234,68 +236,70 @@
   width: 100%;
   padding: 12px 14px;
   border-radius: 10px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--color-border);
   font-size: 1rem;
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
   margin-top: 15px;
   margin-bottom: 10px;
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
 }
 
 .modal-content input:focus,
 .modal-content select:focus,
 .modal-content textarea:focus {
-  border-color: #4f46e5;
+  border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
 }
 
 /* Labels */
 .modal-content label {
   font-weight: 600;
-  color: #374151;
+  color: var(--color-text-secondary);
   margin-bottom: 5px;
   display: block;
   font-size: 0.95rem;
 }
 /* Team Members Checkbox Panel */
 .team-members-checkboxes {
-  max-height: 220px; /* slightly taller */
+  max-height: 220px;
   overflow-y: auto;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--color-border);
   padding: 14px;
   border-radius: 14px;
-  background-color: #fefefe; /* cleaner white tone */
+  background-color: var(--color-bg-primary);
   display: flex;
   flex-direction: column;
-  gap: 8px; /* more breathing room between items */
+  gap: 8px;
 }
 
 /* Individual checkbox items */
 .checkbox-label {
   display: flex;
   align-items: center;
-  justify-content: space-between; /* better spacing between text and checkbox */
+  justify-content: space-between;
   padding: 10px 14px;
   border-radius: 10px;
   cursor: pointer;
   font-size: 0.95rem;
-  background-color: #ffffff;
+  background-color: var(--color-bg-secondary);
   transition: all 0.25s ease;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-sm);
 }
 
 .checkbox-label input {
-  margin-left: 12px; /* checkbox on the right */
-  accent-color: #4f46e5; /* keeps your purple accent */
+  margin-left: 12px;
+  accent-color: var(--color-primary);
   width: 18px;
   height: 18px;
   float: right;
 }
 
 .checkbox-label:hover {
-  background-color: #eef2ff;
+  background-color: rgba(37, 99, 235, 0.05);
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--shadow-md);
 }
 
 /* Modal Buttons */
@@ -317,19 +321,19 @@
 }
 
 .modal-buttons button[type="submit"] {
-  background-color: #4f46e5;
+  background-color: var(--color-primary);
   color: #ffffff;
 }
 
 .modal-buttons button[type="submit"]:hover {
-  background-color: #4338ca;
+  background-color: var(--color-primary-dark);
 }
 
 .modal-buttons .cancel-btn {
-  background-color: #f3f4f6;
-  color: #374151;
+  background-color: var(--color-bg-tertiary);
+  color: var(--color-text-secondary);
 }
 
 .modal-buttons .cancel-btn:hover {
-  background-color: #e5e7eb;
+  background-color: var(--color-border);
 }

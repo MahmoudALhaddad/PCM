@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import AppRoutes from "./routes/AppRoutes";
 import SplashScreen from "./components/SplashScreen";
+import { ThemeProvider } from "./contexts/ThemeContext";
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -22,7 +23,11 @@ function App() {
     return <SplashScreen onFinish={handleSplashFinish} />;
   }
 
-  return <AppRoutes />;
+  return (
+    <ThemeProvider>
+      <AppRoutes />
+    </ThemeProvider>
+  );
 }
 
 export default App;

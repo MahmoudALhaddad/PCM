@@ -4,17 +4,17 @@
 
 .profile-page h2 {
   margin-bottom: 30px;
-  color: #2e59d9;
+  color: var(--color-primary);
 }
 
 .profile-card {
   display: flex;
   align-items: flex-start;
   gap: 40px;
-  background: #fff;
+  background: var(--color-bg-secondary);
   padding: 30px;
   border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  box-shadow: var(--shadow-lg);
 }
 
 .profile-avatar img {
@@ -38,27 +38,29 @@
 .profile-form .form-group label {
   margin-bottom: 5px;
   font-weight: 500;
-  color: #495057;
+  color: var(--color-text-secondary);
 }
 
 .profile-form .form-group input {
   padding: 10px 12px;
   border-radius: 6px;
-  border: 1px solid #ced4da;
+  border: 1px solid var(--color-border);
   font-size: 14px;
   outline: none;
   transition: all 0.3s ease;
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
 }
 
 .profile-form .form-group input:focus {
-  border-color: #4e73df;
-  box-shadow: 0 0 5px rgba(78,115,223,0.4);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 5px rgba(37, 99, 235, 0.4);
 }
 
 .save-btn {
   padding: 12px 20px;
   border-radius: 8px;
-  background: #4e73df;
+  background: var(--color-primary);
   color: #fff;
   font-weight: bold;
   border: none;
@@ -67,6 +69,6 @@
 }
 
 .save-btn:hover {
-  background: #2e59d9;
+  background: var(--color-primary-dark);
   transform: scale(1.03);
 }

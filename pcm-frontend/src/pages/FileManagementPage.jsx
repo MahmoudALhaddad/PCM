@@ -122,36 +122,42 @@ export default function FileManagementPage() {
   const containerStyle = {
     maxWidth: "900px",
     margin: "40px auto",
-    fontFamily: "Arial, sans-serif",
     padding: "0 20px",
+    color: "var(--color-text-primary)",
   };
   const cardStyle = {
-    background: "#f9f9f9",
-    borderRadius: "8px",
+    background: "var(--color-bg-secondary)",
+    borderRadius: "var(--radius-xl)",
     padding: "15px 20px",
     marginBottom: "20px",
-    boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+    boxShadow: "var(--shadow-sm)",
+    border: "1px solid var(--color-border)",
+    color: "var(--color-text-primary)",
   };
   const buttonStyle = {
     padding: "6px 12px",
     marginLeft: "10px",
-    borderRadius: "4px",
-    border: "none",
+    borderRadius: "var(--radius-md)",
+    border: "1px solid var(--color-primary)",
     cursor: "pointer",
-    background: "#3b82f6",
+    background: "linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))",
     color: "#fff",
-    transition: "background 0.2s",
+    transition: "background var(--transition-base), transform var(--transition-base)",
+    boxShadow: "var(--shadow-primary)",
   };
   const deleteButtonStyle = {
     ...buttonStyle,
-    background: "#ef4444",
+    background: "var(--color-danger)",
+    border: "1px solid var(--color-danger)",
+    boxShadow: "var(--shadow-sm)",
   };
   const fileItemStyle = {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
     padding: "5px 0",
-    borderBottom: "1px solid #eee",
+    borderBottom: "1px solid var(--color-border)",
+    color: "var(--color-text-primary)",
   };
 
   const projectFiles = files.project_files || [];
@@ -159,18 +165,25 @@ export default function FileManagementPage() {
 
   return (
     <div style={containerStyle}>
-      <h1 style={{ textAlign: "center", marginBottom: "30px" }}>📁 File Management</h1>
-      {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>}
+      <h1 style={{ textAlign: "center", marginBottom: "30px", color: "var(--color-text-primary)" }}>📁 File Management</h1>
+      {error && <p style={{ color: "var(--color-danger)", textAlign: "center" }}>{error}</p>}
 
       <div style={{ ...cardStyle, display: "flex", alignItems: "center", gap: "10px" }}>
-        <label>Select Project:</label>
+        <label style={{ color: "var(--color-text-primary)" }}>Select Project:</label>
         <select
           value={selectedProject?.id || ""}
           onChange={(e) => {
             const project = projects.find((p) => p.id === parseInt(e.target.value));
             setSelectedProject(project);
           }}
-          style={{ flex: 1, padding: "6px", borderRadius: "4px", border: "1px solid #ccc" }}
+          style={{
+            flex: 1,
+            padding: "6px",
+            borderRadius: "var(--radius-md)",
+            border: "1px solid var(--color-border)",
+            background: "var(--color-bg-tertiary)",
+            color: "var(--color-text-primary)",
+          }}
         >
           {projects.map((p) => (
             <option key={p.id} value={p.id}>{p.name}</option>
