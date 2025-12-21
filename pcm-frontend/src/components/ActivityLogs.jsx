@@ -136,7 +136,8 @@ export default function ActivityLogs() {
             onChange={(e) => handleFilterChange('projectName', e.target.value)}
           />
         </div>
-        <div className="filter-group">
+        <div className="filter-group"> 
+           
           <label>Task Title</label>
           <input
             type="text"
