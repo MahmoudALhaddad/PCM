@@ -17,10 +17,15 @@ const io = initializeSocket(server);
 app.set('io', io);
 
 
+const allowedOrigins = [
+  "http://localhost:3000",
+  process.env.FRONTEND_URL
+];
+
 app.use(cors({
-  origin: 'http://localhost:3000', // frontend URL
-  credentials: true               // allow cookies
-}));
+  origin: allowedOrigins,
+  credentials: true
+}));  
 
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

@@ -65,7 +65,6 @@ router.get('/:projectId/files', authenticateToken, listProjectFiles);
 router.post(
   '/:projectId/project_files/upload',
   authenticateToken,
-  authorize(['admin']), // change to ['admin','manager'] if managers can upload
   projectFilesUpload.single('file'),
   uploadProjectFile
 );

@@ -54,12 +54,28 @@ export default function FileManagementPage() {
     setFiles(res.data);
   };
 
-  const download = (folder, name) => {
-    window.open(
+const download = async (folder, name) => {
+  try {
+    const res = await axios.get(
       `http://localhost:5000/api/projects/${selectedProject.id}/files/${folder}/${name}`,
-      "_blank"
+      {
+        headers: { Authorization: `Bearer ${token}` },
+        responseType: "blob", // important for file download
+      }
     );
-  };
+
+    // create a link and click it to download
+    const url = window.URL.createObjectURL(new Blob([res.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", name);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  } catch (err) {
+    console.error(err);
+  }
+};
 
   return (
     <div className="fm-layout">
