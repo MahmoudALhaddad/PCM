@@ -22,7 +22,7 @@ function MyTasks() {
 
       try {
         // Fetch all tasks
-        const tasksRes = await axios.get("https://www.piece.media/api/tasks", {
+        const tasksRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/tasks`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -42,7 +42,7 @@ function MyTasks() {
           projectIds.map(async (id) => {
             try {
               const res = await axios.get(
-                `https://www.piece.media/api/projects/${id}`,
+                `${process.env.REACT_APP_API_URL}/api/projects/${id}`,
                 { headers: { Authorization: `Bearer ${token}` } }
               );
               projectData[id] = res.data.name || `Project #${id}`;
@@ -88,7 +88,7 @@ function MyTasks() {
 
     try {
       await axios.put(
-        `https://www.piece.media/api/tasks/${fileTaskId}/upload`,
+        `${process.env.REACT_APP_API_URL}/api/tasks/${fileTaskId}/upload`,
         formData,
         {
           headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" },
@@ -108,7 +108,7 @@ function MyTasks() {
     const token = localStorage.getItem("token");
     try {
       await axios.put(
-        `https://www.piece.media/api/tasks/${taskId}`,
+        `${process.env.REACT_APP_API_URL}/api/tasks/${taskId}`,
         { status },
         { headers: { Authorization: `Bearer ${token}` } }
       );

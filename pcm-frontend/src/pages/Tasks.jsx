@@ -23,7 +23,7 @@ function TasksPage() {
       const token = localStorage.getItem("token");
        const userData = JSON.parse(localStorage.getItem("user"));
        setUser(userData);
-      const res = await axios.get("https://www.piece.media/api/projects", {
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/projects`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setProjects(res.data);
@@ -39,7 +39,7 @@ function TasksPage() {
   const fetchTasks = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get("https://www.piece.media/api/tasks", {
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/tasks`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setTasks(res.data);
@@ -57,7 +57,7 @@ function TasksPage() {
 
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`https://www.piece.media/api/tasks/${taskId}`, {
+      await axios.delete(`${process.env.REACT_APP_API_URL}/api/tasks/${taskId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

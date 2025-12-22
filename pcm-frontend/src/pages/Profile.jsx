@@ -16,7 +16,7 @@ export default function Profile() {
       if (!token) return;
 
       try {
-        const response = await fetch("https://www.piece.media/api/users/profile", {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/profile`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -52,7 +52,7 @@ export default function Profile() {
     if (!token) return;
 
     try {
-      const response = await fetch(`https://www.piece.media/api/users/${user.id}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/${user.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

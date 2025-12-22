@@ -17,7 +17,7 @@ export default function AddTaskModal({ show, onClose, projectId, refreshTasks })
       try {
         const token = localStorage.getItem("token");
         const res = await axios.get(
-          `https://www.piece.media/api/projects/${projectId}/members`,
+          `${process.env.REACT_APP_API_URL}/api/projects/${projectId}/members`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setUsers(res.data);
@@ -56,7 +56,7 @@ export default function AddTaskModal({ show, onClose, projectId, refreshTasks })
 
     try {
       const token = localStorage.getItem("token");
-      await axios.post("https://www.piece.media/api/tasks", payload, {
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/tasks`, payload, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

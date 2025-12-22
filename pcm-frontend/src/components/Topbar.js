@@ -21,7 +21,7 @@ export default function Topbar({ collapsed, toggleSidebar, currentUser, socket }
   // Fetch notifications
   const fetchNotifications = async () => {
     try {
-      const res = await fetch("https://www.piece.media/api/notifications", {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/notifications`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -51,7 +51,7 @@ export default function Topbar({ collapsed, toggleSidebar, currentUser, socket }
   // Mark notification as read
   const handleNotificationClick = async (id, link) => {
     try {
-      await fetch("https://www.piece.media/api/notifications/mark-read", {
+      await fetch(`${process.env.REACT_APP_API_URL}/api/notifications/mark-read`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -77,7 +77,7 @@ export default function Topbar({ collapsed, toggleSidebar, currentUser, socket }
     setHideBadge(true);
 
     try {
-      await fetch("https://www.piece.media/api/notifications/mark-all-read", {
+      await fetch(`${process.env.REACT_APP_API_URL}/api/notifications/mark-all-read`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       });

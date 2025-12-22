@@ -56,7 +56,7 @@ export default function CalendarPage() {
         const token = localStorage.getItem("token");
         if (!token) return;
 
-        const res = await axios.get("https://www.piece.media/api/tasks", {
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/tasks`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 

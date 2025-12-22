@@ -52,13 +52,13 @@ export default function Dashboard() {
 
       // Fetch projects and tasks
       const [projectRes, taskRes, userRes] = await Promise.all([
-        axios.get("https://www.piece.media/api/projects", {
+        axios.get(`${process.env.REACT_APP_API_URL}/api/projects`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        axios.get("https://www.piece.media/api/tasks", {
+        axios.get(`${process.env.REACT_APP_API_URL}/api/tasks`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        axios.get("https://www.piece.media/api/users", {
+        axios.get(`${process.env.REACT_APP_API_URL}/api/users`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
       ]);

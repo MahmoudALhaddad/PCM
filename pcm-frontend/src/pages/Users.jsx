@@ -12,7 +12,7 @@ export default function Users() {
 
   // Fetch current user profile
   const fetchProfile = async () => {
-    const res = await fetch("https://www.piece.media/api/users/profile", {
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/api/users/profile`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = await res.json();
@@ -22,7 +22,7 @@ export default function Users() {
   // Fetch all users
   const fetchUsers = async () => {
     setLoading(true);
-    const res = await fetch("https://www.piece.media/api/users", {
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/api/users`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = await res.json();
@@ -39,7 +39,7 @@ export default function Users() {
   const handleAddUser = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("https://www.piece.media/api/users", {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/users`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify(newUser),
@@ -60,7 +60,7 @@ export default function Users() {
   const handleDeleteUser = async (id) => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
     try {
-      const res = await fetch(`https://www.piece.media/api/users/${id}`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/users/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -76,7 +76,7 @@ export default function Users() {
 
     const handleUpdateUser = async (user) => {
     try {
-        const res = await fetch(`https://www.piece.media/api/users/${user.id}`, {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/users/${user.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify(user),

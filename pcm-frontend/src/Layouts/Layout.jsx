@@ -21,7 +21,7 @@ export default function Layout() {
     if (!token) return navigate("/login");
 
     try {
-      const res = await fetch("https://www.piece.media/api/users/profile", {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/users/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
@@ -60,7 +60,7 @@ export default function Layout() {
   useEffect(() => {
     if (!currentUser || !token) return;
 
-    const newSocket = io("https://www.piece.media", {
+    const newSocket = io(`${process.env.REACT_APP_API_URL}`, {
       auth: { token },
       reconnection: true,
       reconnectionDelay: 1000,

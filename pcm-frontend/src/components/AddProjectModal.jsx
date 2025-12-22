@@ -16,7 +16,7 @@ export default function AddProjectModal({ onClose, onProjectAdded }) {
     const fetchUsers = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("https://www.piece.media/api/users", {
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/users`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setTeamMembers(res.data);
@@ -40,7 +40,7 @@ export default function AddProjectModal({ onClose, onProjectAdded }) {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        "https://www.piece.media/api/projects",
+        `${process.env.REACT_APP_API_URL}/api/projects`,
         {
           name,
           clientName: client,

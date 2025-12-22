@@ -63,7 +63,7 @@ export default function ActivityLogs() {
 
       console.log('Fetching with params:', params.toString());
 
-      const res = await axios.get(`https://www.piece.media/api/activity?${params}`, {
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/activity?${params}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

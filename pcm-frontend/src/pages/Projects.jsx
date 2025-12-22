@@ -17,7 +17,7 @@ export default function ProjectsPage() {
 
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`https://www.piece.media/api/projects/${projectId}`, {
+      await axios.delete(`${process.env.REACT_APP_API_URL}/api/projects/${projectId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchProjects(); // Refresh project list
@@ -36,7 +36,7 @@ export default function ProjectsPage() {
 
       if (!token) throw new Error("No token found, please login");
 
-      const res = await axios.get("https://www.piece.media/api/projects", {
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/projects`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setProjects(res.data);

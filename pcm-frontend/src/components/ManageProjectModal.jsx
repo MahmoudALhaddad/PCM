@@ -18,7 +18,7 @@ export default function ManageProjectModal({ project, onClose, onProjectUpdated 
     const fetchUsers = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("https://www.piece.media/api/users", {
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/users`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -56,7 +56,7 @@ export default function ManageProjectModal({ project, onClose, onProjectUpdated 
     try {
       const token = localStorage.getItem("token");
       await axios.put(
-        `https://www.piece.media/api/projects/${project.id}`,
+        `${process.env.REACT_APP_API_URL}/api/projects/${project.id}`,
         {
           name,
           client_name: client,

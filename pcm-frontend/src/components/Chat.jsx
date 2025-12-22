@@ -26,7 +26,7 @@ const Chat = () => {
   // Fetch conversations
   const fetchConversations = React.useCallback(async () => {
     try {
-      const res = await fetch('https://www.piece.media/api/chat/conversations', {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/chat/conversations`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
@@ -42,7 +42,7 @@ const Chat = () => {
   useEffect(() => {
     if (!token) return;
 
-    const newSocket = io('https://www.piece.media', {
+    const newSocket = io(`${process.env.REACT_APP_API_URL}`, {
       auth: { token },
       reconnection: true,
       reconnectionDelay: 1000,
@@ -123,7 +123,7 @@ const Chat = () => {
   useEffect(() => {
     if (!token) return;
 
-    fetch("https://www.piece.media/api/notifications/mark-all-messages-read", {
+    fetch(`${process.env.REACT_APP_API_URL}/api/notifications/mark-all-messages-read`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -135,7 +135,7 @@ const Chat = () => {
   const fetchAllUsers = async () => {
     if (!token) return;
     try {
-      const res = await fetch('https://www.piece.media/api/users', {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/users`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.ok) {
@@ -170,7 +170,7 @@ const Chat = () => {
     const fetchHistory = async () => {
       try {
                   // 🔔 MARK MESSAGE NOTIFICATIONS AS READ
-          await fetch('https://www.piece.media/api/notifications/mark-chat-read', {
+          await fetch(`${process.env.REACT_APP_API_URL}/api/notifications/mark-chat-read`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -183,7 +183,7 @@ const Chat = () => {
 
         console.log('Fetching history for user:', selectedUser.id);
         const res = await fetch(
-          `https://www.piece.media/api/chat/history?withUserId=${selectedUser.id}&limit=1000`,
+          `${process.env.REACT_APP_API_URL}/api/chat/history?withUserId=${selectedUser.id}&limit=1000`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         if (res.ok) {
@@ -195,7 +195,7 @@ const Chat = () => {
           const senderIds = [selectedUser.id];
           if (senderIds.length > 0) {
             try {
-              await fetch('https://www.piece.media/api/chat/mark-read', {
+              await fetch(`${process.env.REACT_APP_API_URL}/api/chat/mark-read`, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',

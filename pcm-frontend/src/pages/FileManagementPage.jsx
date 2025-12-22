@@ -15,7 +15,7 @@ export default function FileManagementPage() {
 
   useEffect(() => {
     axios
-      .get("https://www.piece.media/api/projects", {
+      .get(`${process.env.REACT_APP_API_URL}/api/projects`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(res => {
@@ -28,7 +28,7 @@ export default function FileManagementPage() {
     if (!selectedProject) return;
     setLoading(true);
     axios
-      .get(`https://www.piece.media/api/projects/${selectedProject.id}/files`, {
+      .get(`${process.env.REACT_APP_API_URL}/api/projects/${selectedProject.id}/files`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(res => setFiles(res.data))
@@ -41,14 +41,14 @@ export default function FileManagementPage() {
     form.append("file", uploadFile);
 
     await axios.post(
-      `https://www.piece.media/api/projects/${selectedProject.id}/project_files/upload`,
+      `${process.env.REACT_APP_API_URL}/api/projects/${selectedProject.id}/project_files/upload`,
       form,
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
     setUploadFile(null);
     const res = await axios.get(
-      `https://www.piece.media/api/projects/${selectedProject.id}/files`,
+      `${process.env.REACT_APP_API_URL}/api/projects/${selectedProject.id}/files`,
       { headers: { Authorization: `Bearer ${token}` } }
     );
     setFiles(res.data);
@@ -57,7 +57,7 @@ export default function FileManagementPage() {
 const download = async (folder, name) => {
   try {
     const res = await axios.get(
-      `https://www.piece.media/api/projects/${selectedProject.id}/files/${folder}/${name}`,
+      `${process.env.REACT_APP_API_URL}/api/projects/${selectedProject.id}/files/${folder}/${name}`,
       {
         headers: { Authorization: `Bearer ${token}` },
         responseType: "blob", // important for file download
