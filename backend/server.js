@@ -19,7 +19,7 @@ app.set('io', io);
 
 const allowedOrigins = [
   "http://localhost:3000",
-  process.env.FRONTEND_URL
+  "https://www.piece.media" 
 ];
 
 app.use(cors({
