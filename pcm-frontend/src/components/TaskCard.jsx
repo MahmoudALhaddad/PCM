@@ -2,20 +2,13 @@ import React from "react";
 import "../styles/tasks.css";
 
 function TaskCard({ task, onEdit, onDelete }) {
-  // Format due date nicely
   const formattedDueDate = task.due_date
-    ? new Date(task.due_date).toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      })
+    ? new Date(task.due_date).toLocaleDateString()
     : "No deadline";
 
-  // Display assigned user names
-  const assignedNames =
-    task.assigned_to && task.assigned_to.length > 0
-      ? task.assigned_to.map(u => u.full_name).join(", ")
-      : "Unassigned";
+  const assignedNames = task.assigned_to?.length
+    ? task.assigned_to.map(u => u.full_name).join(", ")
+    : "Unassigned";
 
   return (
     <div className="task-card">
@@ -26,9 +19,7 @@ function TaskCard({ task, onEdit, onDelete }) {
         </span>
       </div>
 
-      <p className="task-description">
-        {task.description || "No description"}
-      </p>
+      <p className="task-description">{task.description || "No description"}</p>
 
       <div className="task-info">
         <p><strong>Status:</strong> {task.status}</p>

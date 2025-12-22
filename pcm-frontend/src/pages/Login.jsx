@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../styles/login.css";
-import logoFullBright from "../assets/brightModeLogo.png";
+import logoFullBright from "../assets/darkModeLogo.png";
 
 export default function Login() {
   const [name, setName] = useState("");

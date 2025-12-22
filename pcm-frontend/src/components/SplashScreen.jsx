@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/splashScreen.css';
-import logo from '../assets/brightModeLogo.png';
+import logo from '../assets/darkModeLogo.png';
 
 const SplashScreen = ({ onFinish }) => {
   const [fadeOut, setFadeOut] = useState(false);

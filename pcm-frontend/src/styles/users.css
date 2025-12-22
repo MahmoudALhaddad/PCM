@@ -1,20 +1,19 @@
 .users-page {
-  --bg: #f7f9fb;
-  --card: #f1f1f18a;
-  --muted: #6c757d;
-  --accent: #007bff;
-  --danger: #dc3545;
-  padding: 30px 20px;
-  margin: 10px auto;
-  background: linear-gradient(180deg, rgba(0,0,0,0.02), transparent);
-    background-color: #f5f5f5;
-
+  --bg: var(--color-bg-primary);
+  --card: var(--color-bg-secondary);
+  --muted: var(--color-text-light);
+  --accent: var(--color-primary);
+  --danger: var(--color-danger);
+  padding: 25px;
+  background: var(--bg);
+  transition: background-color var(--transition-base), color var(--transition-base);
 }
 
 .users-page > h2 {
-  font-size: 1.5rem;
-  margin: 0 0 12px 0;
-  color: #222;
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  color: var(--color-text-primary);
   display: flex;
   align-items: center;
   gap: 12px;
@@ -32,9 +31,11 @@
 .add-user-form select {
   padding: 8px 12px;
   border-radius: 8px;
-  border: 1px solid #e3e7ea;
-  background: #fff;
+  border: 1px solid var(--color-border-light);
+  background: var(--card);
+  color: var(--color-text-primary);
   box-shadow: 0 1px 0 rgba(0,0,0,0.02) inset;
+  transition: background-color var(--transition-base), color var(--transition-base);
 }
 
 .add-user-form button {
@@ -42,12 +43,15 @@
   border: none;
   border-radius: 8px;
   background-color: var(--accent);
-  color: #fff;
+  color: var(--color-text-primary);
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(0,123,255,0.08);
+  transition: background-color var(--transition-base);
 }
 
-.add-user-form button:hover { background-color: #0069d9; }
+.add-user-form button:hover { 
+  background-color: var(--color-primary-dark); 
+}
 
 .users-table-container {
   width: 100%;
@@ -61,23 +65,25 @@
   min-width: 700px;
   background: var(--card);
   border-radius: 10px;
-  box-shadow: 0 6px 18px rgba(16,24,40,0.06);
+  box-shadow: var(--shadow-sm);
+  transition: background-color var(--transition-base), color var(--transition-base);
 }
 
 .users-table th,
 .users-table td {
   padding: 12px 14px;
   text-align: left;
-  border-bottom: 1px solid #eef2f5;
+  border-bottom: 1px solid var(--color-border-light);
+  color: var(--color-text-primary);
 }
 
 .users-table thead th {
-  background: linear-gradient(180deg,#ffffff,#fbfdff);
+  background: var(--color-bg-tertiary);
   position: sticky;
   top: 0;
   z-index: 2;
   font-weight: 600;
-  color: #233;
+  color: var(--color-text-primary);
 }
 
 /* Narrow columns */
@@ -87,17 +93,20 @@
 .users-table td:nth-child(5) { width: 170px; }
 
 /* Zebra rows and hover */
-.users-table tbody tr:nth-child(even) { background: #fbfdff; }
-.users-table tbody tr:hover { background: #f1f7ff; }
+.users-table tbody tr:nth-child(even) { background: var(--color-bg-tertiary); }
+.users-table tbody tr:hover { background: var(--color-bg-secondary); }
 
 /* Inline edit inputs */
 .users-table input,
 .users-table select {
   padding: 6px 8px;
   border-radius: 6px;
-  border: 1px solid #e1e7ea;
+  border: 1px solid var(--color-border-light);
   width: 100%;
   box-sizing: border-box;
+  background: var(--card);
+  color: var(--color-text-primary);
+  transition: background-color var(--transition-base), color var(--transition-base);
 }
 
 /* Action buttons */
@@ -111,19 +120,20 @@
   margin-left: 6px;
   cursor: pointer;
   font-size: 0.9rem;
+  transition: background-color var(--transition-base);
 }
 
 .users-table .save-btn { background-color: #28a745; color: #fff; }
 .users-table .save-btn:hover { background-color: #218838; }
-.users-table .cancel-btn { background-color: #6c757d; color: #fff; }
+.users-table .cancel-btn { background-color: var(--muted); color: #fff; }
 .users-table .cancel-btn:hover { background-color: #5a6268; }
 .users-table .edit-btn { background-color: var(--accent); color: #fff; }
-.users-table .edit-btn:hover { background-color: #0069d9; }
+.users-table .edit-btn:hover { background-color: var(--color-primary-dark); }
 .users-table .delete-btn { background-color: var(--danger); color: #fff; }
 .users-table .delete-btn:hover { background-color: #c82333; }
 
 /* Role badge (3rd column) */
-.users-table td:nth-child(3) { font-weight: 600; color: #334; }
+.users-table td:nth-child(3) { font-weight: 600; color: var(--color-text-primary); }
 
 /* Responsive: allow horizontal scroll on small screens */
 @media (max-width: 900px) {
@@ -141,25 +151,10 @@
   padding: 24px;
   text-align: center;
   color: var(--muted);
-  background: #fff;
+  background: var(--card);
   border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(16,24,40,0.04);
-}
-
-/* Edit button for inline editing */
-.users-table .edit-btn {
-  padding: 6px 10 px;
-  border: none;
-  border-radius: 4px;
-  background-color: #007bff; /* blue */
-  color: #fff;
-  cursor: pointer;
-  font-size: 0.85rem;
-  margin-right: 4px;
-}
-
-.users-table .edit-btn:hover {
-  background-color: #0069d9;
+  box-shadow: var(--shadow-sm);
+  transition: background-color var(--transition-base), color var(--transition-base);
 }
 
 /* Additional responsive tweaks */
@@ -170,7 +165,6 @@
   .users-table th:nth-child(1),
   .users-table td:nth-child(1) { display: none; }
 
-  /* allow table to shrink a bit but keep horizontal scroll available */
   .users-table { min-width: 600px; }
 }
 

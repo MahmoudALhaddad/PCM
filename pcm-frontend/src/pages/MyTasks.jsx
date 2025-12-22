@@ -125,7 +125,7 @@ function MyTasks() {
 
   return (
     <div className="mytasks-wrapper">
-      <h1>My Tasks</h1>
+      <h2 className="title-myTasks">My Tasks</h2>
 
       {Object.entries(groupedTasks).map(([projectId, projectTasks]) => (
         <div key={projectId} className="project-block">

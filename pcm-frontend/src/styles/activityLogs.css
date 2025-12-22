@@ -1,26 +1,37 @@
 .activity-logs {
-  padding: 2rem;
+  padding: 25px;
   max-width: 1400px;
   margin: 0 auto;
+  color: var(--color-text-primary);
+  background: var(--color-bg-primary); /* ✅ THIS */
+  min-height: 100vh;                   /* ✅ optional but recommended */
 }
 
+
+/* =========================
+   PAGE HEADER
+========================= */
 .page-header {
   margin-bottom: 2rem;
 }
 
-.page-header h1 {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
-  color: #1a1a1a;
+.page-header h2 {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  color: var(--color-text-primary);
 }
 
 .page-header p {
-  color: #666;
+  color: var(--color-text-secondary);
   font-size: 0.95rem;
 }
 
+/* =========================
+   FILTERS
+========================= */
 .filters-section {
-  background: #f8f9fa;
+  background: var(--color-bg-tertiary);
   padding: 1.5rem;
   border-radius: 8px;
   margin-bottom: 1.5rem;
@@ -28,6 +39,7 @@
   gap: 1rem;
   flex-wrap: wrap;
   align-items: end;
+  transition: background-color var(--transition-base);
 }
 
 .filter-group {
@@ -41,58 +53,68 @@
 .filter-group label {
   font-weight: 600;
   font-size: 0.9rem;
-  color: #333;
+  color: var(--color-text-primary);
 }
 
 .filter-group input {
   padding: 0.6rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-border-light);
   border-radius: 6px;
   font-size: 0.95rem;
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  transition: all var(--transition-fast);
 }
 
 .filter-group input:focus {
   outline: none;
-  border-color: #4f46e5;
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
+/* Clear button */
 .clear-btn {
   padding: 0.6rem 1.2rem;
-  background: #6b7280;
+  background: var(--color-text-secondary);
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
-  transition: background 0.2s;
+  transition: background-color var(--transition-fast);
 }
 
 .clear-btn:hover {
-  background: #4b5563;
+  background: var(--color-text-tertiary);
 }
 
+/* =========================
+   STATS BAR
+========================= */
 .stats-bar {
   display: flex;
   justify-content: space-between;
   padding: 1rem;
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-light);
   border-radius: 6px;
   margin-bottom: 1rem;
   font-size: 0.9rem;
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
 .stats-bar strong {
-  color: #1a1a1a;
+  color: var(--color-text-primary);
   font-weight: 700;
 }
 
+/* =========================
+   ACTIVITY LIST
+========================= */
 .activity-list {
-  background: white;
+  background: var(--color-bg-secondary);
   border-radius: 8px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--color-border-light);
   overflow: hidden;
 }
 
@@ -100,8 +122,8 @@
   display: flex;
   gap: 1rem;
   padding: 1.25rem;
-  border-bottom: 1px solid #f3f4f6;
-  transition: background 0.2s;
+  border-bottom: 1px solid var(--color-border-light);
+  transition: background-color var(--transition-fast);
 }
 
 .activity-item:last-child {
@@ -109,13 +131,14 @@
 }
 
 .activity-item:hover {
-  background: #f9fafb;
+  background: var(--color-bg-tertiary);
 }
 
 .activity-icon {
   font-size: 2rem;
   line-height: 1;
   flex-shrink: 0;
+  color: var(--color-primary);
 }
 
 .activity-content {
@@ -131,17 +154,18 @@
 
 .activity-user {
   font-weight: 600;
-  color: #1a1a1a;
+  color: var(--color-text-primary);
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
+/* Role badge */
 .role-badge {
   font-size: 0.75rem;
   padding: 0.2rem 0.5rem;
-  background: #e0e7ff;
-  color: #4f46e5;
+  background: rgba(37, 99, 235, 0.15);
+  color: var(--color-primary);
   border-radius: 4px;
   font-weight: 600;
   text-transform: capitalize;
@@ -149,15 +173,18 @@
 
 .activity-time {
   font-size: 0.85rem;
-  color: #6b7280;
+  color: var(--color-text-light);
 }
 
 .activity-action {
-  color: #374151;
+  color: var(--color-text-secondary);
   margin: 0.5rem 0;
   line-height: 1.5;
 }
 
+/* =========================
+   META BADGES
+========================= */
 .activity-meta {
   display: flex;
   gap: 0.75rem;
@@ -176,15 +203,18 @@
 }
 
 .meta-badge.project {
-  background: #dbeafe;
-  color: #1e40af;
+  background: var(--color-info-bg);
+  color: var(--color-info-text);
 }
 
 .meta-badge.task {
-  background: #fef3c7;
-  color: #92400e;
+  background: var(--color-warning-bg);
+  color: var(--color-warning-text);
 }
 
+/* =========================
+   PAGINATION
+========================= */
 .pagination-controls {
   display: flex;
   justify-content: center;
@@ -196,47 +226,53 @@
 
 .pagination-btn {
   padding: 0.7rem 1.5rem;
-  background: #4f46e5;
+  background: var(--color-primary);
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
-  transition: all 0.2s;
+  transition: all var(--transition-fast);
 }
 
 .pagination-btn:hover:not(:disabled) {
-  background: #4338ca;
+  background: var(--color-primary-dark);
   transform: translateY(-1px);
 }
 
 .pagination-btn:disabled {
-  background: #d1d5db;
+  background: var(--color-border);
   cursor: not-allowed;
   opacity: 0.6;
 }
 
 .page-info {
   font-size: 0.95rem;
-  color: #4b5563;
+  color: var(--color-text-secondary);
   font-weight: 500;
 }
 
+/* =========================
+   STATES
+========================= */
 .empty-state {
   text-align: center;
   padding: 3rem;
-  color: #9ca3af;
+  color: var(--color-text-light);
   font-size: 1.1rem;
 }
 
 .error {
-  color: #dc2626;
-  background: #fee2e2;
+  color: var(--color-danger-text);
+  background: var(--color-danger-bg);
   padding: 1rem;
   border-radius: 6px;
   text-align: center;
 }
 
+/* =========================
+   RESPONSIVE
+========================= */
 @media (max-width: 768px) {
   .activity-logs {
     padding: 1rem;

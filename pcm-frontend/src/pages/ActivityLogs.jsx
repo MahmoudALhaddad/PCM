@@ -113,8 +113,7 @@ export default function ActivityLogs() {
   return (
     <div className="activity-logs">
       <div className="page-header">
-        <h1>📋 Activity Logs</h1>
-        <p>Track all user actions and system events</p>
+        <h2> Activity Logs</h2>
       </div>
 
       <div className="filters-section">

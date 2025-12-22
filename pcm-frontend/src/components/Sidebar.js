@@ -10,15 +10,27 @@ import {
   FaSignOutAlt,
   FaFolder,
   FaHistory,
+  FaMoon,
+  FaSun,
 } from "react-icons/fa";
 import "../styles/sidebar.css";
 
 import logoFullBright from "../assets/brightModeLogo.png";
 import logoIconBright from "../assets/collabsedLOGO.png";
+import logoFullDark from "../assets/darkModeLogo.png";
+import logoIconDark from "../assets/collabsedLOGO.png"; 
 
-export default function Sidebar({ collapsed, currentUser, isMobile, toggleSidebar }) {
+import { useTheme } from "../contexts/ThemeContext";
+
+export default function Sidebar({
+  collapsed,
+  currentUser,
+  isMobile,
+  toggleSidebar,
+}) {
   const location = useLocation();
   const navigate = useNavigate();
+  const { isDark, toggleTheme } = useTheme();
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -52,14 +64,20 @@ export default function Sidebar({ collapsed, currentUser, isMobile, toggleSideba
       : []),
   ];
 
+  // ✅ LOGO LOGIC (this is the key part)
+  const logoSrc = collapsed
+    ? isDark
+      ? logoIconDark
+      : logoIconBright
+    : isDark
+    ? logoFullDark
+    : logoFullBright;
+
   return (
     <div className={`sidebar ${collapsed ? "collapsed" : ""}`}>
       {/* Logo */}
       <div className="sidebar-logo">
-        <img
-          src={collapsed ? logoIconBright : logoFullBright}
-          alt="PCM Logo"
-        />
+        <img src={logoSrc} alt="PCM Logo" />
       </div>
 
       {/* Menu */}
@@ -72,7 +90,7 @@ export default function Sidebar({ collapsed, currentUser, isMobile, toggleSideba
             <Link
               to={item.path}
               onClick={() => {
-                if (isMobile) toggleSidebar(); // <-- collapse sidebar on mobile
+                if (isMobile) toggleSidebar();
               }}
             >
               {item.icon}
@@ -82,7 +100,15 @@ export default function Sidebar({ collapsed, currentUser, isMobile, toggleSideba
         ))}
       </ul>
 
+      {/* Footer */}
       <div className="sidebar-footer">
+        <button className="sidebar-theme-toggle" onClick={toggleTheme}>
+          {isDark ? <FaSun /> : <FaMoon />}
+          {!collapsed && (
+            <span>{isDark ? "Light Mode" : "Dark Mode"}</span>
+          )}
+        </button>
+
         <button className="logout-btn" onClick={handleLogout}>
           <FaSignOutAlt />
           {!collapsed && <span>Logout</span>}
