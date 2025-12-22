@@ -1,0 +1,223 @@
+.fm-layout {
+  display: flex;
+  height: calc(100vh - 60px);
+  font-family: Inter, sans-serif;
+  background: var(--color-bg-primary);
+  transition: background-color var(--transition-base), color var(--transition-base);
+}
+
+/* =========================
+   SIDEBAR
+========================= */
+.fm-sidebar {
+  width: 260px;
+  background: var(--color-bg-secondary);
+  padding: 20px;
+  border-right: 1px solid var(--color-border-light);
+  transition: background-color var(--transition-base), border-color var(--transition-base);
+}
+
+.fm-sidebar h3 {
+  margin-bottom: 16px;
+  font-size: 18px;
+  color: var(--color-text-primary);
+}
+
+.fm-project {
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 6px;
+  color: var(--color-text-secondary);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.fm-project:hover {
+  background: var(--color-bg-tertiary);
+}
+
+.fm-project.active {
+  background: var(--color-primary);
+  color: white;
+}
+
+/* =========================
+   MAIN
+========================= */
+.fm-main {
+  flex: 1;
+  padding: 24px 32px;
+  overflow-y: auto;
+  color: var(--color-text-primary);
+}
+
+.fm-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.fm-upload input {
+  margin-right: 10px;
+}
+
+.fm-upload button {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.fm-upload button:hover {
+  background: var(--color-primary-dark);
+}
+
+/* =========================
+   FILE GRID
+========================= */
+.fm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.fm-file-card {
+  background: var(--color-bg-secondary);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+  transition: transform 0.2s, box-shadow var(--transition-base),
+              background-color var(--transition-base);
+}
+
+.fm-file-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.fm-file-icon {
+  font-size: 32px;
+  margin-bottom: 10px;
+  color: var(--color-primary);
+}
+
+.fm-file-name {
+  font-size: 14px;
+  margin-bottom: 10px;
+  word-break: break-word;
+  color: var(--color-text-primary);
+}
+
+.fm-file-card button {
+  background: var(--color-bg-tertiary);
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.fm-file-card button:hover {
+  background: var(--color-primary);
+  color: white;
+}
+
+.fm-loading {
+  text-align: center;
+  color: var(--color-text-light);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+/* Tablets */
+@media (max-width: 1024px) {
+  .fm-layout {
+    flex-direction: column;
+  }
+
+  .fm-sidebar {
+    width: 100%;
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  .fm-sidebar h3 {
+    display: none;
+  }
+
+  .fm-project {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .fm-main {
+    padding: 20px;
+  }
+
+  .fm-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+}
+
+/* Phones */
+@media (max-width: 768px) {
+  .fm-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .fm-upload {
+    width: 100%;
+    display: flex;
+    gap: 8px;
+  }
+
+  .fm-upload input {
+    flex: 1;
+  }
+
+  .fm-upload button {
+    width: 100%;
+  }
+
+  .fm-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .fm-main {
+    padding: 16px;
+  }
+
+  .fm-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .fm-file-card {
+    padding: 12px;
+  }
+
+  .fm-file-icon {
+    font-size: 26px;
+  }
+
+  .fm-file-name {
+    font-size: 13px;
+  }
+}

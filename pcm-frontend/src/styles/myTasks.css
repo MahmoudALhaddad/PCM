@@ -1,0 +1,104 @@
+.mytasks-wrapper {
+  padding: 25px;
+  background-color: var(--color-bg-primary);
+}
+
+.title-myTasks {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  color: var(--color-text-primary);
+  margin-bottom: 2rem;
+}
+.project-block {
+  margin-bottom: 30px;
+}
+
+.project-block h2 {
+  background-color: var(--color-bg-tertiary);
+  padding: 10px 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  color: var(--color-text-primary);
+}
+
+.task-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.task-card {
+  background-color: var(--color-bg-secondary);
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: var(--shadow-sm);
+  flex: 1 1 300px;
+  min-width: 250px;
+  position: relative;
+  transition: transform 0.2s;
+}
+
+.task-card:hover {
+  transform: translateY(-5px);
+}
+
+.task-card.todo { border-left: 5px solid #facc15; }       /* yellow */
+.task-card.review { border-left: 5px solid #3b82f6; }     /* blue */
+.task-card.in_progress { border-left: 5px solid #f97316; } /* orange */
+.task-card.done { border-left: 5px solid #10b981; }        /* green */
+
+.task-card h3 {
+  margin: 0 0 10px;
+  font-size: 1.1rem;
+}
+
+.task-card p {
+  margin: 5px 0;
+  color: #4b5563;
+  font-size: 0.9rem;
+}
+
+.task-card button {
+  margin-top: 10px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: #3b82f6;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.task-card button:hover {
+  background-color: #2563eb;
+}
+
+.file-upload-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--color-bg-secondary);
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: var(--shadow-lg);
+  z-index: 999;
+}
+
+.file-upload-popup h3 {
+  margin-bottom: 15px;
+}
+
+.file-upload-popup input {
+  margin-bottom: 10px;
+}
+
+.file-upload-popup button {
+  margin-right: 10px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
