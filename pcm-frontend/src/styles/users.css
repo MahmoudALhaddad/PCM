@@ -64,7 +64,6 @@
 
 .users-table-container {
   width: 100%;
-  overflow-x: auto;
   background: transparent;
 }
 
@@ -147,6 +146,7 @@
 /* Responsive: allow horizontal scroll on small screens */
 @media (max-width: 900px) {
   .users-page { padding: 16px; }
+  .users-table-container { overflow-x: auto; }
   .users-table { min-width: 620px; }
 }
 
@@ -167,7 +167,11 @@
 }
 
 /* Additional responsive tweaks */
-.users-page { box-sizing: border-box; max-width: 100%; }
+.users-page { 
+  box-sizing: border-box; 
+  max-width: 100%; 
+  overflow-x: hidden;
+}
 
 @media (max-width: 800px) {
   /* hide ID column on narrower screens to save space */
