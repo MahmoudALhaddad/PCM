@@ -19,7 +19,7 @@ export const loginUser = async (req, res) => {
     const token = generateToken(user.id);
 
     // Log successful login
-    await logActivity(user.id, 'Logged in');
+    // await logActivity(user.id, 'Logged in');
 
     res.json({ 
       token, 
