@@ -6,6 +6,7 @@ export const loginUser = async (req, res) => {
   const { name, password } = req.body;
 
   try {
+    console.log(`Login attempt for user: ${name}`);
     const result = await pool.query('SELECT * FROM users WHERE name = $1', [name]);
     const user = result.rows[0];
 
