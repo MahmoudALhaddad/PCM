@@ -4,6 +4,7 @@ import { logActivity } from '../utils/activityLogger.js';
 
 export const loginUser = async (req, res) => {
   const { name, password } = req.body;
+  console.log(`Login attempt for user: ${name}`);
 
   try {
     console.log(`Login attempt for user: ${name}`);
