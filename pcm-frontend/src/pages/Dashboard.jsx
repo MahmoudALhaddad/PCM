@@ -219,7 +219,7 @@ export default function Dashboard() {
       <div className="quick-actions">
         {(user?.role === "admin" || user?.role === "manager") && (
           <>
-            <button className="action-btn primary" onClick={() => window.location.href = "/projects"}>
+            <button className="action-btn primary" onClick={() => window.location.href = "/api/projects"}>
               ➕ New Project
             </button>
             <button className="action-btn secondary" onClick={() => window.location.href = "/tasks"}>
