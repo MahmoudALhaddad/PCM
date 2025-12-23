@@ -4,7 +4,7 @@
   --muted: var(--color-text-light);
   --accent: var(--color-primary);
   --danger: var(--color-danger);
-    transition: background-color var(--transition-base), color var(--transition-base);
+  transition: background-color var(--transition-base), color var(--transition-base);
 
 }
 .users-page {

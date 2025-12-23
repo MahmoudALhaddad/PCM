@@ -1,8 +1,15 @@
 body {
   margin: 0;
-  background-color: #f8f9fa; /* page background */
   font-family: sans-serif;
   overflow-x: hidden;
+      --bg: var(--color-bg-primary);
+  --card: var(--color-bg-secondary);
+  --muted: var(--color-text-light);
+  --accent: var(--color-primary);
+  --danger: var(--color-danger);
+  transition: background-color var(--transition-base), color var(--transition-base);
+
+
 }
 
 .main-content {
