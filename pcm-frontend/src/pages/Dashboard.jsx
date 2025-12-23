@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../styles/dashboard.css";
 
@@ -37,7 +38,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
-
+  const navigate = useNavigate();
   useEffect(() => {
     fetchDashboardData();
   }, []);
@@ -219,18 +220,18 @@ export default function Dashboard() {
       <div className="quick-actions">
         {(user?.role === "admin" || user?.role === "manager") && (
           <>
-            <button className="action-btn primary" onClick={() => window.location.href = "/api/projects"}>
+            <button className="action-btn primary" onClick={() => navigate("/projects")}>
               ➕ New Project
             </button>
-            <button className="action-btn secondary" onClick={() => window.location.href = "/tasks"}>
+            <button className="action-btn secondary" onClick={() => navigate("/tasks")}>
               📝 New Task
             </button>
           </>
         )}
-        <button className="action-btn tertiary" onClick={() => window.location.href = "/chat"}>
+        <button className="action-btn tertiary" onClick={() => navigate("/chat")}>
           💬 Messages
         </button>
-        <button className="action-btn quaternary" onClick={() => window.location.href = "/files"}>
+        <button className="action-btn quaternary" onClick={() => navigate("/files")}>
           📁 Files
         </button>
       </div>
