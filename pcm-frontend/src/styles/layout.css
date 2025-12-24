@@ -18,8 +18,9 @@ body {
   min-height: 100vh;
   min-height: 100svh;
   min-height: 100dvh;
-  background-color: #f8f9fa; /* same as body */
   transition: all 0.3s ease;
+  --bg: var(--color-bg-primary);
+
 }
 
 .page-content {
