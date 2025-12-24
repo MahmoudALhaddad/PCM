@@ -76,9 +76,15 @@ export default function Sidebar({
   return (
     <div className={`sidebar ${collapsed ? "collapsed" : ""}`}>
       {/* Logo */}
-      <div className="sidebar-logo">
+      <Link
+        to="/"
+        className="sidebar-logo"
+        onClick={() => {
+          if (isMobile) toggleSidebar();
+        }}
+      >
         <img src={logoSrc} alt="PCM Logo" />
-      </div>
+      </Link>
 
       {/* Menu */}
       <ul className="sidebar-menu">
