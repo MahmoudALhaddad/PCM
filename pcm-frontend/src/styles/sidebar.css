@@ -1,6 +1,8 @@
 .sidebar {
   width: 242px;
   height: 100vh;
+  height: 100svh;
+  height: 100dvh;
   position: fixed;
   background-color: var(--color-bg-tertiary);
   color: var(--color-text-secondary);
@@ -36,6 +38,8 @@
 .sidebar {
   width: 242px;
   height: 100vh;
+  height: 100svh;
+  height: 100dvh;
   position: fixed;
   background-color: var(--color-bg-tertiary);
   color: var(--color-text-secondary);

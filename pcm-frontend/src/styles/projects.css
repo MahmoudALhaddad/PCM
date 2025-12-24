@@ -1,6 +1,8 @@
 .projects-page {
   background-color: var(--color-bg-primary);
   min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
   padding: 25px;
 }
 
