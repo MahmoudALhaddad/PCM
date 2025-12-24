@@ -86,7 +86,7 @@ export default function Profile() {
         </div>
 
         <form className="profile-form" onSubmit={handleSave}>
-          <div className="form-group">
+        <div className="form-group">
           <label>Name</label>
           <input
             type="text"
@@ -112,12 +112,6 @@ export default function Profile() {
             readOnly={!(user.role === "admin" || user.role === "manager")}
           />
         </div>
-
-        {(user.role === "admin" || user.role === "manager") && (
-          <button type="submit" className="save-btn">
-            Save Changes
-          </button>
-        )}
 
         </form>
       </div>

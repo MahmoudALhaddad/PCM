@@ -1,34 +1,69 @@
+/* ================================
+   PROFILE PAGE ROOT
+================================ */
 .profile-page {
-  padding: 40px;
+  padding: 20px;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  transition: background-color var(--transition-base, 0.3s ease), 
+              color var(--transition-base, 0.3s ease);
 }
 
+.profile-page * {
+  color: inherit;
+}
+
+
+[data-theme="light"] .profile-page,
+[data-theme="dark"] .profile-page {
+  background-color: var(--color-bg-primary) !important;
+  color: var(--color-text-primary) !important;
+}
+
+/* ================================
+   PAGE TITLE
+================================ */
 .profile-page h2 {
   margin-bottom: 30px;
-  color: #2e59d9;
+  color: var(--color-text-primary);
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 700;
 }
 
+/* ================================
+   PROFILE CARD
+================================ */
 .profile-card {
   display: flex;
-  align-items: flex-start;
-  gap: 40px;
-  background: #fff;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  padding: 25px;
+  border-radius: 16px;
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  box-shadow: var(--shadow-sm, 0 10px 30px rgba(0,0,0,0.05));
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  transition: background-color var(--transition-base, 0.3s ease), 
+              box-shadow var(--transition-base, 0.3s ease);
 }
 
-.profile-avatar img {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  object-fit: cover;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+/* Stronger specificity for theme-aware backgrounds */
+[data-theme="light"] .profile-card,
+[data-theme="dark"] .profile-card {
+  background-color: var(--color-bg-secondary) !important;
+  color: var(--color-text-primary) !important;
 }
 
-.profile-form {
-  flex: 1;
-}
-
+/* ================================
+   FORM INPUTS WITH THEME SUPPORT
+================================ */
 .profile-form .form-group {
   margin-bottom: 20px;
   display: flex;
@@ -36,37 +71,324 @@
 }
 
 .profile-form .form-group label {
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   font-weight: 500;
-  color: #495057;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  transition: color var(--transition-base, 0.3s ease);
+}
+
+[data-theme="light"] .profile-form .form-group label,
+[data-theme="dark"] .profile-form .form-group label {
+  color: var(--color-text-secondary) !important;
 }
 
 .profile-form .form-group input {
-  padding: 10px 12px;
-  border-radius: 6px;
-  border: 1px solid #ced4da;
-  font-size: 14px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border-light, #ced4da);
+  font-size: 16px;
   outline: none;
-  transition: all 0.3s ease;
+  transition: all var(--transition-base, 0.3s ease);
+  width: 100%;
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+}
+
+/* Theme-aware input backgrounds and borders */
+[data-theme="light"] .profile-form .form-group input,
+[data-theme="dark"] .profile-form .form-group input {
+  background-color: var(--color-bg-secondary) !important;
+  color: var(--color-text-primary) !important;
+  border-color: var(--color-border-light) !important;
+}
+
+.profile-form .form-group input::placeholder {
+  color: var(--color-text-tertiary);
+  opacity: 0.7;
 }
 
 .profile-form .form-group input:focus {
-  border-color: #4e73df;
-  box-shadow: 0 0 5px rgba(78,115,223,0.4);
+  border-color: var(--color-primary, #4e73df);
+  box-shadow: 0 0 0 3px rgba(78, 115, 223, 0.15);
+  background-color: var(--color-bg-secondary);
 }
 
+[data-theme="light"] .profile-form .form-group input:focus,
+[data-theme="dark"] .profile-form .form-group input:focus {
+  border-color: var(--color-primary) !important;
+  background-color: var(--color-bg-secondary) !important;
+}
+
+/* ================================
+   AVATAR SECTION
+================================ */
+.profile-avatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+}
+
+.profile-avatar img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: var(--shadow-sm, 0 4px 10px rgba(0,0,0,0.1));
+  transition: all var(--transition-base, 0.3s ease);
+  border: 3px solid var(--color-border-light, transparent);
+}
+
+/* Avatar upload button with theme support */
+.avatar-upload {
+  margin-top: 15px;
+}
+
+.avatar-upload label {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-light);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all var(--transition-base, 0.3s ease);
+}
+
+[data-theme="light"] .avatar-upload label,
+[data-theme="dark"] .avatar-upload label {
+  background-color: var(--color-bg-tertiary) !important;
+  color: var(--color-text-primary) !important;
+  border-color: var(--color-border-light) !important;
+}
+
+.avatar-upload label:hover {
+  background-color: var(--color-bg-hover);
+  transform: translateY(-1px);
+}
+
+.avatar-upload input[type="file"] {
+  display: none;
+}
+
+/* ================================
+   SAVE BUTTON WITH THEME SUPPORT
+================================ */
 .save-btn {
-  padding: 12px 20px;
+  padding: 14px 28px;
   border-radius: 8px;
-  background: #4e73df;
-  color: #fff;
-  font-weight: bold;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: var(--color-on-primary);
+  font-weight: 700;
   border: none;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all var(--transition-base, 0.3s ease);
+  font-size: 16px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+[data-theme="light"] .save-btn,
+[data-theme="dark"] .save-btn {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)) !important;
+  color: var(--color-on-primary) !important;
 }
 
 .save-btn:hover {
-  background: #2e59d9;
-  transform: scale(1.03);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-primary-hover, 0 4px 12px rgba(46, 89, 217, 0.3));
+}
+
+.save-btn:active {
+  transform: translateY(0);
+}
+
+.save-btn.loading {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* ================================
+   MESSAGES WITH THEME SUPPORT
+================================ */
+.profile-message {
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 20px;
+  font-size: 14px;
+  display: none;
+}
+
+.profile-message.success {
+  display: block;
+  background-color: var(--color-success-bg);
+  color: var(--color-success-text);
+  border: 1px solid var(--color-success-border);
+}
+
+.profile-message.error {
+  display: block;
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger-text);
+  border: 1px solid var(--color-danger-border);
+}
+
+/* ================================
+   RESPONSIVE BREAKPOINTS
+================================ */
+/* Tablet and larger screens */
+@media (min-width: 768px) {
+  .profile-page {
+    padding: 30px;
+  }
+  
+  .profile-card {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 40px;
+    padding: 30px;
+  }
+  
+  .profile-form .form-group label {
+    font-size: 15px;
+  }
+  
+  .save-btn {
+    width: auto;
+    min-width: 150px;
+    padding: 12px 24px;
+    font-size: 15px;
+  }
+}
+
+/* Desktop screens */
+@media (min-width: 1024px) {
+  .profile-page {
+    padding: 40px;
+  }
+  
+  .profile-card {
+    gap: 50px;
+    padding: 40px;
+  }
+}
+
+/* Responsive avatar sizes */
+@media (min-width: 480px) {
+  .profile-avatar img {
+    width: 120px;
+    height: 120px;
+  }
+}
+
+@media (min-width: 768px) {
+  .profile-avatar img {
+    width: 140px;
+    height: 140px;
+  }
+  
+  .profile-avatar {
+    width: auto;
+    align-items: flex-start;
+  }
+}
+
+/* Form grid for larger screens */
+@media (min-width: 768px) {
+  .form-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  
+  .form-row .form-group {
+    margin-bottom: 0;
+  }
+}
+
+/* For very large screens, use 3 columns */
+@media (min-width: 1200px) {
+  .form-row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Full width fields */
+.full-width {
+  grid-column: 1 / -1;
+}
+
+/* Better mobile input experience */
+@media (max-width: 480px) {
+  .profile-form .form-group input {
+    padding: 14px 16px;
+    font-size: 16px;
+  }
+}
+
+/* Additional mobile optimizations */
+@media (max-width: 767px) {
+  .profile-card {
+    padding: 20px;
+    gap: 25px;
+  }
+  
+  .profile-form .form-group {
+    margin-bottom: 18px;
+  }
+  
+  .profile-page h2 {
+    margin-bottom: 25px;
+    text-align: center;
+  }
+}
+
+/* For very small screens */
+@media (max-width: 360px) {
+  .profile-page {
+    padding: 15px;
+  }
+  
+  .profile-card {
+    padding: 15px;
+    gap: 20px;
+  }
+  
+  .profile-avatar img {
+    width: 90px;
+    height: 90px;
+  }
+}
+
+/* ================================
+   REDUCED MOTION SUPPORT
+================================ */
+@media (prefers-reduced-motion: reduce) {
+  .profile-page,
+  .profile-card,
+  .profile-form .form-group input,
+  .avatar-upload label,
+  .save-btn,
+  .profile-avatar img {
+    transition: none;
+  }
+  
+  .save-btn:hover,
+  .avatar-upload label:hover {
+    transform: none;
+  }
+}
+
+
+.profile-form {
+  width: 100%;
+  flex: 1 1 auto;
+  min-width: 0; 
+}
+
+.profile-form .form-group input {
+  box-sizing: border-box;
 }
