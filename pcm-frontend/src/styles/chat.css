@@ -1,6 +1,8 @@
 .chat-container {
   display: flex;
   height: 100vh;
+  height: 100svh;
+  height: 100dvh;
   background-color: var(--color-bg-primary);
 }
 

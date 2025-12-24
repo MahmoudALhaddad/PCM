@@ -4,6 +4,8 @@
 .tasks-page {
   padding: 25px;
   min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
   background-color: var(--color-bg-primary);
   color: var(--color-text-primary);
   transition: background-color var(--transition-base), color var(--transition-base);

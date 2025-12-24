@@ -35,6 +35,8 @@ html, body {
   display: grid;
   grid-template-columns: 1.2fr 1fr;
   height: 100vh;
+  height: 100svh;
+  height: 100dvh;
   width: 100%;
   font-family: 'Poppins', sans-serif;
   background: var(--bg-light);
@@ -347,6 +349,8 @@ html, body {
     grid-template-columns: 1fr;
     height: auto;
     min-height: 100vh;
+    min-height: 100svh;
+    min-height: 100dvh;
   }
 
   .login-left {
@@ -389,12 +393,16 @@ html, body {
     grid-template-columns: 1fr;
     height: auto;
     min-height: 100vh;
+    min-height: 100svh;
+    min-height: 100dvh;
     background: white;
   }
 
   .login-left {
     padding: 30px 16px;
     min-height: 100vh;
+    min-height: 100svh;
+    min-height: 100dvh;
     justify-content: flex-start;
     padding-top: 30px;
   }

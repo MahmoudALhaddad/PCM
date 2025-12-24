@@ -5,6 +5,8 @@
   background: var(--color-bg-primary);
   color: var(--color-text-primary);
   min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
   margin: 0 auto;
   font-family: "Roboto", sans-serif;
 
