@@ -546,3 +546,37 @@
     display: none;
   }
 }
+
+/* Keep chat header visible when mobile keyboard opens */
+.chat-header {
+  position: sticky;
+  top: 0;
+  z-index: 6;
+}
+
+.messages-list {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.message-form {
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px));
+}
+
+@media (max-width: 768px) {
+  .chat-container,
+  .chat-window {
+    height: 100svh;
+  }
+
+  .chat-header {
+    position: sticky;
+    top: 0;
+    z-index: 6;
+  }
+
+  /* keep messages list usable when keyboard shows */
+  .messages-list {
+    max-height: calc(100svh - 56px - 72px); /* viewport minus header and input (approx) */
+  }
+}
