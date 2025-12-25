@@ -505,10 +505,14 @@
     width: 100%;
     height: 100%;
     border-left: none;
-    position: absolute;
-    top: 0;
+    /* Use fixed so the chat panel stays visible while the page
+       behind it may scroll. Keeps header/input anchored. */
+    position: fixed;
+    top: 60px; /* account for topbar height */
     left: 0;
-    z-index: 2;
+    right: 0;
+    bottom: 0;
+    z-index: 1200;
     transform: translateX(100%);
     transition: transform 0.3s ease;
   }
@@ -517,8 +521,13 @@
     transform: translateX(0);
   }
 
+  /* Keep header visible on mobile while messages scroll beneath */
   .chat-header {
-    position: relative;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+    color: #fff;
   }
 
   .back-button {
@@ -534,6 +543,14 @@
     margin-right: 12px;
     border-radius: 6px;
     transition: background 0.2s ease;
+  }
+
+  /* Keep the message input visible at the bottom of the fixed chat panel */
+  .message-form {
+    position: sticky;
+    bottom: 0;
+    z-index: 4;
+    background: var(--color-bg-primary);
   }
 
   .back-button:hover {

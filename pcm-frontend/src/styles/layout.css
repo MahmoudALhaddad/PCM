@@ -56,15 +56,13 @@ body {
 @media (max-width: 768px) {
   .main-content,
   .main-content.collapsed {
-    margin-left: 0; /* do not reserve sidebar space on mobile */
+    margin-left: 0; 
   }
-  /* Ensure page content doesn't itself scroll on mobile so child
-     chat components can take full phone height and manage their own
-     internal scrolling (messages list). This prevents double-scroll
-     where the outer page scroll hides the chat header/recipient.) */
+
   .page-content {
     height: calc(100svh - 60px);
     height: calc(100dvh - 60px);
-    overflow: hidden;
+
+    overflow-y: auto;
   }
 }
