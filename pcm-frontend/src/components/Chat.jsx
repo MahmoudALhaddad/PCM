@@ -17,6 +17,14 @@ const Chat = () => {
   const selectedUserRef = useRef(null);
   const token = localStorage.getItem('token');
   const currentUser = JSON.parse(localStorage.getItem('user'));
+  // 🔒 Lock viewport height to prevent keyboard resize issues (mobile)
+  useEffect(() => {
+    const appHeight = window.innerHeight;
+    document.documentElement.style.setProperty(
+      '--app-height',
+      `${appHeight}px`
+    );
+  }, []);
 
   // Update ref when selectedUser changes
   useEffect(() => {
@@ -252,7 +260,7 @@ const Chat = () => {
           <h2>Messages</h2>
           {/* faisal - Add button to open user modal */}
           <button className="add-user-btn" onClick={fetchAllUsers} title="Start new conversation">
-            +
+            <span>+</span>
           </button>
         </div>
 
