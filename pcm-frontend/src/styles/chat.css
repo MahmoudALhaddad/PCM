@@ -523,11 +523,25 @@
 
   /* Keep header visible on mobile while messages scroll beneath */
   .chat-header {
-    position: sticky;
-    top: 0;
-    z-index: 5;
+    /* Make the header fixed to the viewport on small screens so it
+       doesn't shift when the on-screen keyboard opens. */
+    position: fixed;
+    top: 60px; /* aligns with .chat-window top */
+    left: 0;
+    right: 0;
+    z-index: 1250;
     background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
     color: #fff;
+    box-sizing: border-box;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+  }
+
+  /* Ensure messages don't sit underneath the fixed header */
+  .messages-list {
+    padding-top: 80px; /* header height + some breathing room */
   }
 
   .back-button {
