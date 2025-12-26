@@ -17,14 +17,55 @@ const Chat = () => {
   const selectedUserRef = useRef(null);
   const token = localStorage.getItem('token');
   const currentUser = JSON.parse(localStorage.getItem('user'));
-  // 🔒 Lock viewport height to prevent keyboard resize issues (mobile)
+  
+  // 🔒 Enhanced viewport handling for mobile keyboard
   useEffect(() => {
-    const appHeight = window.innerHeight;
-    document.documentElement.style.setProperty(
-      '--app-height',
-      `${appHeight}px`
-    );
+    const setAppHeight = () => {
+      // Use visualViewport if available (better for mobile keyboards)
+      const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+      document.documentElement.style.setProperty('--app-height', `${vh}px`);
+      document.documentElement.style.setProperty('--window-height', `${window.innerHeight}px`);
+    };
+
+    setAppHeight();
+    
+    // Listen for viewport changes (keyboard open/close)
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', setAppHeight);
+      window.visualViewport.addEventListener('scroll', setAppHeight);
+    } else {
+      window.addEventListener('resize', setAppHeight);
+    }
+
+    return () => {
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', setAppHeight);
+        window.visualViewport.removeEventListener('scroll', setAppHeight);
+      } else {
+        window.removeEventListener('resize', setAppHeight);
+      }
+    };
   }, []);
+
+  // Prevent scroll when keyboard appears on mobile
+  useEffect(() => {
+    if (selectedUser && window.innerWidth <= 768) {
+      // Prevent body scroll when chat is active on mobile
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+    };
+  }, [selectedUser]);
 
   // Update ref when selectedUser changes
   useEffect(() => {
