@@ -24,7 +24,6 @@ const Chat = () => {
       // Use visualViewport if available (better for mobile keyboards)
       const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
       document.documentElement.style.setProperty('--app-height', `${vh}px`);
-      document.documentElement.style.setProperty('--window-height', `${window.innerHeight}px`);
     };
 
     setAppHeight();
@@ -46,26 +45,6 @@ const Chat = () => {
       }
     };
   }, []);
-
-  // Prevent scroll when keyboard appears on mobile
-  useEffect(() => {
-    if (selectedUser && window.innerWidth <= 768) {
-      // Prevent body scroll when chat is active on mobile
-      document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.width = '100%';
-    } else {
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.width = '';
-    }
-
-    return () => {
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.width = '';
-    };
-  }, [selectedUser]);
 
   // Update ref when selectedUser changes
   useEffect(() => {
