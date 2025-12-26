@@ -561,9 +561,9 @@
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
     padding: 20px;
-    min-height: 0;
+    min-height: 0; /* Important for flex scrolling */
   }
 
   .back-button {
@@ -591,31 +591,24 @@
   .message-form {
     flex-shrink: 0;
     background: var(--color-bg-primary);
-    padding: 15px;
+    padding: 15px 20px;
     border-top: 1px solid var(--color-border);
     display: flex;
     gap: 10px;
     /* Safe area for notched devices */
-    padding-bottom: max(15px, env(safe-area-inset-bottom));
+    margin-bottom: env(safe-area-inset-bottom, 0px);
   }
 
   .message-form input {
-    flex: 1;
+    width: 100%;
     padding: 12px 15px;
-    font-size: 16px;
-    border: 1px solid var(--color-border);
+    font-size: 16px; /* Prevents zoom on iOS */
     border-radius: 8px;
-    outline: none;
-  }
-
-  .message-form input:focus {
-    border-color: var(--color-primary);
   }
 
   .message-form button {
     padding: 12px 20px;
     white-space: nowrap;
-    flex-shrink: 0;
   }
 
   .no-chat-selected {
