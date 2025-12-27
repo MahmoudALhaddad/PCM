@@ -518,7 +518,7 @@
   /* Mobile chat window - full viewport height that adapts to keyboard */
   .chat-window {
     width: 100vw;
-    height: var(--app-height);
+    height: 100dvh;
     border-left: none;
     position: fixed;
     top: 0;
@@ -548,7 +548,8 @@
     gap: 12px;
     border-bottom: 1px solid var(--color-border);
     z-index: 10;
-    height: 56px;
+    height: auto;
+    min-height: 56px;
   }
 
   .chat-header h3 {

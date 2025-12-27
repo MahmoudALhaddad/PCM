@@ -18,38 +18,6 @@ const Chat = () => {
   const token = localStorage.getItem('token');
   const currentUser = JSON.parse(localStorage.getItem('user'));
   
-  // 🔒 Enhanced viewport handling for mobile keyboard
-  useEffect(() => {
-    const setAppHeight = () => {
-      // Use visualViewport if available (better for mobile keyboards)
-      const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-      document.documentElement.style.setProperty('--app-height', `${vh}px`);
-      // Keep the latest message visible when the keyboard opens/closes
-      try {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-      } catch {}
-    };
-
-    setAppHeight();
-    
-    // Listen for viewport changes (keyboard open/close)
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', setAppHeight);
-      window.visualViewport.addEventListener('scroll', setAppHeight);
-    } else {
-      window.addEventListener('resize', setAppHeight);
-    }
-
-    return () => {
-      if (window.visualViewport) {
-        window.visualViewport.removeEventListener('resize', setAppHeight);
-        window.visualViewport.removeEventListener('scroll', setAppHeight);
-      } else {
-        window.removeEventListener('resize', setAppHeight);
-      }
-    };
-  }, []);
-
   // Update ref when selectedUser changes
   useEffect(() => {
     selectedUserRef.current = selectedUser;
@@ -255,7 +223,7 @@ const Chat = () => {
 
   // Auto scroll to latest message
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: 'auto' });
   }, [messages]);
 
   const handleSendMessage = (e) => {

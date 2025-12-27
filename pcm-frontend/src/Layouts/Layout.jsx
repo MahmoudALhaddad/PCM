@@ -55,6 +55,35 @@ export default function Layout() {
     fetchProfile();
   }, []);
 
+  // Global viewport height tracking for mobile keyboard support
+  useEffect(() => {
+    const updateViewportHeight = () => {
+      if (window.visualViewport) {
+        const vh = window.visualViewport.height;
+        document.documentElement.style.setProperty('--app-height', `${vh}px`);
+      }
+    };
+
+    // Set initial height
+    updateViewportHeight();
+
+    // Listen for viewport changes (keyboard open/close)
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', updateViewportHeight);
+      window.visualViewport.addEventListener('scroll', updateViewportHeight);
+      // Also listen to regular resize as fallback
+      window.addEventListener('resize', updateViewportHeight);
+    }
+
+    return () => {
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', updateViewportHeight);
+        window.visualViewport.removeEventListener('scroll', updateViewportHeight);
+      }
+      window.removeEventListener('resize', updateViewportHeight);
+    };
+  }, []);
+
   // Track viewport width for responsive sidebar behavior
   useEffect(() => {
     const handleResize = () => {
