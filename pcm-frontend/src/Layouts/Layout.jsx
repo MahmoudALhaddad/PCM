@@ -11,6 +11,7 @@ export default function Layout() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [currentUser, setCurrentUser] = useState(null);
   const [socket, setSocket] = useState(null); // <-- socket state
+  const [profileError, setProfileError] = useState(null); // show a friendly error instead of redirect looping
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
@@ -24,16 +25,29 @@ export default function Layout() {
       const res = await fetch(`${process.env.REACT_APP_API_URL}/api/users/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (res.ok) {
-        const data = await res.json();
-        setCurrentUser(data);
-        localStorage.setItem("currentUser", JSON.stringify(data)); // for RequireRole
-      } else {
-        navigate("/login");
+
+      if (res.status === 401 || res.status === 403) {
+        // Auth is bad: clear and bounce to login
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        localStorage.removeItem("currentUser");
+        return navigate("/login");
       }
+
+      if (!res.ok) {
+        const message = `Profile request failed (${res.status})`;
+        console.error(message);
+        setProfileError(message);
+        return;
+      }
+
+      const data = await res.json();
+      setCurrentUser(data);
+      setProfileError(null);
+      localStorage.setItem("currentUser", JSON.stringify(data)); // for RequireRole
     } catch (err) {
-      console.error(err);
-      navigate("/login");
+      console.error("Profile request error", err);
+      setProfileError("Cannot reach server. Please check your network/API URL.");
     }
   };
 
@@ -62,6 +76,8 @@ export default function Layout() {
 
     const newSocket = io(`${process.env.REACT_APP_API_URL}`, {
       auth: { token },
+      path: '/socket.io',
+      transports: ['websocket'],
       reconnection: true,
       reconnectionDelay: 1000,
       reconnectionDelayMax: 5000,
@@ -81,7 +97,17 @@ export default function Layout() {
     return () => newSocket.close();
   }, [currentUser, token]);
 
-  // Wait until user is loaded
+  // Wait until user is loaded; show error instead of looping redirects
+  if (profileError) {
+    return (
+      <div style={{ padding: "24px" }}>
+        <h2>Unable to load your profile</h2>
+        <p>{profileError}</p>
+        <p>Check your connection or REACT_APP_API_URL, then refresh.</p>
+      </div>
+    );
+  }
+
   if (!currentUser) return <p>Loading...</p>;
 
   return (

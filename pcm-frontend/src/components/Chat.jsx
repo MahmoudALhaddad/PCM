@@ -24,6 +24,10 @@ const Chat = () => {
       // Use visualViewport if available (better for mobile keyboards)
       const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
       document.documentElement.style.setProperty('--app-height', `${vh}px`);
+      // Keep the latest message visible when the keyboard opens/closes
+      try {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      } catch {}
     };
 
     setAppHeight();
@@ -72,6 +76,8 @@ const Chat = () => {
 
     const newSocket = io(`${process.env.REACT_APP_API_URL}`, {
       auth: { token },
+      path: '/socket.io',
+      transports: ['websocket'],
       reconnection: true,
       reconnectionDelay: 1000,
       reconnectionDelayMax: 5000,
@@ -122,8 +128,7 @@ const Chat = () => {
     newSocket.on('messages_marked_read', (data) => {
       console.log('Messages marked as read event received:', data);
       const { senderId, recipientId } = data;
-      // Update messages SENT BY current user that were just read
-      // senderId is who sent the messages, recipientId is who read them
+
       setMessages((prev) =>
         prev.map((msg) =>
           msg.sender_id === senderId && msg.recipient_id === recipientId
@@ -278,13 +283,11 @@ const Chat = () => {
       <div className={`conversations-list ${selectedUser ? 'has-active-chat' : ''}`}>
         <div className="messages-header">
           <h2>Messages</h2>
-          {/* faisal - Add button to open user modal */}
           <button className="add-user-btn" onClick={fetchAllUsers} title="Start new conversation">
             <span>+</span>
           </button>
         </div>
 
-        {/* faisal - User selection modal */}
         {showUserModal && (
           <div className="user-modal-overlay" onClick={() => setShowUserModal(false)}>
             <div className="user-modal" onClick={(e) => e.stopPropagation()}>
@@ -359,7 +362,6 @@ const Chat = () => {
                     <span className="message-time">
                       {new Date(msg.created_at).toLocaleTimeString()}
                     </span>
-                    {/* faisal - Show checkmarks for sent messages */}
                     {msg.sender_id === currentUser.id && (
                       <span className={`message-status ${msg.is_read ? 'read' : 'sent'}`}>
                         ✔✔

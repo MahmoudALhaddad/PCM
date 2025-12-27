@@ -7,6 +7,7 @@ const connectedUsers = new Map(); // Map of userId -> socket.id
 
 export const initializeSocket = (server) => {
   const io = new Server(server, {
+    path: '/socket.io',
     cors: {
       origin: process.env.FRONTEND_URL || 'http://localhost:3000',
       methods: ['GET', 'POST'],
